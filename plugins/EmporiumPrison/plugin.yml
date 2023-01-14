@@ -1,0 +1,8 @@
+name: EmporiumPrison
+version: 1.0.0
+api: 4.0.0
+main: Emporium\Prison\Loader
+
+permissions:
+  emporiumprison.command.mines:
+    default: true
