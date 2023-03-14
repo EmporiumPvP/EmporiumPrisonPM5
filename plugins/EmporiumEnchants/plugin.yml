@@ -1,0 +1,24 @@
+# About
+name: EmporiumEnchants
+description: "Emporium Custom Enchants"
+main: Tetro\EmporiumEnchants\Loader
+author: Tetro
+
+# Versions
+version: 1.0.0
+api: 4.9.0
+
+# Permissions
+permissions:
+  emporiumenchants.command.enchant:
+    default: op
+  emporiumenchants.command.info:
+    default: true
+  emporiumenchants.command.list:
+    default: true
+  emporiumenchants.command.remove:
+    default: op
+  emporiumenchants.command.blackscroll:
+    default: op
+  cmd.ce.about:
+    default: false
