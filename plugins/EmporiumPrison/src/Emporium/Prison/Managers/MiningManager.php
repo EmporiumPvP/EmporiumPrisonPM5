@@ -4,6 +4,8 @@ namespace Emporium\Prison\Managers;
 
 use JsonException;
 use pocketmine\player\Player;
+use EmporiumData\DataManager;
+
 
 class MiningManager {
 
@@ -15,34 +17,26 @@ class MiningManager {
         $this->addTime($player);
     }
 
-    /**
-     * @throws JsonException
-     */
     public function stop(Player $player): void {
-        DataManager::setData($player, "Boosters", "mining-booster-timer", 0);
-        DataManager::setData($player, "Boosters", "mining-booster-multiplier", 1.0);
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "booster.mining-booster-timer", 0);
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "booster.mining-booster-multiplier", 1.0);
     }
 
-    /**
-     * @throws JsonException
-     */
     public function addTime(Player $player): void {
-        DataManager::addData($player, "Boosters", "mining-booster-timer", 3600);
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "booster.mining-booster-timer", DataManager::getInstance()->getPlayerData($player->getXuid(), "mining-booster-timer") + 3600);
     }
 
     public function getTime(Player $player): int {
-        return DataManager::getData($player, "Boosters", "mining-booster-timer");
+        return DataManager::getInstance()->getPlayerData($player->getXuid(), "booster.mining-booster-timer");
     }
 
-    /**
-     * @throws JsonException
-     */
     public function setMultiplier(Player $player, float $multiplier): void {
-        DataManager::setData($player, "Boosters", "mining-booster-multiplier", $multiplier);
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "booster.mining-booster-multiplier", $multiplier);
+
     }
 
     public function getMultiplier(Player $player): float {
-        return DataManager::getData($player, "Boosters", "mining-booster-multiplier");
+        return DataManager::getInstance()->getPlayerData($player->getXuid(), "booster.mining-booster-multiplier");
     }
 
 }

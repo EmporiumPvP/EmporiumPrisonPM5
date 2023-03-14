@@ -102,6 +102,7 @@ class MeteorListener implements Listener {
                     $multipliedXp = $xp * $miningMultiplier;
                     $player->sendTip("+$multipliedXp xp");
                     DataManager::addData($player, "Players", "xp", $multipliedXp);
+                    DataManager::setPlayerData();
                 } else {
                     $player->sendTip("+$xp xp");
                     DataManager::addData($player, "Players", "xp", $xp);

@@ -1,0 +1,72 @@
+Emporium Prison Wiki
+
+Mines:
+	Coal Mine:
+		Pickaxe required - Trainee
+		Level required: 1
+		Resources - Coal ore, Coal block
+		XP gained per ore - 4
+		XP gained per block - 8
+		Energy gained per ore - 10-20
+		Energy gained per block - 20-40
+		Guards - Coal Bandit
+
+	Iron Mine:
+		Pickaxe required - Trainee
+		Level required: 20
+		Resources - Iron ore, Iron block
+		XP gained per ore - 6
+		XP gained per block - 12
+		Energy gained per ore - 20-30
+		Energy gained per block - 40-60
+		Guards - Iron Bandit
+
+	Lapis Mine:
+		Pickaxe required - Stone
+		Level required: 30
+		Resources - Lapis ore, lapis block
+		XP gained per ore - 10
+		XP gained per block - 20
+		Energy gained per ore - 40-50
+		Energy gained per block - 80-100
+		Guards - Lapis Bandit
+
+	Redstone Mine:
+		Pickaxe required - Stone
+		Level required: 50
+		Resources - Redstone ore, redstone block
+		XP gained per ore - 8
+		XP gained per block - 16
+		Energy gained per ore - 30-40
+		Energy gained per block - 60-80
+		Guards - Redstone Bandit
+
+	Gold Mine:
+		Pickaxe required - Iron
+		Level required: 70
+		Resources - Gold ore, gold block
+		XP gained per ore - 12
+		XP gained per block - 24
+		Energy gained per ore - 50-60
+		Energy gained per block - 100-120
+		Guards - Gold Bandit
+
+	Diamond Mine:
+		Level required: 90
+		Pickaxe required - Diamond
+		Resources - Diamond ore, diamond block
+		XP gained per ore - 14
+		XP gained per block - 28
+		Energy gained per ore - 60-70
+		Energy gained per block - 120-140
+		Guards - Diamond Bandit
+
+	Emerald Mine:
+		Level required: 100
+		Pickaxe required - Diamond
+		Resources - Emerald ore, emerald block
+		XP gained per ore - 16
+		XP gained per block - 32
+		Energy gained per ore - 70-80
+		Energy gained per block - 140-160
+		Guards - Emerald Bandit

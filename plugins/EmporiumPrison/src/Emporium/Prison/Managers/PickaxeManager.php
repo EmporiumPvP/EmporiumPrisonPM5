@@ -26,7 +26,7 @@ class PickaxeManager {
 
     public function getEnergyNeeded($item): int {
         $level = $item->getNamedTag()->getInt("Level");
-        return PrisonManager::getData("Prison", "pickaxeEnergyLevels", $level + 1);
+        return EmporiumPrison::getInstance()->getPickaxeEnergyLevels()[$level] + 1;
     }
 
     public function getSuccessfulEnchants($item): int {

@@ -8,8 +8,12 @@ use Emporium\Prison\library\formapi\SimpleForm;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
-class Bank {
+class Bank extends Menu {
 
+    public function open (Player $player) : void
+    {
+        $this->Form($player);
+    }
 
     public function Form(Player $player): void {
 
@@ -40,5 +44,7 @@ class Bank {
         $form->addButton(TF::BOLD . "Withdraw");
         $player->sendForm($form);
     }
+
+
 
 }

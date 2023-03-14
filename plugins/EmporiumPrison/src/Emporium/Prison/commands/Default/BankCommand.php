@@ -23,12 +23,6 @@ class BankCommand extends Command {
             return;
         }
 
-        /*
-        $permission = DataManager::getData($sender, "Permissions", "emporiumprison.command.bank");
-        if(!$permission) {
-            $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "No permission.");
-        }*/
-
         $sender->broadcastSound(new BarrelOpenSound(), [$sender]);
         $bank = new Bank();
         $bank->Form($sender);

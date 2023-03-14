@@ -4,7 +4,7 @@ namespace Tetro\EPTutorial\Managers;
 
 use DialogueUIAPI\Yanoox\DialogueUIAPI\DialogueAPI;
 use DialogueUIAPI\Yanoox\DialogueUIAPI\element\DialogueButton;
-use Emporium\Prison\Managers\DataManager;
+use EmporiumData\DataManager;
 use JsonException;
 use pocketmine\event\Listener;
 use pocketmine\player\Player;
@@ -17,19 +17,19 @@ use pocketmine\world\sound\BlazeShootSound;
 class TutorialManager implements Listener {
 
     public function checkPlayerTutorialComplete(Player $player): bool {
-        return DataManager::getData($player, "Players", "tutorial-complete");
+        return DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-complete");
     }
 
     public function getPlayerTutorialProgress(Player $player): int {
-        return DataManager::getData($player, "Players", "tutorial-progress");
+        return DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-progress");
     }
 
     public function getPlayerTutorialBlocksMined(Player $player): int {
-        return DataManager::getData($player, "Players", "tutorial-blocks-mined");
+        return DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-blocks-mined");
     }
 
     public function tutorialComplete(Player $player): bool {
-        return DataManager::getData($player, "Players", "tutorial-complete");
+        return DataManager::getInstance()->getPlayerData($player, "tutorial-complete");
     }
 
     /**
@@ -119,10 +119,10 @@ class TutorialManager implements Listener {
                 break;
 
             case 6:
-                $playerLevel = DataManager::getData($player, "Players", "level");
+                $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
                 # set player tutorial complete if Data is correct
                 if($playerLevel === 10) {
-                    DataManager::setData($player, "Players", "tutorial-complete", true);
+                    DataManager::getInstance()->setPlayerData($player->getXuid(), "tutorial-complete", true);
                     $dialogue = DialogueAPI::create(
                         "TourGuideQuest7",
                         "Tour Guide",

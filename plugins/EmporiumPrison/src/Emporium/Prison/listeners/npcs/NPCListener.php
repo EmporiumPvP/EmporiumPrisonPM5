@@ -6,7 +6,7 @@ use DialogueUIAPI\Yanoox\DialogueUIAPI\DialogueAPI;
 use DialogueUIAPI\Yanoox\DialogueUIAPI\element\DialogueButton;
 
 use Emporium\Prison\EmporiumPrison;
-use Emporium\Prison\Managers\DataManager;
+use EmporiumData\DataManager;
 use Emporium\Prison\Managers\misc\Translator;
 use Emporium\Prison\Managers\PrisonManager;
 use Emporium\Prison\Menus\TourGuide;
@@ -50,11 +50,6 @@ class NPCListener implements Listener {
         56, 57, 264, # diamond
         129, 133, 388 # emerald
     ];
-    private TutorialManager $tutorialManager;
-
-    public function __construct() {
-        $this->tutorialManager = Loader::getTutorialManager();
-    }
 
     /**
      * @throws JsonException
@@ -223,17 +218,18 @@ class NPCListener implements Listener {
                         $player->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "You do not have any sellable items in your inventory.");
                         $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     } else {
-                        \EmporiumCore\managers\data\DataManager::addData($player, "Players", "Money", $sellprice);
+                        DataManager::getInstance()->setPlayerData($player->getXuid(), "money", DataManager::getInstance()->getPlayerData($player->getXuid(), "money") + $sellprice);
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have sold your inventory for " . TF::GREEN . "$" . TF::WHITE . Translator::shortNumber($sellprice));
                         $player->broadcastSound(new XpCollectSound(), [$player]);
                     }
                     # check tutorial stage
-                    $tutorialProgress = $this->tutorialManager->getPlayerTutorialProgress($player);
+                    $tutorialProgress = (new TutorialManager())->getPlayerTutorialProgress($player);
                     if($tutorialProgress == 2) {
                         # update player tutorial progression
-                        DataManager::addData($player, "Players", "tutorial-progress", 1);
+                        DataManager::getInstance()->setPlayerData($player->getXuid(), "tutorial-progress", DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-progress") + 1);
+
                         # start next tutorial stage
-                        $this->tutorialManager->startTutorial($player);
+                        (new TutorialManager())->startTutorial($player);
                     }
                     break;
 
@@ -365,7 +361,8 @@ class NPCListener implements Listener {
                         $player->sendMessage(TF::GREEN . "You Tinkered an Enchantment Book " . TF::AQUA . "+$totalCexp CEXP");
                         $player->broadcastSound(new XpLevelUpSound(30), [$player]);
                         $player->getInventory()->setItemInHand(VanillaItems::AIR());
-                        \EmporiumCore\Managers\Data\DataManager::addData($player, "Players", "Cexp", $totalCexp);
+                        DataManager::getInstance()->setPlayerData($player->getXuid(), "cexp", DataManager::getInstance()->getPlayerData($player->getXuid(), "cexp") + $totalCexp);
+
                     } else {
                         $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You are not holding an enchantment book");
                     }

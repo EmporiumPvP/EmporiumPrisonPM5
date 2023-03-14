@@ -1,0 +1,8 @@
+---
+mining-booster-active: false
+mining-booster-timer: 0
+mining-booster-multiplier: 1
+energy-booster-active: false
+energy-booster-timer: 0
+energy-booster-multiplier: 1
+...

@@ -1,0 +1,10 @@
+name: Tinker
+main: tinker\Tinker
+version: 1.0.0
+api: 4.0.0
+author: Tetro
+description: Tinker plugin for Emporium
+
+permissions:
+  emporiumtinker.command.tinker:
+    default: false

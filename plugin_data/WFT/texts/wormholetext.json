@@ -1,0 +1,10 @@
+{
+    "name": "wormholetext",
+    "lines": [
+        "\u00a76Welcome to the \u00a7l\u00a76Wormhole!\u00a7r\n\u00a7bWhen your pickaxe has reached 100% \u00a7lEnergy\u00a7r\n\u00a7bYou may throw it into the \u00a7l\u00a76Wormhole \u00a7r\u00a7bto forge it!\n\u00a77(Yes, really, drop your pickaxe while at the wormhole)"
+    ],
+    "world": "TutorialMine",
+    "x": -24.5,
+    "y": 151,
+    "z": 15.5
+}

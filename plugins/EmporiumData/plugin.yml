@@ -1,0 +1,5 @@
+name: EmporiumData
+author: Tetro
+version: 1.0.0
+main: EmporiumData\Loader
+api: 4.0.0

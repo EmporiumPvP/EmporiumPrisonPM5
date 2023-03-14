@@ -1,0 +1,18 @@
+{
+    "name": "tutorialwelcometext",
+    "lines": [
+        "\u00a7bWelcome to \u00a7l\u00a76Emporium Prison",
+        "",
+        "\u00a7r\u00a7bYou are in the Training Area",
+        "\u00a7bHere you will learn the basics before you are",
+        "\u00a7breleased into the Yard",
+        "",
+        "\u00a7bTo get started check your chat",
+        "\u00a7bYou have been sent your first \u00a7eQuest",
+        ""
+    ],
+    "world": "TutorialMine",
+    "x": -36.5,
+    "y": 158,
+    "z": -2.5
+}

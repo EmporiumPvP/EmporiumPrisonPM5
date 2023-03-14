@@ -18,27 +18,27 @@ use Tetro\EmporiumEnchants\Utils\Utils;
 
 class BookListener implements Listener {
 
-    private Utils $utils;
     private BookManager $bookManager;
 
     public function __construct() {
-        $this->utils = Loader::getUtils();
         $this->bookManager = Loader::getBookManager();
     }
 
     /**
      * @throws Exception
      */
-    public function onRevealBookAir(PlayerItemUseEvent $event) {
+    public function onRevealBookAir(PlayerInteractEvent $event) {
 
         $player = $event->getPlayer();
         $hand = $player->getInventory()->getItemInHand();
         $count = $hand->getCount();
 
+        $utils = new Utils();
+
         # Elite Book
         if ($hand->getNamedTag()->getTag("EliteBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_ELITE);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_ELITE);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -61,7 +61,7 @@ class BookListener implements Listener {
         # Ultimate Book
         if ($hand->getNamedTag()->getTag("UltimateBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_ULTIMATE);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_ULTIMATE);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -75,7 +75,7 @@ class BookListener implements Listener {
                 # give item
                 $player->getInventory()->addItem($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success));
                 # send particles
-                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLUE);
+                FireworksParticle::instantFirework($player, Fireworks::COLOR_YELLOW);
             } else {
                 $player->sendMessage(TF::RED. "Your inventory is full");
             }
@@ -84,7 +84,7 @@ class BookListener implements Listener {
         # Legendary Book
         if ($hand->getNamedTag()->getTag("LegendaryBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_LEGENDARY);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_LEGENDARY);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -98,7 +98,7 @@ class BookListener implements Listener {
                 # give item
                 $player->getInventory()->addItem($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success));
                 # send particles
-                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLUE);
+                FireworksParticle::instantFirework($player, Fireworks::COLOR_GOLD);
             } else {
                 $player->sendMessage(TF::RED. "Your inventory is full");
             }
@@ -107,7 +107,7 @@ class BookListener implements Listener {
         # Godly Book
         if ($hand->getNamedTag()->getTag("GodlyBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_GODLY);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_GODLY);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -121,7 +121,7 @@ class BookListener implements Listener {
                 # give item
                 $player->getInventory()->addItem($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success));
                 # send particles
-                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLUE);
+                FireworksParticle::instantFirework($player, Fireworks::COLOR_PINK);
             } else {
                 $player->sendMessage(TF::RED. "Your inventory is full");
             }
@@ -130,7 +130,7 @@ class BookListener implements Listener {
         # Heroic Book
         if ($hand->getNamedTag()->getTag("HeroicBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_HEROIC);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_HEROIC);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -142,9 +142,9 @@ class BookListener implements Listener {
                 $hand->setCount($count - 1);
                 $player->getInventory()->setItemInHand($hand);
                 # give item
-                $player->getInventory()->addItem($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success));
+                $player->getInventory()->addItem(($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success)));
                 # send particles
-                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLUE);
+                FireworksParticle::instantFirework($player, Fireworks::COLOR_RED);
             } else {
                 $player->sendMessage(TF::RED. "Your inventory is full");
             }
@@ -153,7 +153,7 @@ class BookListener implements Listener {
         # Executive Book
         if ($hand->getNamedTag()->getTag("ExecutiveBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_EXECUTIVE);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_EXECUTIVE);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -167,7 +167,7 @@ class BookListener implements Listener {
                 # give item
                 $player->getInventory()->addItem($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success));
                 # send particles
-                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLUE);
+                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLACK);
             } else {
                 $player->sendMessage(TF::RED. "Your inventory is full");
             }
@@ -184,10 +184,12 @@ class BookListener implements Listener {
         $hand = $player->getInventory()->getItemInHand();
         $count = $hand->getCount();
 
+        $utils = new Utils();
+
         # Elite Book
         if ($hand->getNamedTag()->getTag("EliteBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_ELITE);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_ELITE);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -210,7 +212,7 @@ class BookListener implements Listener {
         # Ultimate Book
         if ($hand->getNamedTag()->getTag("UltimateBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_ULTIMATE);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_ULTIMATE);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -224,7 +226,7 @@ class BookListener implements Listener {
                 # give item
                 $player->getInventory()->addItem($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success));
                 # send particles
-                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLUE);
+                FireworksParticle::instantFirework($player, Fireworks::COLOR_YELLOW);
             } else {
                 $player->sendMessage(TF::RED. "Your inventory is full");
             }
@@ -233,7 +235,7 @@ class BookListener implements Listener {
         # Legendary Book
         if ($hand->getNamedTag()->getTag("LegendaryBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_LEGENDARY);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_LEGENDARY);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -247,7 +249,7 @@ class BookListener implements Listener {
                 # give item
                 $player->getInventory()->addItem($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success));
                 # send particles
-                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLUE);
+                FireworksParticle::instantFirework($player, Fireworks::COLOR_GOLD);
             } else {
                 $player->sendMessage(TF::RED. "Your inventory is full");
             }
@@ -256,7 +258,7 @@ class BookListener implements Listener {
         # Godly Book
         if ($hand->getNamedTag()->getTag("GodlyBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_GODLY);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_GODLY);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -270,7 +272,7 @@ class BookListener implements Listener {
                 # give item
                 $player->getInventory()->addItem($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success));
                 # send particles
-                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLUE);
+                FireworksParticle::instantFirework($player, Fireworks::COLOR_PINK);
             } else {
                 $player->sendMessage(TF::RED. "Your inventory is full");
             }
@@ -279,7 +281,7 @@ class BookListener implements Listener {
         # Heroic Book
         if ($hand->getNamedTag()->getTag("HeroicBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_HEROIC);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_HEROIC);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -291,9 +293,9 @@ class BookListener implements Listener {
                 $hand->setCount($count - 1);
                 $player->getInventory()->setItemInHand($hand);
                 # give item
-                $player->getInventory()->addItem($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success));
+                $player->getInventory()->addItem(($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success)));
                 # send particles
-                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLUE);
+                FireworksParticle::instantFirework($player, Fireworks::COLOR_RED);
             } else {
                 $player->sendMessage(TF::RED. "Your inventory is full");
             }
@@ -302,7 +304,7 @@ class BookListener implements Listener {
         # Executive Book
         if ($hand->getNamedTag()->getTag("ExecutiveBook")) {
             # create book
-            $enchants = $this->utils->getEnchant(CustomEnchant::RARITY_EXECUTIVE);
+            $enchants = $utils->getEnchant(CustomEnchant::RARITY_EXECUTIVE);
             $enchant = $enchants[array_rand($enchants)];
             $id = $enchant->getId();
             $level = mt_rand(1, $enchant->getMaxLevel());
@@ -316,7 +318,7 @@ class BookListener implements Listener {
                 # give item
                 $player->getInventory()->addItem($this->bookManager->EnchantedBook($enchant, $level,  $rarity, $id, $success));
                 # send particles
-                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLUE);
+                FireworksParticle::instantFirework($player, Fireworks::COLOR_BLACK);
             } else {
                 $player->sendMessage(TF::RED. "Your inventory is full");
             }

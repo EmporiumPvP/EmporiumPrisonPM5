@@ -1,0 +1,80 @@
+name: EmporiumCore
+author: Tetro
+version: 1.0.0
+main: EmporiumCore\EmporiumCore
+api: 4.0.0
+
+permissions:
+  # default commands
+  emporiumcore.command.balance:
+    default: true
+  emporiumcore.command.brag:
+    default: true
+  emporiumcore.command.ceshop:
+    default: true
+  emporiumcore.command.discord:
+    default: true
+  emporiumcore.command.gamble:
+    default: true
+  emporiumcore.command.gkits:
+    default: true
+  emporiumcore.command.items:
+    default: true
+  emporiumcore.command.kits:
+    default: true
+  emporiumcore.command.pay:
+    default: true
+  emporiumcore.command.ranks:
+    default: true
+  emporiumcore.command.rules:
+    default: true
+  emporiumcore.command.shop:
+    default: true
+  emporiumcore.command.tags:
+    default: true
+  emporiumcore.command.trash:
+    default: true
+  emporiumcore.command.voteshop:
+    default: true
+  emporiumcore.command.warps:
+    default: true
+  # rank commands
+  emporiumcore.command.sell:
+    default: false
+  emporiumcore.command.clear:
+    default: false
+  emporiumcore.command.feed:
+    default: false
+  emporiumcore.command.heal:
+    default: false
+  emporiumcore.command.milk:
+    default: false
+  # staff commands
+  emporiumcore.command.ban:
+    default: false
+  emporiumcore.command.broadcast:
+    default: false
+  emporiumcore.command.clearchat:
+    default: false
+  emporiumcore.command.creative:
+    default: false
+  emporiumcore.command.freeze:
+    default: false
+  emporiumcore.command.kick:
+    default: false
+  emporiumcore.command.kill:
+    default: false
+  emporiumcore.command.mute:
+    default: false
+  emporiumcore.command.survival:
+    default: false
+  emporiumcore.command.teleport:
+    default: false
+  emporiumcore.command.unban:
+    default: false
+  emporiumcore.command.unfreeze:
+    default: false
+  emporiumcore.command.unmute:
+    default: false
+  emporiumcore.command.warn:
+    default: false

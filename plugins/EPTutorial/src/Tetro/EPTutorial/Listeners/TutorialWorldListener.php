@@ -29,7 +29,6 @@ use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\EndermanTeleportSound;
 use pocketmine\world\sound\XpLevelUpSound;
-use Tetro\EPTutorial\Loader;
 use Tetro\EPTutorial\Managers\TutorialManager;
 
 class TutorialWorldListener implements Listener {
@@ -42,27 +41,13 @@ class TutorialWorldListener implements Listener {
         BlockLegacyIds::COAL_ORE,
         BlockLegacyIds::COAL_BLOCK
     ];
-    private PickaxeManager $pickaxeManager;
-    private TutorialManager $tutorialManager;
-    private EnergyManager $energyManager;
-    private MiningManager $miningManager;
-    private PlayerLevelManager $playerLevelManager;
-
-    public function __construct() {
-        # Managers
-        $this->pickaxeManager = EmporiumPrison::getPickaxeManager();
-        $this->tutorialManager = Loader::getTutorialManager();
-        $this->energyManager = EmporiumPrison::getEnergyManager();
-        $this->miningManager = EmporiumPrison::getMiningManager();
-        $this->playerLevelManager = EmporiumPrison::getPlayerLevelManager();
-    }
 
     public function onDropItem(PlayerDropItemEvent $event) {
 
         $player = $event->getPlayer();
         $item = $event->getItem();
         $hand = $item->getId();
-        $pickaxeManager = new PickaxeManager();
+        $pickaxeManager = new PickaxeManager($player);
         $playerX = $player->getPosition()->getX();
         $playerY = $player->getPosition()->getY();
         $playerZ = $player->getPosition()->getZ();
@@ -120,38 +105,44 @@ class TutorialWorldListener implements Listener {
         $player = $event->getPlayer();
         $blockId = $event->getBlock()->getIdInfo()->getBlockId();
         $world = $event->getPlayer()->getWorld()->getFolderName();
+        # Managers
+        $pickaxeManager = new PickaxeManager($player);
+        $tutorialManager = new TutorialManager();
+        $energyManager = new EnergyManager($player);
+        $miningManager = new MiningManager($player);
+        $playerLevelManager = new PlayerLevelManager($player);
         # item info
         $item = $event->getPlayer()->getInventory()->getItemInHand();
         $itemId = $item->getId();
         $woodenPickaxe = 270;
         # variables
-        $tutorialProgress = $this->tutorialManager->getPlayerTutorialProgress($player);
-        $tutorialBlocksMined = $this->tutorialManager->getPlayerTutorialBlocksMined($player);
+        $tutorialProgress = $tutorialManager->getPlayerTutorialProgress($player);
+        $tutorialBlocksMined = $tutorialManager->getPlayerTutorialBlocksMined($player);
 
         if($world === "TutorialMine") {
 
             if(!in_array($blockId, $this->ores)) {
                 $event->cancel();
             }
-            if($tutorialProgress === 5 && $this->playerLevelManager->getPlayerLevel($player) >= 10) {
+            if($tutorialProgress === 5 && $playerLevelManager->getPlayerLevel($player) >= 10) {
                 DataManager::addData($player, "Players", "tutorial-progress", 1);
-                $this->tutorialManager->startTutorial($player);
+                $tutorialManager->startTutorial($player);
             }
-            if($tutorialProgress === 6 && $this->tutorialManager->tutorialComplete($player) === false) {
+            if($tutorialProgress === 6 && $tutorialManager->tutorialComplete($player) === false) {
                 DataManager::setData($player, "Players", "tutorial-complete", true);
-                $this->tutorialManager->startTutorial($player);
+                $tutorialManager->startTutorial($player);
             }
-            if($tutorialProgress === 6 && $this->tutorialManager->tutorialComplete($player) === true) {
+            if($tutorialProgress === 6 && $tutorialManager->tutorialComplete($player) === true) {
                 $event->cancel();
-                $this->tutorialManager->startTutorial($player);
+                $tutorialManager->startTutorial($player);
             }
             if($itemId === 270 || $itemId === 274 || $itemId === 285 || $itemId === 257 || $itemId === 278) {
                 $energy = $item->getNamedTag()->getInt("Energy");
-                $energyNeeded = $this->pickaxeManager->getEnergyNeeded($item);
+                $energyNeeded = $pickaxeManager->getEnergyNeeded($item);
                 if($energy >= $energyNeeded) {
                     if($tutorialProgress == 3) {
                         DataManager::addData($player, "Players", "tutorial-progress", 1);
-                        $this->tutorialManager->startTutorial($player);
+                        $tutorialManager->startTutorial($player);
                         $event->cancel();
                     } else {
                         $event->cancel();
@@ -168,11 +159,10 @@ class TutorialWorldListener implements Listener {
                     $blockId = $event->getBlock()->getIdInfo()->getBlockId();
                     $blockPosition = $block->getPosition();
                     # boosters
-                    $energyBoosterTime = $this->energyManager->getTime($player);
-                    $energyMultiplier = $this->energyManager->getMultiplier($player);
-                    $miningBoosterTime = $this->miningManager->getTime($player);
-                    $miningMultiplier = $this->miningManager->getMultiplier($player);
-
+                    $energyBoosterTime = $energyManager->getTime();
+                    $energyMultiplier = $energyManager->getMultiplier();
+                    $miningBoosterTime = $miningManager->getTime();
+                    $miningMultiplier = $miningManager->getMultiplier();
                     switch($blockId) {
 
                         case BlockLegacyIds::COAL_ORE: # (wooden pickaxe required)
@@ -239,8 +229,8 @@ class TutorialWorldListener implements Listener {
                                 $player->getXpManager()->addXp($event->getXpDropAmount());
                                 $event->setXpDropAmount(0);
                                 # player and pickaxe checks
-                                $this->pickaxeManager->updatePickaxeSetInHand($player, $item);
-                                $this->playerLevelManager->checkPlayerLevelUp($player);
+                                $pickaxeManager->updatePickaxeSetInHand($item);
+                                $playerLevelManager->checkPlayerLevelUp();
                             }
                             break;
 
@@ -309,8 +299,8 @@ class TutorialWorldListener implements Listener {
                                 $player->getXpManager()->addXp($event->getXpDropAmount());
                                 $event->setXpDropAmount(0);
                                 # player and pickaxe checks
-                                $this->pickaxeManager->updatePickaxeSetInHand($player, $item);
-                                $this->playerLevelManager->checkPlayerLevelUp($player);
+                                $pickaxeManager->updatePickaxeSetInHand($item);
+                                $playerLevelManager->checkPlayerLevelUp();
                             }
                             break;
                     }
@@ -400,7 +390,7 @@ class TutorialWorldListener implements Listener {
 
                         case 60:
                             DataManager::addData($player, "Players", "tutorial-progress", 1);
-                            $this->tutorialManager->startTutorial($player);
+                            $tutorialManager->startTutorial($player);
                             break;
                     }
 

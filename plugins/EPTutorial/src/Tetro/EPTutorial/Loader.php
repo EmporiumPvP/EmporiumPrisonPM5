@@ -5,16 +5,10 @@ namespace Tetro\EPTutorial;
 use DialogueUIAPI\Yanoox\DialogueUIAPI\DialogueAPI;
 use pocketmine\plugin\PluginBase;
 use Tetro\EPTutorial\Listeners\TutorialWorldListener;
-use Tetro\EPTutorial\Managers\TutorialManager;
 
 class Loader extends PluginBase {
 
     private static Loader $instance;
-    private static TutorialManager $tutorialManager;
-
-    public function onLoad(): void {
-        self::$tutorialManager = new TutorialManager();
-    }
 
     public function onEnable(): void {
 
@@ -32,10 +26,6 @@ class Loader extends PluginBase {
 
     public static function getInstance(): Loader {
         return self::$instance;
-    }
-
-    public static function getTutorialManager(): TutorialManager {
-        return self::$tutorialManager;
     }
 
 }

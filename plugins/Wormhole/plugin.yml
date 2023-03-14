@@ -1,0 +1,7 @@
+name: Wormhole
+description: "Emporium Prison Wormhole"
+main: Emporium\Wormhole\Wormhole
+author: Emporium
+
+version: 1.0.0
+api: 4.0.0
