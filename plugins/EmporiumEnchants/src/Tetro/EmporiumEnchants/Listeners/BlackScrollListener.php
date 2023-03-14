@@ -18,7 +18,8 @@ use Tetro\EmporiumEnchants\Core\BookManager;
 use Tetro\EmporiumEnchants\Core\CustomEnchantManager;
 use Tetro\EmporiumEnchants\Loader;
 
-class BlackScrollListener implements Listener {
+class BlackScrollListener implements Listener
+{
 
     private PickaxeManager $pickaxeManager;
     private BookManager $bookManager;
@@ -32,7 +33,8 @@ class BlackScrollListener implements Listener {
     /**
      * @throws Exception
      */
-    public function onUseBlackScroll(InventoryTransactionEvent $event): void {
+    public function onUseBlackScroll(InventoryTransactionEvent $event): void
+    {
         $player = $event->getTransaction()->getSource();
         $transaction = $event->getTransaction();
         $actions = array_values($transaction->getActions());

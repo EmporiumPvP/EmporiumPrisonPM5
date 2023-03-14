@@ -1,13 +1,8 @@
 <?php
 
-namespace Emporium\Prison\Managers\misc;
+namespace Emporium\Prison\Managers;
 
 use Emporium\Prison\EmporiumPrison;
-
-use Emporium\Prison\Managers\EnergyManager;
-use Emporium\Prison\Managers\MiningManager;
-use Emporium\Prison\Managers\PickaxeManager;
-use Emporium\Prison\Managers\PlayerLevelManager;
 
 use EmporiumCore\managers\data\DataManager;
 use pocketmine\player\Player;
@@ -20,29 +15,22 @@ use pocketmine\network\mcpe\protocol\{SetScorePacket, SetDisplayObjectivePacket,
 
 use Tetro\EPTutorial\Loader;
 use Tetro\EPTutorial\Managers\TutorialManager;
+use Emporium\Prison\Managers\misc\Translator;
 
 
 class ScoreboardManager {
 
+    private const OBJECTIVE = "scoreboard";
+
     private EmporiumPrison $plugin;
-    private MiningManager $miningManager;
-    private EnergyManager $energyManager;
-    private PlayerLevelManager $levelManager;
-    private TutorialManager $tutorialManager;
-    private PickaxeManager $pickaxeManager;
 
     public function __construct(EmporiumPrison $plugin) {
         $this->plugin = $plugin;
-        $this->miningManager = EmporiumPrison::getMiningManager();
-        $this->energyManager = EmporiumPrison::getEnergyManager();
-        $this->levelManager = EmporiumPrison::getPlayerLevelManager();
-        $this->tutorialManager = Loader::getTutorialManager();
-        $this->pickaxeManager = EmporiumPrison::getPickaxeManager();
     }
 
     public function setScoreboardEntry(Player $player, int $score, string $msg, string $objName): void {
         $entry = new ScorePacketEntry();
-        $entry->objectiveName = $objName;
+        $entry->objectiveName = self::OBJECTIVE;
         $entry->type = 3;
         $entry->customName = " $msg   ";
         $entry->score = $score;
@@ -53,19 +41,19 @@ class ScoreboardManager {
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
-    public function createScoreboard(Player $player, string $title, string $objName, string $slot = "sidebar", $order = 0): void {
+    public function createScoreboard(Player $player, string $title, string $slot = "sidebar", $order = 0): void {
         $pk = new SetDisplayObjectivePacket();
         $pk->displaySlot = $slot;
-        $pk->objectiveName = $objName;
+        $pk->objectiveName = self::OBJECTIVE;
         $pk->displayName = $title;
         $pk->criteriaName = "dummy";
         $pk->sortOrder = $order;
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
-    public function rmScoreboard(Player $player, string $objName): void {
+    public function rmScoreboard(Player $player): void {
         $pk = new RemoveObjectivePacket();
-        $pk->objectiveName = $objName;
+        $pk->objectiveName = self::OBJECTIVE;
         $player->getNetworkSession()->sendDataPacket($pk);
     }
 
@@ -77,23 +65,24 @@ class ScoreboardManager {
             # world
             $world = $player->getWorld()->getFolderName();
             # mining booster manager
-            $miningBoosterTimer = $this->miningManager->getTime($player);
+            $miningBoosterTimer = EmporiumPrison::getMiningManager()->getTime($player);
             $miningBoosterTranslated = Translator::timeConvert($miningBoosterTimer);
-            $miningBoosterMultiplier = $this->miningManager->getMultiplier($player);
+            $miningBoosterMultiplier = EmporiumPrison::getMiningManager()->getMultiplier($player);
             # energy manager
-            $energyBoosterTime = $this->energyManager->getTime($player);
-            $energyBoosterMultiplier = $this->energyManager->getMultiplier($player);
+            $energyBoosterTime = EmporiumPrison::getEnergyManager()->getTime($player);
+            $energyBoosterMultiplier = EmporiumPrison::getEnergyManager()->getMultiplier($player);
             $energyBoosterTranslated = Translator::timeConvert($energyBoosterTime);
             # level manager
-            $playerLevel = $this->levelManager->getPlayerLevel($player);
-            $playerTotalXp = $this->levelManager->getTotalPlayerXp($player);
-            $playerXp = $this->levelManager->getPlayerXp($player);
-            $nextLevelXp = $this->levelManager->getNextPlayerLevelXp($player);
+            $playerLevel = EmporiumPrison::getPlayerLevelManager()->getPlayerLevel($player);
+            $playerTotalXp = EmporiumPrison::getPlayerLevelManager()->getTotalPlayerXp($player);
+            $playerXp = EmporiumPrison::getPlayerLevelManager()->getPlayerXp($player);
+            $nextLevelXp = EmporiumPrison::getPlayerLevelManager()->getNextPlayerLevelXp($player);
             $xpNeeded = $nextLevelXp - $playerXp;
             # pickaxe manager
             # tutorial manager
-            $tutorialComplete = $this->tutorialManager->checkPlayerTutorialComplete($player);
-            $tutorialProgress = $this->tutorialManager->getPlayerTutorialProgress($player);
+            $tutorialManager = new TutorialManager();
+            $tutorialComplete = $tutorialManager->checkPlayerTutorialComplete($player);
+            $tutorialProgress = $tutorialManager->getPlayerTutorialProgress($player);
             # player balance
             $playerBalance = DataManager::getData($player, "Players", "Money");
             # player location information
@@ -113,7 +102,7 @@ class ScoreboardManager {
             if($item->getNamedTag()->getTag("PickaxeType") !== null) {
                 if($item->getNamedTag()->getTag("Energy") !== null) {
                     $pickaxeEnergy = $item->getNamedTag()->getInt("Energy");
-                    $pickaxeEnergyNeeded = $this->pickaxeManager->getEnergyNeeded($item);
+                    $pickaxeEnergyNeeded = EmporiumPrison::getPickaxeManager()->getEnergyNeeded($item);
                 }
             }
 

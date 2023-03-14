@@ -6,10 +6,6 @@ main: Emporium\Prison\EmporiumPrison
 
 depend:
   - EmporiumCore
-commands:
-  xd:
-    description: "View the Help Menu"
-    permission: "emporiumprison.command.help"
 
 permissions:
     # default commands

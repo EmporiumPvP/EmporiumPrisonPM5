@@ -4,8 +4,7 @@ namespace Emporium\Prison\Menus;
 
 use Emporium\Prison\library\formapi\SimpleForm;
 use Emporium\Prison\EmporiumPrison;
-use Emporium\Prison\Managers\DataManager;
-use Emporium\Prison\Managers\PlayerLevelManager;
+use EmporiumData\DataManager;
 use Emporium\Prison\Variables;
 
 use muqsit\invmenu\InvMenu;
@@ -25,7 +24,7 @@ use pocketmine\world\Position;
 use pocketmine\world\sound\EndermanTeleportSound;
 use pocketmine\world\sound\ItemFrameAddItemSound;
 
-class Mines {
+class Mines extends Menu {
 
     public function Inventory(Player $player): void {
         $menu = InvMenu::create(InvMenuTypeIds::TYPE_CHEST);
@@ -33,7 +32,7 @@ class Mines {
         $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) {
             $player = $transaction->getPlayer();
             $itemClicked = $transaction->getItemClicked();
-            $playerLevel = DataManager::getData($player, "Players", "level");
+            $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
             # coal mine
             if($itemClicked->getId() === ItemIds::COAL_ORE) {
                 $player->teleport(new Position(-1444.5, 246, -39.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
@@ -166,7 +165,7 @@ class Mines {
     }
     public function ironWarp(Player $player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         if($playerLevel >= 10) {
             # mine unlocked
             $item = StringToItemParser::getInstance()->parse("iron_ore");
@@ -199,7 +198,7 @@ class Mines {
     }
     public function lapisWarp(Player $player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         if($playerLevel >= 30) {
             # mine unlocked
             $item = StringToItemParser::getInstance()->parse("lapis_ore");
@@ -232,7 +231,7 @@ class Mines {
     }
     public function redstoneWarp(Player $player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         if($playerLevel >= 50) {
             # mine unlocked
             $item = StringToItemParser::getInstance()->parse("redstone_ore");
@@ -265,7 +264,7 @@ class Mines {
     }
     public function goldMine(Player $player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         if($playerLevel >= 70) {
             # mine unlocked
             $item = StringToItemParser::getInstance()->parse("gold_ore");
@@ -298,7 +297,7 @@ class Mines {
     }
     public function diamondMine(Player $player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         if($playerLevel >= 90) {
             # mine unlocked
             $item = StringToItemParser::getInstance()->parse("diamond_ore");
@@ -331,7 +330,7 @@ class Mines {
     }
     public function emeraldMine(Player $player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         if($playerLevel >= 100) {
             # mine unlocked
             $item = StringToItemParser::getInstance()->parse("emerald_ore");
@@ -442,8 +441,7 @@ class Mines {
             $ironPickaxe = VanillaItems::IRON_PICKAXE();
             $diamondPickaxe = VanillaItems::DIAMOND_PICKAXE();
 
-            $playerLevelManager = new PlayerLevelManager($player);
-            $playerLevel = $playerLevelManager->getPlayerLevel();
+            $playerLevel = EmporiumPrison::getPlayerLevelManager()->getPlayerLevel($player);
 
             if($data === null) {
                 return;
@@ -556,8 +554,7 @@ class Mines {
                     break;
             }
         });
-        $playerLevelManager = new PlayerLevelManager($player);
-        $playerLevel = $playerLevelManager->getPlayerLevel();
+        $playerLevel = EmporiumPrison::getPlayerLevelManager()->getPlayerLevel($player);
 
         $form->setTitle(TF::DARK_AQUA);
         $form->setContent(TF::GRAY . "Select a mine to teleport to it");
@@ -608,7 +605,6 @@ class Mines {
                 return;
             }
             switch($data) {
-
                 case 0:
                     $this->coalMineInfo($player);
                     break;
@@ -653,13 +649,7 @@ class Mines {
     public function coalMineInfo($player): SimpleForm {
 
         $form = new SimpleForm(function($player, $data) {
-            switch($data) {
-                case 0:
-                    $this->MinesInfoForm($player);
-                    break;
-                case null:
-                    break;
-            }
+            $this->MinesInfoForm($player);
         });
         $form->setTitle("Coal Mine - Information");
         $form->setContent(TF::GREEN . "RESOURCES:\n" . TF::RESET . TF::GRAY . "Coal Ore\nCoal Block\nMeteors\n\n" . TF::GREEN . "PICKAXE:\n" . TF::RESET . TF::GRAY . "Trainee\n\n" . TF::GREEN . "ARMOUR:\n" . TF::RESET . TF::GRAY . "Chain\n\n" . TF::RED . "GUARDS:\n" . TF::RESET . TF::GRAY . "Coal Bandit");
@@ -670,13 +660,7 @@ class Mines {
     public function ironMineInfo($player): SimpleForm {
 
         $form = new SimpleForm(function($player, $data) {
-            switch($data) {
-                case 0:
-                    $this->MinesInfoForm($player);
-                    break;
-                case null:
-                    break;
-            }
+            $this->MinesInfoForm($player);
         });
         $form->setTitle("Iron Mine - Information");
         $form->setContent(TF::GREEN . "RESOURCES:\n" . TF::RESET . TF::GRAY . "Iron Ore\nIron Block\nMeteors\n\n" . TF::GREEN . "PICKAXE:\n" . TF::RESET . TF::GRAY . "Trainee\n\n" . TF::GREEN . "ARMOUR:\n" . TF::RESET . TF::GRAY . "Chain\n\n" . TF::RED . "GUARDS:\n" . TF::RESET . TF::GRAY . "Iron Bandit");
@@ -687,13 +671,7 @@ class Mines {
     public function lapisMineInfo($player): SimpleForm {
 
         $form = new SimpleForm(function($player, $data) {
-            switch($data) {
-                case 0:
-                    $this->MinesInfoForm($player);
-                    break;
-                case null:
-                    break;
-            }
+            $this->MinesInfoForm($player);
         });
         $form->setTitle("Lapis Mine - Information");
         $form->setContent(TF::GREEN . "RESOURCES:\n" . TF::RESET . TF::GRAY . "Lapis Ore\nLapis Block\nMeteors\n\n" . TF::GREEN . "PICKAXE:\n" . TF::RESET . TF::GRAY . "Iron\n\n" . TF::GREEN . "ARMOUR:\n" . TF::RESET . TF::GRAY . "Iron\n\n" . TF::RED . "GUARDS:\n" . TF::RESET . TF::GRAY . "Lapis Bandit");
@@ -704,13 +682,7 @@ class Mines {
     public function redstoneMineInfo($player): SimpleForm {
 
         $form = new SimpleForm(function($player, $data) {
-            switch($data) {
-                case 0:
-                    $this->MinesInfoForm($player);
-                    break;
-                case null:
-                    break;
-            }
+            $this->MinesInfoForm($player);
         });
         $form->setTitle("Redstone Mine - Information");
         $form->setContent(TF::GREEN . "RESOURCES:\n" . TF::RESET . TF::GRAY . "Redstone Ore\nRedstone Block\nMeteors\n\n" . TF::GREEN . "PICKAXE:\n" . TF::RESET . TF::GRAY . "Stone\n\n" . TF::GREEN . "ARMOUR:\n" . TF::RESET . TF::GRAY . "Iron\n\n" . TF::RED . "GUARDS:\n" . TF::RESET . TF::GRAY . "Redstone Bandit");
@@ -721,13 +693,7 @@ class Mines {
     public function goldMineInfo($player): SimpleForm {
 
         $form = new SimpleForm(function($player, $data) {
-            switch($data) {
-                case 0:
-                    $this->MinesInfoForm($player);
-                    break;
-                case null:
-                    break;
-            }
+            $this->MinesInfoForm($player);
         });
         $form->setTitle("Gold Mine - Information");
         $form->setContent(TF::GREEN . "RESOURCES:\n" . TF::RESET . TF::GRAY . "Gold Ore\nGold Block\nMeteors\n\n" . TF::GREEN . "PICKAXE:\n" . TF::RESET . TF::GRAY . "Iron\n\n" . TF::GREEN . "ARMOUR:\n" . TF::RESET . TF::GRAY . "Iron\n\n" . TF::RED . "GUARDS:\n" . TF::RESET . TF::GRAY . "Gold Bandit");
@@ -738,13 +704,7 @@ class Mines {
     public function diamondMineInfo($player): SimpleForm {
 
         $form = new SimpleForm(function($player, $data) {
-            switch($data) {
-                case 0:
-                    $this->MinesInfoForm($player);
-                    break;
-                case null:
-                    break;
-            }
+            $this->MinesInfoForm($player);
         });
         $form->setTitle("Diamond Mine - Information");
         $form->setContent(TF::GREEN . "RESOURCES:\n" . TF::RESET . TF::GRAY . "Diamond Ore\nDiamond Block\nMeteors\n\n" . TF::GREEN . "PICKAXE:\n" . TF::RESET . TF::GRAY . "Diamond\n\n" . TF::GREEN . "ARMOUR:\n" . TF::RESET . TF::GRAY . "Diamond\n\n" . TF::RED . "GUARDS:\n" . TF::RESET . TF::GRAY . "Diamond Bandit");
@@ -755,13 +715,7 @@ class Mines {
     public function emeraldMineInfo($player): SimpleForm {
 
         $form = new SimpleForm(function($player, $data) {
-            switch($data) {
-                case 0:
-                    $this->MinesInfoForm($player);
-                    break;
-                case null:
-                    break;
-            }
+            $this->MinesInfoForm($player);
         });
         $form->setTitle("Emerald Mine - Information");
         $form->setContent(TF::GREEN . "RESOURCES:\n" . TF::RESET . TF::GRAY . "Emerald Ore\nEmerald Block\nMeteors\n\n" . TF::GREEN . "PICKAXE:\n" . TF::RESET . TF::GRAY . "Diamond\n\n" . TF::GREEN . "ARMOUR:\n" . TF::RESET . TF::GRAY . "Diamond\n\n" . TF::RED . "GUARDS:\n" . TF::RESET . TF::GRAY . "Emerald Bandit");

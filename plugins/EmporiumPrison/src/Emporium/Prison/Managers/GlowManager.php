@@ -1,6 +1,6 @@
 <?php
 
-namespace Emporium\Prison\Managers\misc;
+namespace Emporium\Prison\Managers;
 
 use pocketmine\data\bedrock\EnchantmentIdMap;
 use pocketmine\item\enchantment\{Enchantment, EnchantmentInstance, ItemFlags, Rarity};

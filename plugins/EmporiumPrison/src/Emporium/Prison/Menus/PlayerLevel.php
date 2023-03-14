@@ -13,58 +13,19 @@ use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
 
-
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 
-use pocketmine\network\mcpe\protocol\types\DeviceOS;
 use pocketmine\player\Player;
 
 use pocketmine\utils\TextFormat as TF;
 
-class PlayerLevel {
+class PlayerLevel extends Menu {
 
     public function Form(Player $player): void {
 
         $form = new SimpleForm(function($player, $data) {
-            if($data === null) {
-                $extraData = $player->getPlayerInfo()->getExtraData();
-                $helpMenu = new Help();
-
-                switch($extraData["DeviceOS"]) {
-
-                    case DeviceOS::IOS:
-                    case DeviceOS::ANDROID:
-                    case DeviceOS::PLAYSTATION:
-                    case DeviceOS::XBOX:
-                    case DeviceOS::NINTENDO:
-                        $helpMenu->Form($player);
-                        break;
-
-                    case DeviceOS::WINDOWS_10:
-                    case DeviceOS::OSX:
-                        $helpMenu->Inventory($player);
-                        break;
-                }
-            } elseif($data === 0) {
-                $extraData = $player->getPlayerInfo()->getExtraData();
-                $helpMenu = new Help();
-                switch($extraData["DeviceOS"]) {
-
-                    case DeviceOS::IOS:
-                    case DeviceOS::ANDROID:
-                    case DeviceOS::PLAYSTATION:
-                    case DeviceOS::XBOX:
-                    case DeviceOS::NINTENDO:
-                        $helpMenu->Form($player);
-                        break;
-
-                    case DeviceOS::WINDOWS_10:
-                    case DeviceOS::OSX:
-                        $helpMenu->Inventory($player);
-                        break;
-                }
-            }
+            (new Help())->open($player);
         });
         $form->setTitle("Player Levels");
         $form->setContent(TF::BOLD . TF::GREEN . "Level " . TF::RESET . TF::WHITE . "1:" . TF::EOL . TF::WHITE . "0" . TF::GRAY . " XP" . TF::EOL . "Unlocks:" . TF::EOL . TF::EOL . TF::GOLD . "Wooden Sword\nWooden Axe\nWooden Pickaxe" . TF::EOL . TF::EOL .
@@ -100,11 +61,9 @@ class PlayerLevel {
     # help inventory sub menus
     public function Inventory(Player $player): void {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $menu = InvMenu::create(InvMenuTypeIds::TYPE_DOUBLE_CHEST);
-        $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) {
-
-        }));
+        $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) {}));
         $inventory = $menu->getInventory();
 
         $inventory->setItem(0, $this->level1($player));
@@ -285,7 +244,7 @@ class PlayerLevel {
 
     public function level1($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::WOODEN_SWORD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -319,7 +278,7 @@ class PlayerLevel {
 
     public function level10($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::CHAINMAIL_CHESTPLATE();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -354,7 +313,7 @@ class PlayerLevel {
 
     public function level15($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::PRISMARINE_SHARD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -379,7 +338,7 @@ class PlayerLevel {
 
     public function level20($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::WRITABLE_BOOK();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -407,7 +366,7 @@ class PlayerLevel {
 
     public function level25($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::PRISMARINE_SHARD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -432,7 +391,7 @@ class PlayerLevel {
 
     public function level30($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::LAPIS_LAZULI();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -467,7 +426,7 @@ class PlayerLevel {
 
     public function level35($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::PRISMARINE_SHARD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -493,7 +452,7 @@ class PlayerLevel {
 
     public function level40($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::PAPER();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -521,7 +480,7 @@ class PlayerLevel {
 
     public function level45($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::PRISMARINE_SHARD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -547,7 +506,7 @@ class PlayerLevel {
 
     public function level50($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::REDSTONE_DUST();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -578,7 +537,7 @@ class PlayerLevel {
 
     public function level55($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::GOLD_INGOT();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -604,7 +563,7 @@ class PlayerLevel {
 
     public function level60($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::REDSTONE_DUST();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -633,7 +592,7 @@ class PlayerLevel {
 
     public function level65($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::GOLD_INGOT();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -659,7 +618,7 @@ class PlayerLevel {
 
     public function level70($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::ENDER_PEARL();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -690,7 +649,7 @@ class PlayerLevel {
 
     public function level75($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::PRISMARINE_SHARD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -720,7 +679,7 @@ class PlayerLevel {
 
     public function level80($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::GOLD_NUGGET();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -750,7 +709,7 @@ class PlayerLevel {
 
     public function level85($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::PRISMARINE_SHARD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -776,7 +735,7 @@ class PlayerLevel {
 
     public function level90($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::EXPERIENCE_BOTTLE();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -809,7 +768,7 @@ class PlayerLevel {
 
     public function level95($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::DIAMOND();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -835,7 +794,7 @@ class PlayerLevel {
 
     public function level100($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::PRISMARINE_CRYSTALS();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -872,7 +831,7 @@ class PlayerLevel {
 
     public function level101($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::DRAGON_HEAD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -903,7 +862,7 @@ class PlayerLevel {
 
     public function level102($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::DRAGON_HEAD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -934,7 +893,7 @@ class PlayerLevel {
 
     public function level103($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::DRAGON_HEAD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -965,7 +924,7 @@ class PlayerLevel {
 
     public function level104($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::DRAGON_HEAD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -995,7 +954,7 @@ class PlayerLevel {
 
     public function level105($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::DRAGON_HEAD();
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -1025,7 +984,7 @@ class PlayerLevel {
 
     public function level106($player): Item {
 
-        $playerLevel = DataManager::getData($player, "Players", "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
         $item = VanillaItems::DRAGON_HEAD();
         $item->addEnchantment(GlowManager::$enchInst);
 

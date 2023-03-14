@@ -38,7 +38,19 @@ class MinesCommand extends Command {
             return false;
         }
 
-        if(isset($args[0])) {
+        $menu = new Mines();
+
+        if (empty($args)) {
+            $menu->open($sender);
+            return false;
+        }
+
+        if (!$tutorialComplete) {
+            $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You need to complete the tutorial to use that");
+            $sender->broadcastSound(new PopSound(1), [$sender]);
+            return true;
+        }
+
             $parameter = strtolower($args[0]);
             if($parameter === "info") {
 
@@ -91,33 +103,11 @@ class MinesCommand extends Command {
                     $form = new Mines();
                     $form->MinesInfoForm($sender);
                 }
-            }
+
 
         } elseif($tutorialComplete === false) {
-            $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You need to complete the tutorial to use that");
-            $sender->broadcastSound(new PopSound(1), [$sender]);
+
             return true;
-        } else {
-            $extraData = $sender->getPlayerInfo()->getExtraData();
-            switch($extraData["DeviceOS"]) {
-
-                case DeviceOS::IOS:
-                case DeviceOS::ANDROID:
-                case DeviceOS::PLAYSTATION:
-                case DeviceOS::XBOX:
-                case DeviceOS::NINTENDO:
-                    $sender->broadcastSound(new BarrelOpenSound(), [$sender]);
-                    $form = new Mines();
-                    $form->Form($sender);
-                    break;
-
-                case DeviceOS::WINDOWS_10:
-                case DeviceOS::OSX:
-                    $sender->broadcastSound(new ChestOpenSound(), [$sender]);
-                    $menu = new Mines();
-                    $menu->Inventory($sender);
-                    break;
-            }
         }
         return true;
     }

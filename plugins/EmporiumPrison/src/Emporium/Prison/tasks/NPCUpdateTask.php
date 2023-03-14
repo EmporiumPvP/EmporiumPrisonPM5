@@ -13,7 +13,6 @@ use pocketmine\utils\TextFormat as TF;
 class NPCUpdateTask extends Task{
 
     public function onRun(): void {
-
         foreach (Server::getInstance()->getWorldManager()->getWorlds() as $worlds) {
             foreach ($worlds->getEntities() as $entities) {
                 if ($entities instanceof NPC) {

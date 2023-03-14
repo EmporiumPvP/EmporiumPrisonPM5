@@ -43,11 +43,25 @@ class DataManager
     public function registerPlayer (Player $player) : void
     {
         $this->playerData[$player->getXuid()] = [
-            "name" => $player->getName(),
-            "level" => 1
+            "level" => 0,
+            "xp" => 0,
+            "total-xp" => 0,
+            "tutorial-complete" => false,
+            "tutorial-progress" => 0,
+            "tutorial-blocks-mined" => 0,
+            "money" => 0,
+            "booster" => [
+                "mining-booster-active" => false,
+                "mining-booster-timer" => 0,
+                "mining-booster-multiplier" => 0,
+                "energy-booster-active" => false,
+                "energy-booster-timer" => 0,
+                "energy-booster-multiplier" => 0
+            ]
         ];
 
         $this->provider->savePlayerDataAll($player->getXuid(), $this->playerData[$player->getXuid()]);
+        $this->xuids[$player->getName()] = $player->getXuid();
     }
 
     public function setPlayerData (string $xuid, string $key, mixed $data) : void
@@ -115,7 +129,12 @@ class DataManager
         return !isset($this->playerData[$player->getXuid()]);
     }
 
-    private function getPlayerNames () : array
+    public function getPlayerXuid (string $name) : string
+    {
+        return $this->xuids[$name];
+    }
+
+    public function getPlayerNames () : array
     {
         $files = scandir(JsonProvider::$PLAYER_FOLDER);
 

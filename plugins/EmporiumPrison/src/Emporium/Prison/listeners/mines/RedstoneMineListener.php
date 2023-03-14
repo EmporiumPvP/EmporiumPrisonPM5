@@ -4,7 +4,7 @@ namespace Emporium\Prison\listeners\mines;
 
 use Emporium\Prison\EmporiumPrison;
 
-use Emporium\Prison\Managers\DataManager;
+use EmporiumData\DataManager;
 use Emporium\Prison\Managers\EnergyManager;
 use Emporium\Prison\Managers\MiningManager;
 use Emporium\Prison\Managers\PickaxeManager;
@@ -114,15 +114,14 @@ class RedstoneMineListener implements Listener {
                                         if ($miningBoosterTime > 0) {
                                             $multipliedXp = $xp * $miningMultiplier;
                                             $player->sendTip("+$multipliedXp xp");
-                                            DataManager::addData($player, "Players", "xp", $multipliedXp);
-                                            DataManager::addData($player, "Players", "total-xp", $multipliedXp);
+                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $multipliedXp);
+                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $multipliedXp);
                                         } else {
                                             $player->sendTip("+$xp xp");
-                                            DataManager::addData($player, "Players", "xp", $xp);
-                                            DataManager::addData($player, "Players", "total-xp", $xp);
+                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $xp);
+                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $xp);
                                         }
                                         # add pickaxe Data
-                                        DataManager::addData($player, "Players", "redstone-ore-mined", 1);
                                         $oldData = $item->getNamedTag()->getInt("BlocksMined");
                                         $newData = $oldData + 1;
                                         $item->getNamedTag()->setInt("BlocksMined", $newData);
@@ -181,15 +180,14 @@ class RedstoneMineListener implements Listener {
                                         if ($miningBoosterTime > 0) {
                                             $multipliedXp = $xp * $miningMultiplier;
                                             $player->sendTip("+$multipliedXp xp");
-                                            DataManager::addData($player, "Players", "xp", $multipliedXp);
-                                            DataManager::addData($player, "Players", "total-xp", $multipliedXp);
+                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $multipliedXp);
+                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $multipliedXp);
                                         } else {
                                             $player->sendTip("+$xp xp");
-                                            DataManager::addData($player, "Players", "xp", $xp);
-                                            DataManager::addData($player, "Players", "total-xp", $xp);
+                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $xp);
+                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $xp);
                                         }
                                         # add pickaxe Data
-                                        DataManager::addData($player, "Players", "redstone-ore-mined", 1);
                                         $oldData = $item->getNamedTag()->getInt("BlocksMined");
                                         $newData = $oldData + 1;
                                         $item->getNamedTag()->setInt("BlocksMined", $newData);
@@ -257,13 +255,14 @@ class RedstoneMineListener implements Listener {
                                     if($miningBoosterTime > 0) {
                                         $multipliedXp = $xp * $miningMultiplier;
                                         $player->sendTip("+$multipliedXp xp");
-                                        DataManager::addData($player, "Players", "xp", $multipliedXp);
+                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $multipliedXp);
+                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $multipliedXp);
                                     } else {
                                         $player->sendTip("+$xp xp");
-                                        DataManager::addData($player, "Players", "xp", $xp);
+                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $xp);
+                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $xp);
                                     }
                                     # add pickaxe Data
-                                    DataManager::addData($player, "Players", "redstone-ore-mined", 1);
                                     $oldData = $item->getNamedTag()->getInt("BlocksMined");
                                     $newData = $oldData + 1;
                                     $item->getNamedTag()->setInt("BlocksMined", $newData);
@@ -322,13 +321,14 @@ class RedstoneMineListener implements Listener {
                                     if($miningBoosterTime > 0) {
                                         $multipliedXp = $xp * $miningMultiplier;
                                         $player->sendTip("+$multipliedXp xp");
-                                        DataManager::addData($player, "Players", "xp", $multipliedXp);
+                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $multipliedXp);
+                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $multipliedXp);
                                     } else {
                                         $player->sendTip("+$xp xp");
-                                        DataManager::addData($player, "Players", "xp", $xp);
+                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $xp);
+                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $xp);
                                     }
                                     # add pickaxe Data
-                                    DataManager::addData($player, "Players", "redstone-ore-mined", 1);
                                     $oldData = $item->getNamedTag()->getInt("BlocksMined");
                                     $newData = $oldData + 1;
                                     $item->getNamedTag()->setInt("BlocksMined", $newData);

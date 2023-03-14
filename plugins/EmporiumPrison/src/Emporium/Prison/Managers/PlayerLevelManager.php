@@ -10,6 +10,8 @@ use Items\Contraband;
 
 use JsonException;
 
+use EmporiumData\DataManager;
+
 use pocketmine\entity\Location;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\event\Listener;
@@ -26,20 +28,21 @@ class PlayerLevelManager implements Listener {
     private ?ItemEntity $playerPickaxe;
 
     public function getPlayerLevel(Player $player): int {
-        return DataManager::getData($player, "Players", "level");
+        return DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
     }
 
     public function getPlayerXp(Player $player): int {
-        return DataManager::getData($player, "Players", "xp");
+        return DataManager::getInstance()->getPlayerData($player->getXuid(), "xp");
     }
 
     public function getTotalPlayerXp(Player $player): int {
-        return DataManager::getData($player, "Players", "total-xp");
+        return DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp");
     }
 
     public function getNextPlayerLevelXp(Player $player): int {
         $playerLevel = $this->getPlayerLevel($player);
-        return PrisonManager::getData("Prison", "playerLevelXp", $playerLevel + 1);
+
+        return EmporiumPrison::getInstance()->getPlayerLevelXpData()[$playerLevel] + 1;
     }
 
 
@@ -101,8 +104,8 @@ class PlayerLevelManager implements Listener {
             return;
         } else {
             # update player Data
-            DataManager::addData($player, "Players", "level", 1);
-            DataManager::setData($player, "Players", "xp", 0);
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "level", DataManager::getInstance()->getPlayerData($player->getXuid(), "level") + 1);
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", 0);
             # send title
             $newPlayerLevel = $this->getPlayerLevel($player);
             $player->broadcastSound(new XpLevelUpSound(30));
@@ -256,11 +259,11 @@ class PlayerLevelManager implements Listener {
         }), 100);
 
         # if player level >= 10 and tutorial is not complete set to complete
-        $tutorialProgress = DataManager::getData($player, "Players", "tutorial-progress");
-        $tutorialComplete = DataManager::getData($player, "Players", "tutorial-complete");
+        $tutorialProgress = DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-progress");
+        $tutorialComplete = DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-complete");
         if ($this->getPlayerLevel($player) === 10 && $tutorialProgress === 4 && $tutorialComplete === false) {
-            DataManager::addData($player, "Players", "tutorial-progress", 1);
-            DataManager::setData($player, "Players", "tutorial-complete", true);
+            DataManager::getInstance()->setPlayerData($player->getXuid(),"tutorial-progress", DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-progress") + 1);
+            DataManager::getInstance()->setPlayerData($player->getXuid(),"tutorial-complete", true);
             $tutorialManager = new TutorialManager();
             $tutorialManager->startTutorial($player);
         }
