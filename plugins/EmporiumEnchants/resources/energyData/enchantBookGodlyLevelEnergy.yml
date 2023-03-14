@@ -1,0 +1,29 @@
+level1minimum: 100000
+level1maximum: 200000
+
+level2minimum: 200000
+level2maximum: 300000
+
+level3minimum: 300000
+level3maximum: 400000
+
+level4minimum: 400000
+level4maximum: 500000
+
+level5minimum: 500000
+level5maximum: 600000
+
+level6minimum: 600000
+level6maximum: 700000
+
+level7minimum: 700000
+level7maximum: 800000
+
+level8minimum: 800000
+level8maximum: 900000
+
+level9minimum: 900000
+level9maximum: 1000000
+
+level10minimum: 1000000
+level10maximum: 1100000

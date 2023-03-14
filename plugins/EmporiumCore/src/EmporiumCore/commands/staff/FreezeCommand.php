@@ -2,8 +2,8 @@
 
 namespace EmporiumCore\Commands\Staff;
 
-use EmporiumCore\Listeners\Players\WebhookEvent;
 
+use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Managers\Data\DataManager;
 
 use EmporiumCore\Variables;
@@ -37,7 +37,7 @@ class FreezeCommand extends Command {
         }
 
         if (isset($args[0])) {
-            $player = $sender->getServer()->getPlayerByPrefix($args[0]);
+            $player = $sender->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
                 DataManager::setData($player, "Players", "Frozen", true);
                 $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have frozen " . TF::YELLOW . "{$player->getName()}.");
@@ -45,11 +45,13 @@ class FreezeCommand extends Command {
                 // Send Logs
                 WebhookEvent::staffWebhook($sender, $player, "Freeze");
                 return true;
+            } else {
+                $sender->sendMessage(Variables::ERROR_PREFIX . TF::RED . "That player cannot be found.");
+                return false;
             }
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::RED . "That player cannot be found.");
+        } else {
+            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /freeze <player>");
             return false;
         }
-        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /freeze <player>");
-        return false;
     }
 }

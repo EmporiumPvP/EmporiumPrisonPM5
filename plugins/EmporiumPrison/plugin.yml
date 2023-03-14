@@ -1,8 +1,45 @@
 name: EmporiumPrison
+author: Tetro
 version: 1.0.0
 api: 4.0.0
-main: Emporium\Prison\Loader
+main: Emporium\Prison\EmporiumPrison
+
+depend:
+  - EmporiumCore
+commands:
+  xd:
+    description: "View the Help Menu"
+    permission: "emporiumprison.command.help"
 
 permissions:
+    # default commands
+  emporiumprison.command.extract:
+    default: true
+  emporiumprison.command.prestige:
+    default: true
+  emporiumprison.command.pickaxeprestige:
+    default: true
+  emporiumprison.command.bank:
+    default: true
+  emporiumprison.command.spawn:
+    default: true
+  emporiumprison.command.tourguide:
+    default: true
+  emporiumprison.command.help:
+    default: true
   emporiumprison.command.mines:
     default: true
+  emporiumprison.command.playerlevel:
+    default: true
+    # rank commands
+  emporiumprison.command.oreexchanger:
+    default: false
+    # staff commands
+  emporiumprison.command.booster:
+    default: false
+  emporiumprison.command.energy:
+    default: false
+  emporiumprison.command.flare:
+    default: false
+  emporiumprison.command.npc:
+    default: false

@@ -21,7 +21,7 @@ class CooldownTask extends Task {
     # Get all Players
 	function getPlayers(): array
     {
-		$files = scandir(EmporiumCore::getPluginInstance()->getDataFolder() . "PlayerData/Cooldowns");
+		$files = scandir(EmporiumCore::getInstance()->getDataFolder() . "PlayerData/Cooldowns");
 		$players = [];
 		foreach($files as $file) {
 			$players[] = str_replace(".yml", "", $file);

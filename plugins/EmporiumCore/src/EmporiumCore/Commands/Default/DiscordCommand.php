@@ -6,8 +6,9 @@ use EmporiumCore\Managers\Data\DataManager;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
+use pocketmine\utils\TextFormat as TF;
 
 class DiscordCommand extends Command {
 
@@ -24,18 +25,14 @@ class DiscordCommand extends Command {
 
         $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.discord");
         if ($permission === false) {
-            $sender->sendMessage(TextFormat::RED . "No permission");
+            $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
 
-        $sender->sendMessage('§a§l==============================');
-        $sender->sendMessage('');
-        $sender->sendMessage('         Join our discord server!');
-        $sender->sendMessage('      §ehttps://discord.emporiumpvp.com');
-        $sender->sendMessage('');
-        $sender->sendMessage('§a§l==============================');
+        $sender->sendMessage(TF::BOLD . TF::GOLD . "(!)" . TF::RESET . TF::GOLD . " Join our discord server!");
+        $sender->sendMessage(TF::GOLD . "https://discord.gg/7TbbGK7pg4");
         return true;
 
-    } # END OF EXECUTE
+    }
 
-} # END OF CLASS
+}

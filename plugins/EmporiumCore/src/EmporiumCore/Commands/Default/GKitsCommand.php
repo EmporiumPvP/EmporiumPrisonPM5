@@ -3,23 +3,17 @@
 namespace EmporiumCore\Commands\Default;
 
 use EmporiumCore\Managers\Data\DataManager;
-# FORMS
-use Forms\GkitsForm;
-# INVENTORIES
-use Inventories\GKitsMenu;
-# POCKETMINE
+
+use Menus\GKitsMenu;
+
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use pocketmine\event\Listener;
 use pocketmine\event\server\DataPacketReceiveEvent;
-
-use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\network\mcpe\JwtUtils;
+use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\network\mcpe\protocol\types\DeviceOS;
-
 use pocketmine\player\Player;
-
 use pocketmine\utils\TextFormat;
 use pocketmine\world\sound\EnderChestOpenSound;
 
@@ -28,7 +22,7 @@ class GKitsCommand extends Command implements Listener {
     private $deviceOS;
 
     public function __construct() {
-        parent::__construct("gkits", "Opens the GKitsForms menu", "/gkits");
+        parent::__construct("gkits", "Opens the GKitsForms menu", "/gkits", ["gkit"]);
         $this->setPermission("emporiumcore.command.gkits");
     }
 
@@ -54,6 +48,7 @@ class GKitsCommand extends Command implements Listener {
         }
 
         # SEND FORM TO CORRECT OS
+        $menu = new GKitsMenu();
         $extraData = $sender->getPlayerInfo()->getExtraData();
         switch($extraData["DeviceOS"]) {
             # SEND FORM
@@ -62,14 +57,12 @@ class GKitsCommand extends Command implements Listener {
             case DeviceOS::PLAYSTATION:
             case DeviceOS::XBOX:
             case DeviceOS::NINTENDO:
-                $gkitsForm = new GkitsForm();
-                $gkitsForm->Form($sender);
+                $menu->Form($sender);
                 break;
             # SEND MENU
             case DeviceOS::WINDOWS_10:
             case DeviceOS::OSX:
-                $gkitsMenu = new GKitsMenu();
-                $gkitsMenu->MainMenu($sender);
+                $menu->Inventory($sender);
                 $sender->broadcastSound(new EnderChestOpenSound());
                 return true;
         }

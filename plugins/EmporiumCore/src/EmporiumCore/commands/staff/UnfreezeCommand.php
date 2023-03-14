@@ -3,6 +3,7 @@
 namespace EmporiumCore\Commands\Staff;
 
 use EmporiumCore\EmporiumCore;
+use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Variables;
 use JsonException;
 
@@ -10,7 +11,6 @@ use pocketmine\player\Player;
 use pocketmine\command\{Command, CommandSender};
 
 use EmporiumCore\Managers\Data\DataManager;
-use EmporiumCore\Listeners\Players\WebhookEvent;
 use pocketmine\utils\TextFormat as TF;
 
 class UnfreezeCommand extends Command {
@@ -36,7 +36,7 @@ class UnfreezeCommand extends Command {
         }
 
         if (isset($args[0])) {
-            $player = EmporiumCore::getPluginInstance()->getServer()->getPlayerExact($args[0]);
+            $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
                 DataManager::setData($player, "Players", "Frozen", false);
                 $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have unfrozen {$player->getName()}.");
@@ -45,17 +45,19 @@ class UnfreezeCommand extends Command {
                 WebhookEvent::staffWebhook($sender, $player->getName(), "Unfreeze");
                 return true;
             }
-            if (file_exists(EmporiumCore::getPluginInstance()->getDataFolder() . "Players/{$args[0]}.yml")) {
+            if (file_exists(EmporiumCore::getInstance()->getDataFolder() . "Players/$args[0].yml")) {
                 DataManager::setOfflinePlayerData($args[0], "Players", "Frozen", false);
-                $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have unfrozen {$args[0]}.");
+                $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have unfrozen $args[0].");
                 // Send Logs
                 WebhookEvent::staffWebhook($sender, $args[0], "Unfreeze");
                 return true;
+            } else {
+                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+                return false;
             }
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+        } else {
+            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /unfreeze <player>");
             return false;
         }
-        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /unfreeze <player>");
-        return false;
     }
 }

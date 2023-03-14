@@ -2,7 +2,7 @@
 
 namespace EmporiumCore\Commands\Default;
 
-use Emporium\Prison\Managers\misc\Translator;
+use Emporium\Prison\Managers\Misc\Translator;
 
 use EmporiumCore\EmporiumCore;
 
@@ -39,7 +39,7 @@ class BalanceCommand extends Command {
         }
 
         if (isset($args[0])) {
-            $player = $this->plugin->getServer()->getPlayerByPrefix($args[0]);
+            $player = $this->plugin->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
                 $balance = DataManager::getData($player, "Players", "Money");
                 $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "{$player->getName()}'s balance: " . TF::GREEN . "$" . TF::WHITE . Translator::shortNumber($balance));

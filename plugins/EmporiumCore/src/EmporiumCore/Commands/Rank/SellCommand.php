@@ -3,7 +3,7 @@
 namespace EmporiumCore\Commands\Rank;
 
 use Emporium\Prison\Managers\misc\Translator;
-use EmporiumCore\managers\data\DataManager;
+use EmporiumCore\Managers\Data\DataManager;
 use EmporiumCore\Variables;
 
 use JsonException;
@@ -52,115 +52,136 @@ class SellCommand extends Command {
                 $item = $sender->getInventory()->getItemInHand();
                 $count = $item->getCount();
                 $sellprice = 0;
-                // Gold Ore
-                if ($item->getId() === 14) {
+                # coal ore
+                if ($item->getId() === ItemIds::COAL_ORE) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (20 * $count);
+                    $sellprice = $sellprice + (0.06 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Iron Ore
-                if ($item->getId() === 15) {
+                # coal block
+                if ($item->getId() === ItemIds::COAL) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (10 * $count);
+                    $sellprice = $sellprice + (0.32 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Coal Ore
-                if ($item->getId() === 16) {
+                # coal
+                if ($item->getId() === ItemIds::COAL_BLOCK) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (10 * $count);
+                    $sellprice = $sellprice + (1.21 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Lapis Ore
-                if ($item->getId() === 21) {
+
+                # iron ore
+                if ($item->getId() === ItemIds::IRON_ORE) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (10 * $count);
+                    $sellprice = $sellprice + (0.20 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Lapis Block
-                if ($item->getId() === 22) {
+                # iron ingot
+                if ($item->getId() === ItemIds::IRON_INGOT) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (90 * $count);
+                    $sellprice = $sellprice + (1.02 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Gold Block
-                if ($item->getId() === 41) {
+                # iron block
+                if ($item->getId() === ItemIds::IRON_BLOCK) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (180 * $count);
+                    $sellprice = $sellprice + (4.08 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Iron Block
-                if ($item->getId() === 42) {
+
+                # lapis ore
+                if ($item->getId() === ItemIds::LAPIS_ORE) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (90 * $count);
+                    $sellprice = $sellprice + (0.52 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Diamond Ore
-                if ($item->getId() === 56) {
+                # lapis
+                if ($item->getId() === ItemIds::DYE && $item->getMeta() === 4) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (30 * $count);
+                    $sellprice = $sellprice + (2.70 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Diamond Block
-                if ($item->getId() === 57) {
+                # lapis block
+                if ($item->getId() === ItemIds::LAPIS_BLOCK) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (270 * $count);
+                    $sellprice = $sellprice + (10.80 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Redstone Ore
-                if ($item->getId() === 73) {
+
+                # redstone ore
+                if ($item->getId() === ItemIds::REDSTONE_ORE) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (10 * $count);
+                    $sellprice = $sellprice + (1.57 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Emerald Ore
-                if ($item->getId() === 129) {
+                # redstone
+                if ($item->getId() === ItemIds::REDSTONE) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (50 * $count);
+                    $sellprice = $sellprice + (8.29 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Emerald Block
-                if ($item->getId() === 133) {
+                # redstone block
+                if ($item->getId() === ItemIds::REDSTONE_BLOCK) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (450 * $count);
+                    $sellprice = $sellprice + (33.16 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Redstone Block
-                if ($item->getId() === 152) {
+
+                # gold ore
+                if ($item->getId() === ItemIds::GOLD_ORE) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (10 * $count);
+                    $sellprice = $sellprice + (4.86 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Coal Block
-                if ($item->getId() === 173) {
+                # gold ingot
+                if ($item->getId() === ItemIds::GOLD_INGOT) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (90 * $count);
+                    $sellprice = $sellprice + (25.76 * $count);
                 }
-                // Red Sandstone
-                if ($item->getId() === 179) {
+                # gold block
+                if ($item->getId() === ItemIds::GOLD_BLOCK) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (30 * $count);
+                    $sellprice = $sellprice + (103.04 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Coal
-                if ($item->getId() === 263) {
+
+                # diamond ore
+                if ($item->getId() === ItemIds::DIAMOND_ORE) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (10 * $count);
+                    $sellprice = $sellprice + (7.34 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Diamond
-                if ($item->getId() === 264) {
+                # diamond
+                if ($item->getId() === ItemIds::DIAMOND) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (30 * $count);
+                    $sellprice = $sellprice + (38.85 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Iron Ingot
-                if ($item->getId() === 265) {
+                # diamond block
+                if ($item->getId() === ItemIds::DIAMOND_BLOCK) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (10 * $count);
+                    $sellprice = $sellprice + (155.40 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Gold Ingot
-                if ($item->getId() === 266) {
+
+                # emerald ore
+                if ($item->getId() === ItemIds::EMERALD_ORE) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (20 * $count);
+                    $sellprice = $sellprice + (27.35 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Redstone
-                if ($item->getId() === 331) {
+                # emerald
+                if ($item->getId() === ItemIds::EMERALD) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (10 * $count);
+                    $sellprice = $sellprice + (144.92 * $count);
+                    $sender->getInventory()->remove($item);
                 }
-                // Dye / Lapis
-                if ($item->getId() === 351) {
+                # emerald block
+                if ($item->getId() === ItemIds::EMERALD_BLOCK) {
                     $count = $item->getCount();
-                    $sellprice = $sellprice + (10 * $count);
-                }
-                // Emerald
-                if ($item->getId() === 388) {
-                    $count = $item->getCount();
-                    $sellprice = $sellprice + (50 * $count);
+                    $sellprice = $sellprice + (579.68 * $count);
+                    $sender->getInventory()->remove($item);
                 }
                 // Nothing Sold
                 if ($sellprice === 0) {
@@ -182,70 +203,83 @@ class SellCommand extends Command {
                         if ($item->getId() === ItemIds::COAL_ORE) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (0.06 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # coal block
-                        if ($item->getId() === ItemIds::COAL_BLOCK) {
-                            $count = $item->getCount();
-                            $sellprice = $sellprice + (0.32 * $count);
-                        }
-                        # coal
                         if ($item->getId() === ItemIds::COAL) {
                             $count = $item->getCount();
+                            $sellprice = $sellprice + (0.32 * $count);
+                            $sender->getInventory()->remove($item);
+                        }
+                        # coal
+                        if ($item->getId() === ItemIds::COAL_BLOCK) {
+                            $count = $item->getCount();
                             $sellprice = $sellprice + (1.21 * $count);
+                            $sender->getInventory()->remove($item);
                         }
 
                         # iron ore
                         if ($item->getId() === ItemIds::IRON_ORE) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (0.20 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # iron ingot
                         if ($item->getId() === ItemIds::IRON_INGOT) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (1.02 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # iron block
                         if ($item->getId() === ItemIds::IRON_BLOCK) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (4.08 * $count);
+                            $sender->getInventory()->remove($item);
                         }
 
                         # lapis ore
                         if ($item->getId() === ItemIds::LAPIS_ORE) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (0.52 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # lapis
-                        if ($item->getId() === ItemIds::DYE) {
+                        if ($item->getId() === ItemIds::DYE && $item->getMeta() === 4) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (2.70 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # lapis block
                         if ($item->getId() === ItemIds::LAPIS_BLOCK) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (10.80 * $count);
+                            $sender->getInventory()->remove($item);
                         }
 
                         # redstone ore
                         if ($item->getId() === ItemIds::REDSTONE_ORE) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (1.57 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # redstone
                         if ($item->getId() === ItemIds::REDSTONE) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (8.29 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # redstone block
                         if ($item->getId() === ItemIds::REDSTONE_BLOCK) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (33.16 * $count);
+                            $sender->getInventory()->remove($item);
                         }
 
                         # gold ore
                         if ($item->getId() === ItemIds::GOLD_ORE) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (4.86 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # gold ingot
                         if ($item->getId() === ItemIds::GOLD_INGOT) {
@@ -256,55 +290,64 @@ class SellCommand extends Command {
                         if ($item->getId() === ItemIds::GOLD_BLOCK) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (103.04 * $count);
+                            $sender->getInventory()->remove($item);
                         }
 
                         # diamond ore
                         if ($item->getId() === ItemIds::DIAMOND_ORE) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (7.34 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # diamond
                         if ($item->getId() === ItemIds::DIAMOND) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (38.85 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # diamond block
                         if ($item->getId() === ItemIds::DIAMOND_BLOCK) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (155.40 * $count);
+                            $sender->getInventory()->remove($item);
                         }
 
                         # emerald ore
                         if ($item->getId() === ItemIds::EMERALD_ORE) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (27.35 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # emerald
                         if ($item->getId() === ItemIds::EMERALD) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (144.92 * $count);
+                            $sender->getInventory()->remove($item);
                         }
                         # emerald block
                         if ($item->getId() === ItemIds::EMERALD_BLOCK) {
                             $count = $item->getCount();
                             $sellprice = $sellprice + (579.68 * $count);
+                            $sender->getInventory()->remove($item);
                         }
-                        $sender->getInventory()->remove($item);
                     }
                 }
                 // Nothing Sold
                 if ($sellprice === 0) {
                     $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "You do not have any sellable items in your inventory.");
                     return false;
+                } else {
+                    DataManager::addData($sender, "Players", "Money", $sellprice);
+                    $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have sold your inventory for $" . $sellprice . ".");
+                    return true;
                 }
-                DataManager::addData($sender, "Players", "Money", $sellprice);
-                $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have sold your inventory for $" . $sellprice . ".");
-                return true;
+            } else {
+                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /sell <hand/inv>");
+                return false;
             }
+        } else {
             $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /sell <hand/inv>");
             return false;
         }
-        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /sell <hand/inv>");
-        return false;
     }
 }

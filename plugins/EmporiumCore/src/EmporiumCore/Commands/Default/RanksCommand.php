@@ -3,8 +3,8 @@
 namespace EmporiumCore\Commands\Default;
 
 use EmporiumCore\EmporiumCore;
-use EmporiumCore\managers\data\DataManager;
-use EmporiumCore\managers\data\PermissionManager;
+use EmporiumCore\Managers\Data\DataManager;
+use EmporiumCore\Managers\Data\PermissionManager;
 
 use EmporiumCore\Variables;
 
@@ -14,6 +14,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 
 use pocketmine\player\Player;
+
 use pocketmine\utils\TextFormat as TF;
 
 class RanksCommand extends Command {
@@ -61,10 +62,18 @@ class RanksCommand extends Command {
             $parameter = strtolower($args[0]);
             # player
             if(isset($args[1])) {
-                if($args[1] instanceof Player) {
-                    $player = EmporiumCore::getPluginInstance()->getServer()->getPlayerExact($args[1]);
+                $target = $args[1];
+                if($target instanceof Player) {
+                    $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[1]);
                 } else {
-                    $player = $args[1];
+                    if(file_exists(EmporiumCore::getInstance()->getDataFolder() . "PlayerData/Players/" . $target . ".yml")) {
+                        # player exists but is offline
+                        $player = $args[1];
+                    } else {
+                        # player doesnt exist
+                        $sender->sendMessage(Variables::ERROR_PREFIX . TF::RED . "That player does not exist");
+                        return;
+                    }
                 }
                 # rank
                 if(isset($args[2])) {
@@ -73,7 +82,7 @@ class RanksCommand extends Command {
                         if($parameter === "set") {
                             $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.ranks.set");
                             if(!$permission) {
-                                $sender->sendMessage(Variables::ERROR_PREFIX . "No permission!");
+                                $sender->sendMessage(Variables::ERROR_PREFIX . "No permission.");
                             } else {
                                 if($player instanceof Player) {
                                     PermissionManager::setOnlinePlayerRankPermissions($player, $rank);
@@ -84,7 +93,7 @@ class RanksCommand extends Command {
                                 }
                             }
                         } else {
-                            $sender->sendMessage(Variables::ERROR_PREFIX . "Unknown Argument.");
+                            $sender->sendMessage(Variables::ERROR_PREFIX . "Invalid usage!");
                             $sender->sendMessage("§r ");
                             $sender->sendMessage($this->getUsage());
                         }
@@ -113,9 +122,13 @@ class RanksCommand extends Command {
                         $sender->sendMessage(TF::BOLD . TF::GOLD . "<" . TF::RESET . TF::DARK_GRAY . "§r§8-----------------" . TF::BOLD . TF::GOLD . ">");
                     }
                 } else {
+                    $sender->sendMessage(Variables::ERROR_PREFIX . "Invalid usage!");
+                    $sender->sendMessage("§r ");
                     $sender->sendMessage($this->getUsage());
                 }
             } else {
+                $sender->sendMessage(Variables::ERROR_PREFIX . "Invalid usage!");
+                $sender->sendMessage("§r ");
                 $sender->sendMessage($this->getUsage());
             }
         } else {

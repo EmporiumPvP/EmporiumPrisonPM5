@@ -8,7 +8,7 @@ use pocketmine\utils\TextFormat as TF;
 
 class RankKits {
 
-    public static function noble(int $amount): Item {
+    public function noble(int $amount): Item {
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_GRAY . "Noble " . TF::RESET . TF::DARK_GRAY . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitNoble", 1);
@@ -31,7 +31,7 @@ class RankKits {
         return $item;
     }
 
-    public static function imperial(int $amount): Item {
+    public function imperial(int $amount): Item {
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::LIGHT_PURPLE . "Imperial " . TF::RESET . TF::LIGHT_PURPLE . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitImperial", 1);
@@ -55,7 +55,7 @@ class RankKits {
         return $item;
     }
 
-    public static function supreme(int $amount): Item {
+    public function supreme(int $amount): Item {
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_AQUA . "Supreme " . TF::RESET . TF::DARK_AQUA . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitSupreme", 1);
@@ -79,7 +79,7 @@ class RankKits {
         return $item;
     }
 
-    public static function majesty(int $amount): Item {
+    public function majesty(int $amount): Item {
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::BLUE . "Majesty " . TF::RESET . TF::BLUE . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitMajesty", 1);
@@ -103,7 +103,7 @@ class RankKits {
         return $item;
     }
 
-    public static function emperor(int $amount): Item {
+    public function emperor(int $amount): Item {
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::AQUA . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitEmperor", 1);
@@ -127,7 +127,7 @@ class RankKits {
         return $item;
     }
 
-    public static function president(int $amount): Item {
+    public function president(int $amount): Item {
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::RED . "President " . TF::RESET . TF::RED . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitPresident", 1);
@@ -135,7 +135,7 @@ class RankKits {
 
         $lore = [
             "",
-            TF::RED . "This GKit Contains: " . TF::GRAY . "(" . TF::WHITE . "5 Items" . TF::GRAY . ")",
+            TF::RED . "This GKit Contains: " . TF::GRAY . "(" . TF::WHITE . "5 Blackscroll" . TF::GRAY . ")",
             TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::AQUA . "Helmet",
             TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::AQUA . "Chestplate",
             TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::AQUA . "Leggings",

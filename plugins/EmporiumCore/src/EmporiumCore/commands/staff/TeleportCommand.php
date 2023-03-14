@@ -39,7 +39,7 @@ class TeleportCommand extends Command {
             if ($option === "to" || $option === "here" || $option === "coordinates" || $option === "coords") {
                 if (isset($args[1])) {
                     if ($option === "to" || $option === "here") {
-                        $player = EmporiumCore::getPluginInstance()->getServer()->getPlayerExact($args[1]);
+                        $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[1]);
                         if ($player instanceof Player) {
                             switch($option) {
                                 case "to":
@@ -53,11 +53,11 @@ class TeleportCommand extends Command {
                                     $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have teleported {$player->getName()} to you.");
                                     break;
                             }
+                        } else {
+                            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+                            return false;
                         }
-                        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
-                        return false;
-                    }
-                    if ($option === "coordinates" || $option === "coords") {
+                    } elseif ($option === "coordinates" || $option === "coords") {
                         if (isset($args[1])) {
                             if (!is_numeric($args[1])) {
                                 $args[1] = 0;
@@ -75,28 +75,33 @@ class TeleportCommand extends Command {
                                     $z = $args[3] + 0;
                                     $world = $sender->getWorld();
                                     $sender->teleport(new Position($x, $y, $z, $world));
-                                    $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have teleported to {$x}, {$y}, {$z}.");
+                                    $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have teleported to $x, $y, $z.");
                                     return true;
+                                } else {
+                                    $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport coordinates <x> <y> <z>");
+                                    return false;
                                 }
+                            } else {
                                 $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport coordinates <x> <y> <z>");
                                 return false;
                             }
+                        } else {
                             $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport coordinates <x> <y> <z>");
                             return false;
                         }
-                        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport coordinates <x> <y> <z>");
-                        return false;
                     }
+                } else {
+                    $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport <option> <player>");
+                    return false;
                 }
-                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport <option> <player>");
+            } else {
+                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That is an invalid option.");
+                $sender->sendMessage(TF::GRAY . "Please use one of the following options:");
+                $sender->sendMessage(TF::GRAY . "- /teleport to <player>");
+                $sender->sendMessage(TF::GRAY . "- /teleport here <player>");
+                $sender->sendMessage(TF::GRAY . "- /teleport coordinates <coordinates>");
                 return false;
             }
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That is an invalid option.");
-            $sender->sendMessage(TF::GRAY . "Please use one of the following options:");
-            $sender->sendMessage(TF::GRAY . "- /teleport to <player>");
-            $sender->sendMessage(TF::GRAY . "- /teleport here <player>");
-            $sender->sendMessage(TF::GRAY . "- /teleport coordinates <coordinates>");
-            return false;
         }
         $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport <option> <player>");
         return false;

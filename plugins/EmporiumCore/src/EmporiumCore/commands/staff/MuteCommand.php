@@ -3,15 +3,17 @@
 namespace EmporiumCore\Commands\Staff;
 
 use Emporium\Prison\Managers\misc\Translator;
+
 use EmporiumCore\EmporiumCore;
+use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Variables;
+
 use JsonException;
 
 use pocketmine\player\Player;
 use pocketmine\command\{Command, CommandSender};
 
 use EmporiumCore\Managers\Data\DataManager;
-use EmporiumCore\Listeners\Players\WebhookEvent;
 use pocketmine\utils\TextFormat as TF;
 
 class MuteCommand extends Command {
@@ -38,33 +40,38 @@ class MuteCommand extends Command {
         }
 
         if (isset($args[0])) {
-            $player = EmporiumCore::getPluginInstance()->getServer()->getPlayerExact($args[0]);
+            $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
                 if (isset($args[1])) {
                     if (is_numeric($args[1])) {
                         if ($args[1] > 0) {
                             $time = Translator::timeConvert($args[1]);
                             DataManager::setData($player, "Cooldowns", "Mute", $args[1]);
-                            $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have been muted for {$time}.");
+                            $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have been muted for $time.");
                             $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have muted {$player->getName()}.");
-                            $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "Mute Duration: {$time}.");
+                            $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "Mute Duration: $time.");
                             // Send Logs
                             WebhookEvent::staffWebhook($sender, $player, "Mute");
                             return true;
+                        } else {
+                            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Please enter a valid duration.");
+                            return false;
                         }
-                        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Please enter a valid duration.");
+                    } else {
+                        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Please enter the duration in seconds.");
                         return false;
                     }
-                    $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Please enter the duration in seconds.");
+                } else {
+                    $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /mute <player> <time>");
                     return false;
                 }
-                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /mute <player> <time>");
+            } else {
+                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
                 return false;
             }
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+        } else {
+            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /mute <player> <time>");
             return false;
         }
-        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /mute <player> <time>");
-        return false;
     }
 }

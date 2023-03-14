@@ -3,17 +3,17 @@
 namespace EmporiumCore\Commands\Default;
 
 use EmporiumCore\Managers\Data\DataManager;
-use Forms\TagsForm;
-# POCKETMINE
-use pocketmine\player\Player;
+use Menus\Tags;
+
 use pocketmine\command\{Command, CommandSender};
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\sound\EnderChestOpenSound;
 
 class TagsCommand extends Command {
 
     public function __construct() {
-        parent::__construct("tags", "Manage your tags", "/tags");
+        parent::__construct("tags", "Manage your tags", "/tags", ["tag"]);
         $this->setPermission("emporiumcore.command.tags");
     }
 
@@ -30,9 +30,9 @@ class TagsCommand extends Command {
         }
 
         // Execute Command
-        $tagForm = new TagsForm();
+        $tagForm = new Tags();
         $tagForm->Form($sender);
-        $sender->broadcastSound(new EnderChestOpenSound());
+        $sender->broadcastSound(new EnderChestOpenSound(), [$sender]);
         return true;
     }
 

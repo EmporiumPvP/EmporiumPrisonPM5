@@ -3,13 +3,13 @@
 namespace EmporiumCore\Commands\Staff;
 
 use EmporiumCore\EmporiumCore;
+use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Managers\Data\DataManager;
 
 use EmporiumCore\Variables;
 use pocketmine\player\Player;
 use pocketmine\command\{Command, CommandSender};
 
-use EmporiumCore\Listeners\Players\WebhookEvent;
 
 use pocketmine\utils\TextFormat as TF;
 
@@ -33,18 +33,20 @@ class KillCommand extends Command {
         }
 
         if (isset($args[0])) {
-            $player = EmporiumCore::getPluginInstance()->getServer()->getPlayerExact($args[0]);
+            $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
                 $player->kill();
                 $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have killed " . TF::YELLOW . "{$player->getName()}.");
                 // Send Logs
                 WebhookEvent::staffWebhook($sender, $player, "Kill");
                 return true;
+            } else {
+                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+                return false;
             }
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+        } else {
+            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Command Usage: /kill <player>");
             return false;
         }
-        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Command Usage: /kill <player>");
-        return false;
     }
 }

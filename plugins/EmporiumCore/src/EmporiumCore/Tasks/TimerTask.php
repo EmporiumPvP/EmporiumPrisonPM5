@@ -19,7 +19,6 @@ use pocketmine\utils\TextFormat as TF;
 class TimerTask extends Task {
 
     private EmporiumCore $plugin;
-    private Config $prisonBreak;
 
     public function __construct(EmporiumCore $plugin) {
         $this->plugin = $plugin;
@@ -41,7 +40,7 @@ class TimerTask extends Task {
 
         //////////////////////////////// EVENT MESSAGES ////////////////////////////////
         switch($minute) {
-            # prison break starting messages (EVERY 45 HOURS - 5)
+            # prison break starting messages (EVERY 3 HOURS - 5 MINUTES)
             case 175:
             case 355:
             case 535:
@@ -53,7 +52,7 @@ class TimerTask extends Task {
                 $this->plugin->getServer()->broadcastMessage(TF::BOLD . TF::GOLD . "More information about this event in " . TF::AQUA . "/help prisonbreak");
                 break;
 
-            # prison break started messages (EVERY 45 HOURS)
+            # prison break started messages (EVERY 3 HOURS)
             case 180:
             case 360:
             case 540:
@@ -61,13 +60,16 @@ class TimerTask extends Task {
             case 900:
             case 1080:
             case 1260:
+                # send messages
                 $this->plugin->getServer()->broadcastMessage(TF::BOLD . TF::GOLD . "(!) The " . TF::RED . "Prison break Event " . TF::GOLD . "has started!");
                 $this->plugin->getServer()->broadcastMessage(TF::BOLD . TF::GOLD . "The event will finish in 15 minutes.");
                 $this->plugin->getServer()->broadcastMessage("");
                 $this->plugin->getServer()->broadcastTitle(TF::BOLD . TF::RED . "Prison Break", TF::GREEN . "Mine in any Tier Mine to obtain Loot!");
+                # create event file
                 ServerManager::setData("Events", "PrisonBreak", true);
-                $this->prisonBreak = new Config(EmporiumCore::getPluginInstance()->getDataFolder() . "Server/PrisonBreak.yml", Config::YAML);
+                new Config(EmporiumCore::getInstance()->getDataFolder() . "Server/PrisonBreak.yml", Config::YAML);
                 $players = null;
+                # send webhook
                 WebhookEvent::EventsWebhook($players, "PrisonBreak");
                 break;
 
@@ -79,20 +81,26 @@ class TimerTask extends Task {
             case 915:
             case 1095:
             case 1275:
-                $this->plugin->getServer()->broadcastMessage(TF::BOLD . TF::GOLD . "(!) The " . TF::RED . "Prison break Event " . TF::GOLD . "has ended!");
-                $this->plugin->getServer()->broadcastMessage(TF::BOLD . TF::DARK_AQUA . "The Top 5 Prisoners are:");
-                $data = [];
-                foreach ($this->prisonBreak->getAll() as $player => $points) {
-                    $data[$player] = $points;
-                }
+                $prisonBreak = New Config(EmporiumCore::getInstance()->getDataFolder() . "Server/PrisonBreak.yml");
+                # end event
+                ServerManager::setData("Events", "PrisonBreak", false);
+                # create results message
+                $message = TF::BOLD . TF::GOLD . "(!) The " . TF::RED . "Prison break Event " . TF::GOLD . "has ended!" . TF::EOL;
+                $message .= TF::BOLD . TF::DARK_AQUA . "The Top 5 Prisoners are:" . TF::EOL;
                 $place = 1;
-                arsort($data);
-                foreach($data as $player => $points) {
+                $eventData = [];
+                foreach($prisonBreak->getAll() as $playerData => $playerPoints) {
+                    $eventData[$playerData] = $playerPoints;
+                }
+                arsort($eventData);
+                foreach($eventData as $playerData => $playerPoints) {
                     if($place > 5) break;
-                    $this->plugin->getServer()->broadcastMessage(TF::BOLD . TF::DARK_AQUA . "$player: " . TF::GOLD . $points . " points");
+                    $message .= TF::BOLD . TF::DARK_AQUA . "$playerData: " . TF::GOLD . $playerPoints . " points" . TF::EOL;
                     $place++;
                 }
-                ServerManager::setData("Events", "PrisonBreak", false);
+                # broadcast message
+                EmporiumCore::getInstance()->getServer()->broadcastMessage($message);
+                # delete events file
                 unlink($this->plugin->getDataFolder() . "Server/PrisonBreak.yml");
                 break;
         }

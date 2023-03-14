@@ -32,17 +32,19 @@ class WarnCommand extends Command {
         }
 
         if (isset($args[0])) {
-            $player = EmporiumCore::getPluginInstance()->getServer()->getPlayerExact($args[0]);
+            $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
                 $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have warned {$player->getName()}.");
                 $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have been warned by staff.");
                 return true;
+            } else {
+                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+                return false;
             }
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+        } else {
+            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /warn <player>");
             return false;
         }
-        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /warn <player>");
-        return false;
     }
 
 }

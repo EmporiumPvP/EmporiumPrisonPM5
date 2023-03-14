@@ -3,20 +3,22 @@
 namespace EmporiumCore\Commands\Default;
 
 use EmporiumCore\Managers\Data\DataManager;
-use Forms\KitsForm;
-# POCKETMINE
+
+use Menus\KitsMenu;
+
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
+use pocketmine\network\mcpe\protocol\types\DeviceOS;
 use pocketmine\player\Player;
-
 use pocketmine\utils\TextFormat;
 use pocketmine\world\sound\EnderChestOpenSound;
+
+# POCKETMINE
 
 class KitsCommand extends Command {
 
     public function __construct() {
-        parent::__construct("kits", "Opens the RankKits Menu", "/kits");
+        parent::__construct("kits", "Opens the RankKits Menu", "/kits", ["kit"]);
         $this->setPermission("emporiumcore.command.kits");
     }
 
@@ -32,11 +34,26 @@ class KitsCommand extends Command {
             return false;
         }
 
-        $kitsForm = new KitsForm();
-        $kitsForm->Form($sender);
-        $sender->broadcastSound(new EnderChestOpenSound());
+        $extraData = $sender->getPlayerInfo()->getExtraData();
+        switch($extraData["DeviceOS"]) {
+
+            case DeviceOS::IOS:
+            case DeviceOS::ANDROID:
+            case DeviceOS::PLAYSTATION:
+            case DeviceOS::XBOX:
+            case DeviceOS::NINTENDO:
+                $form = new KitsMenu();
+                $form->Form($sender);
+                $sender->broadcastSound(new EnderChestOpenSound());
+                break;
+
+            case DeviceOS::WINDOWS_10:
+            case DeviceOS::OSX:
+                $menu = new KitsMenu();
+                $menu->Inventory($sender);
+                $sender->broadcastSound(new EnderChestOpenSound());
+                break;
+        }
         return true;
-
     }
-
-} # END OF CLASS
+}

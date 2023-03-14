@@ -3,13 +3,15 @@
 namespace Items;
 
 use Emporium\Prison\Managers\misc\GlowManager;
+
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
+
 use pocketmine\utils\TextFormat as TF;
 
 class Contraband {
 
-    public static function Elite(int $amount): Item {
+    public function Elite(int $amount): Item {
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCount($amount);
         $item->setCustomName(TF::BOLD . TF::BLUE . "Elite Contraband");
@@ -22,7 +24,7 @@ class Contraband {
             TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::WHITE . "250,000 " . TF::AQUA . "Energy",
             TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::WHITE . "100,000 " . TF::AQUA . "Energy",
             TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::WHITE . "50,000 " . TF::AQUA . "Energy",
-            TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "2x " . TF::BOLD . TF::GOLD . "Mystery Legendary Enchant",
+            TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "2x " . TF::BOLD . TF::GOLD . "Mystery Elite Enchant",
             TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::WHITE . "Rank: " . TF::WHITE . "<" . TF::LIGHT_PURPLE . "Imperial" . TF::WHITE . ">",
             TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::WHITE . "Rank Kit: " . TF::WHITE . "<" . TF::LIGHT_PURPLE . "Imperial" . TF::WHITE . ">",
             TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::GOLD . "Mystery Elite GKit",
@@ -138,7 +140,7 @@ class Contraband {
             TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "2x " . TF::BOLD . TF::GOLD . "Mystery Heroic Enchant",
             TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::WHITE . "Rank: " . TF::WHITE . "<" . TF::RED . "President" . TF::WHITE . ">",
             TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::WHITE . "Rank Kit: " . TF::WHITE . "<" . TF::RED . "President" . TF::WHITE . ">",
-            TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::GOLD . "Mystery Heroic GKit",
+            TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::GOLD . "Mystery Rank Kit",
             TF::BOLD . TF::GOLD . "* " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . "$4,000,000 - $6,000,000",
             "",
             TF::GRAY . "Right-click to open"

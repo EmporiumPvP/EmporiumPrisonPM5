@@ -5,7 +5,7 @@ namespace EmporiumCore\Commands\Staff;
 use pocketmine\command\{Command, CommandSender};
 
 use EmporiumCore\EmporiumCore;
-use EmporiumCore\Listeners\Players\WebhookEvent;
+use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Managers\Data\DataManager;
 use EmporiumCore\Variables;
 

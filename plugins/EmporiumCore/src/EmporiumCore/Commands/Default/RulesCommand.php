@@ -3,16 +3,14 @@
 namespace EmporiumCore\Commands\Default;
 
 use EmporiumCore\Managers\Data\DataManager;
-
-use Forms\RulesForm;
-# POCKETMINE
+use Menus\RulesForm;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\sound\EnderChestOpenSound;
 
-use pocketmine\command\Command;
-use pocketmine\command\CommandSender;
-
-use pocketmine\player\Player;
+# POCKETMINE
 
 class RulesCommand extends Command {
 

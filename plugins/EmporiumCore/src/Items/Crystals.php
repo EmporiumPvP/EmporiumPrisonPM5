@@ -9,7 +9,7 @@ use pocketmine\utils\TextFormat as TF;
 
 class Crystals {
 
-    public static function noble(): Item {
+    public function noble(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::DARK_GRAY . "Noble Rank" . TF::LIGHT_PURPLE . " Crystal");
         $item->getNamedTag()->setByte("NobleCrystal", 1);
@@ -24,7 +24,7 @@ class Crystals {
         return $item;
     }
 
-    public static function nobleSuperior(): Item {
+    public function nobleSuperior(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::DARK_GRAY . "Noble Rank" . TF::YELLOW . " Superior Crystal");
         $item->getNamedTag()->setByte("NobleSuperiorCrystal", 1);
@@ -39,7 +39,7 @@ class Crystals {
         return $item;
     }
 
-    public static function imperial(): Item {
+    public function imperial(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::LIGHT_PURPLE . "Imperial Rank" . TF::LIGHT_PURPLE . " Crystal");
         $item->getNamedTag()->setByte("ImperialCrystal", 1);
@@ -54,7 +54,7 @@ class Crystals {
         return $item;
     }
 
-    public static function imperialSuperior(): Item {
+    public function imperialSuperior(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::LIGHT_PURPLE . "Noble Rank" . TF::YELLOW . " Superior Crystal");
         $item->getNamedTag()->setByte("ImperialSuperiorCrystal", 1);
@@ -69,7 +69,7 @@ class Crystals {
         return $item;
     }
 
-    public static function supreme(): Item {
+    public function supreme(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::DARK_AQUA . "Supreme Rank" . TF::LIGHT_PURPLE . " Crystal");
         $item->getNamedTag()->setByte("SupremeCrystal", 1);
@@ -84,7 +84,7 @@ class Crystals {
         return $item;
     }
 
-    public static function supremeSuperior(): Item {
+    public function supremeSuperior(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::DARK_AQUA . "Supreme Rank" . TF::YELLOW . " Superior Crystal");
         $item->getNamedTag()->setByte("SupremeSuperiorCrystal", 1);
@@ -99,7 +99,7 @@ class Crystals {
         return $item;
     }
 
-    public static function majesty(): Item {
+    public function majesty(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::BLUE . "Majesty Rank" . TF::LIGHT_PURPLE . " Crystal");
         $item->getNamedTag()->setByte("MajestyCrystal", 1);
@@ -114,7 +114,7 @@ class Crystals {
         return $item;
     }
 
-    public static function majestySuperior(): Item {
+    public function majestySuperior(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::BLUE . "Majesty Rank" . TF::YELLOW . " Superior Crystal");
         $item->getNamedTag()->setByte("MajestySuperiorCrystal", 1);
@@ -129,7 +129,7 @@ class Crystals {
         return $item;
     }
 
-    public static function emperor(): Item {
+    public function emperor(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::AQUA . "Emperor Rank" . TF::LIGHT_PURPLE . " Crystal");
         $item->getNamedTag()->setByte("EmperorCrystal", 1);
@@ -144,7 +144,7 @@ class Crystals {
         return $item;
     }
 
-    public static function emperorSuperior(): Item {
+    public function emperorSuperior(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::AQUA . "Emperor Rank" . TF::YELLOW . " Superior Crystal");
         $item->getNamedTag()->setByte("EmperorSuperiorCrystal", 1);
@@ -159,7 +159,7 @@ class Crystals {
         return $item;
     }
 
-    public static function president(): Item {
+    public function president(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::RED . "President Rank" . TF::LIGHT_PURPLE . " Crystal");
         $item->getNamedTag()->setByte("PresidentCrystal", 1);
@@ -174,7 +174,7 @@ class Crystals {
         return $item;
     }
 
-    public static function presidentSuperior(): Item {
+    public function presidentSuperior(): Item {
         $item = StringToItemParser::getInstance()->parse("nether_star");
         $item->setCustomName(TF::RED . "President Rank" . TF::YELLOW . " Superior Crystal");
         $item->getNamedTag()->setByte("PresidentSuperiorCrystal", 1);

@@ -36,7 +36,7 @@ class WebhookEvent implements Listener {
                 $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
                 $curlopts = [
                     "content" => $message,
-                    "username" => "Emporium | Events"
+                    "username" => "Emporium | Moderation"
                 ];
                 // Send Webhook
                 $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($event->getPlayer()->getName(), $webhook, serialize($curlopts)));
@@ -53,7 +53,7 @@ class WebhookEvent implements Listener {
         $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
         $curlopts = [
             "content" => $message,
-            "username" => "Emporium | Events"
+            "username" => "Emporium | Moderation"
         ];
 
         // Send Webhook
@@ -66,10 +66,10 @@ class WebhookEvent implements Listener {
         // Create Webhook
         $count = count($this->plugin->getServer()->getOnlinePlayers()) - 1;
         $message = "**{$event->getPlayer()->getName()}** has left the server. **(" . $count . "/" . $this->plugin->getServer()->getMaxPlayers() . ")**";
-        $webhook = "https://discord.com/api/webhooks/1054914712770465843/dbiR0pfZFb05u3-DwNgw8eTcM8nFeJSUyTP8IvYbUfQrE9faa5UWBT-mbc8J612l4tOr";
+        $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
         $curlopts = [
             "content" => $message,
-            "username" => "Emporium | Events"
+            "username" => "Emporium | Moderation"
         ];
 
         // Send Webhook
@@ -93,7 +93,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
             $curlopts = [
                 "content" => $message,
-                "username" => "EmporiumPvP | Core"
+                "username" => "EmporiumPvP | Commands"
             ];
 
         } else {
@@ -294,7 +294,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicZenith") {
@@ -303,7 +303,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicColossus") {
@@ -312,7 +312,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicWarlock") {
@@ -321,7 +321,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicSlaughter") {
@@ -330,7 +330,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicAtheos") {
@@ -339,7 +339,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicApetus") {
@@ -348,7 +348,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicBroteas") {
@@ -357,7 +357,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicGrimReaper") {
@@ -366,7 +366,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicExecutioner") {
@@ -375,7 +375,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicIapetus") {
@@ -384,7 +384,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHeroicExecutioner") {
@@ -393,16 +393,16 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitBlacksmith") {
             // Create Webhook
-            $message = "**{$player->getName()}** has opened a **Blacksmith God Kit**";
+            $message = "**{$player->getName()}** has opened a **Wormhole God Kit**";
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHero") {
@@ -411,7 +411,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitCyborg") {
@@ -420,7 +420,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitCrucible") {
@@ -429,7 +429,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
         if ($item === "GKitHunter") {
@@ -438,7 +438,7 @@ class WebhookEvent implements Listener {
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,
-                "username" => "Emporium | Items"
+                "username" => "Emporium | Blackscroll"
             ];
         }
 

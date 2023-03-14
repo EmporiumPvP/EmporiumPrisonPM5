@@ -1,0 +1,12 @@
+name: Tutorial
+author: Emporium
+version: 1.0.0
+api: 4.0.0
+main: Tetro\EPTutorial\Loader
+
+depend:
+  - EmporiumPrison
+
+permissions:
+  wild.infiel:
+    default: true
