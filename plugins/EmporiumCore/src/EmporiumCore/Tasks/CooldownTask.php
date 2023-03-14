@@ -24,6 +24,8 @@ class CooldownTask extends Task {
 		$files = scandir(EmporiumCore::getInstance()->getDataFolder() . "PlayerData/Cooldowns");
 		$players = [];
 		foreach($files as $file) {
+            if (in_array($file, ["..", "."])) continue;
+            if (str_contains(".tmp", $file)) continue;
 			$players[] = str_replace(".yml", "", $file);
 		}
 		return $players;
