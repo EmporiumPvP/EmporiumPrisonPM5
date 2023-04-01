@@ -2,16 +2,12 @@
 
 namespace EmporiumCore\Listeners;
 
-use pocketmine\player\Player;
-
-use pocketmine\event\Listener;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\player\{PlayerCommandPreprocessEvent, PlayerDeathEvent, PlayerJoinEvent, PlayerQuitEvent};
-
 use EmporiumCore\EmporiumCore;
-
 use EmporiumCore\Managers\Misc\Webhooks;
-
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\Listener;
+use pocketmine\event\player\{PlayerCommandPreprocessEvent, PlayerDeathEvent, PlayerJoinEvent, PlayerQuitEvent};
+use pocketmine\player\Player;
 use pocketmine\Server;
 
 class WebhookEvent implements Listener {
@@ -87,10 +83,10 @@ class WebhookEvent implements Listener {
 
         // Create Webhook
         $message = "**" . $event->getPlayer()->getName() . "**: `" . $message . "`";
+        $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
         if ($event->getMessage()[0] === "/") {
 
             // Create Command Webhook
-            $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
             $curlopts = [
                 "content" => $message,
                 "username" => "EmporiumPvP | Commands"
@@ -99,7 +95,6 @@ class WebhookEvent implements Listener {
         } else {
 
             // Create Chat Webhook
-            $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
             $curlopts = [
                 "content" => $message,
                 "username" => "Emporium | Chat"
@@ -147,20 +142,15 @@ class WebhookEvent implements Listener {
             if ($object === $sender) {
                 // Create Webhook
                 $message = "**{$sender->getName()}** has changed their gamemode";
-                $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
-                $curlopts = [
-                    "content" => $message,
-                    "username" => "Emporium | Moderation"
-                ];
             } else {
                 // Create Webhook
                 $message = "**{$sender->getName()}** has changed **{$object->getName()}**'s gamemode";
-                $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
-                $curlopts = [
-                    "content" => $message,
-                    "username" => "Emporium | Moderation"
-                ];
             }
+            $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
+            $curlopts = [
+                "content" => $message,
+                "username" => "Emporium | Moderation"
+            ];
         }
         if ($command === "item") {
             // Create Webhook
@@ -175,20 +165,15 @@ class WebhookEvent implements Listener {
             if ($object === "Keyall") {
                 // Create Webhook
                 $message = "**{$sender->getName()}** hosted a **keyall**";
-                $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
-                $curlopts = [
-                    "content" => $message,
-                    "username" => "Emporium | Moderation"
-                ];
             } else {
                 // Create Webhook
                 $message = "**{$sender->getName()}** has given keys to **{$object->getName()}**";
-                $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
-                $curlopts = [
-                    "content" => $message,
-                    "username" => "Emporium | Moderation"
-                ];
             }
+            $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
+            $curlopts = [
+                "content" => $message,
+                "username" => "Emporium | Moderation"
+            ];
         }
         if ($command === "Kick") {
             // Create Webhook
@@ -398,7 +383,7 @@ class WebhookEvent implements Listener {
         }
         if ($item === "GKitBlacksmith") {
             // Create Webhook
-            $message = "**{$player->getName()}** has opened a **Wormhole God Kit**";
+            $message = "**{$player->getName()}** has opened a **Blacksmith God Kit**";
             $webhook = "https://discord.com/api/webhooks/1054909649889005711/9UsLrQ5jPjkCksT34MOUotlzFPaic5UcYfrsxJRYV9q9_OdZ9ixK_yQDtADfZTC0Hd3S";
             $curlopts = [
                 "content" => $message,

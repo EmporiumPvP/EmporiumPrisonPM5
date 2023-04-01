@@ -11,19 +11,13 @@ use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 
 use pocketmine\player\Player;
-
 use pocketmine\Server;
 use pocketmine\world\sound\EnderChestCloseSound;
 use pocketmine\world\sound\NoteInstrument;
-
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\item\StringToItemParser;
-
 use pocketmine\utils\TextFormat as TF;
-
-use muqsit\playervaults\PlayerVaults;
-
 use pocketmine\world\sound\NoteSound;
 
 class Vaults extends Menu {

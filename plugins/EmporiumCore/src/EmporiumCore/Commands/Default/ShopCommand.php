@@ -3,13 +3,11 @@
 namespace EmporiumCore\Commands\Default;
 
 use Emporium\Prison\EmporiumPrison;
-
 use Emporium\Prison\Variables;
-use pocketmine\player\Player;
+use EmporiumData\DataManager;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
-
-use EmporiumCore\Managers\Data\DataManager;
-
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\Position;
 
@@ -27,19 +25,19 @@ class ShopCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.shop");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.shop");
+        if (!$permission) {
             $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
 
-        $tutorialComplete = \Emporium\Prison\Managers\DataManager::getData($sender, "Players", "tutorial-complete");
+        $tutorialComplete = DataManager::getInstance()->getPlayerData($sender->getXuid(), "profile.tutorial-complete");
 
         if($tutorialComplete) {
             $sender->teleport(new Position(-1585.5, 170, -317.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
             return true;
         } else {
-            $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You need to complete the tutorial to use that");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "You need to complete the tutorial to use that");
             return false;
         }
     }

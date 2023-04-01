@@ -3,45 +3,22 @@
 namespace Emporium\Prison\listeners\Items;
 
 use Emporium\Prison\EmporiumPrison;
-use Emporium\Prison\items\Boosters;
-use Emporium\Prison\items\Orbs;
-use Emporium\Prison\Managers\EnergyManager;
-use Emporium\Prison\Managers\PickaxeManager;
 use Emporium\Prison\Variables;
 
 use JsonException;
 
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerItemUseEvent;
-
 use pocketmine\inventory\transaction\action\SlotChangeAction;
 use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
-
 use pocketmine\world\sound\BlazeShootSound;
 use pocketmine\world\sound\XpCollectSound;
 use pocketmine\world\sound\XpLevelUpSound;
-use Tetro\EmporiumEnchants\Core\BookManager;
-use Tetro\EmporiumEnchants\Loader;
 
 class EnergyListener implements Listener {
-
-    private EnergyManager $energyManager;
-    private PickaxeManager $pickaxeManager;
-    private BookManager $bookManager;
-    private Boosters $boosters;
-    private Orbs $orbs;
-
-    public function __construct() {
-        $this->energyManager = EmporiumPrison::getEnergyManager();
-        $this->pickaxeManager = EmporiumPrison::getPickaxeManager();
-        $this->bookManager = Loader::getBookManager();
-        $this->boosters = EmporiumPrison::getBoosters();
-        $this->orbs = EmporiumPrison::getOrbs();
-    }
 
     /**
      * @throws JsonException
@@ -56,9 +33,9 @@ class EnergyListener implements Listener {
             switch ($booster) {
 
                 case 2:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(1.25))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(1.25))) {
                         # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(1.25)));
+                        $player->getInventory()->addItem((EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(1.25)));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.25x " . TF::GREEN . "Energy Booster.");
                         # remove 1 from stack
@@ -67,14 +44,14 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 3:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(1.5))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(1.5))) {
                         # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(1.5)));
+                        $player->getInventory()->addItem((EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(1.5)));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.5x " . TF::GREEN . "Energy Booster.");
                         # remove 1 from stack
@@ -83,14 +60,14 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 4:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(1.75))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(1.75))) {
                         # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(1.75)));
+                        $player->getInventory()->addItem((EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(1.75)));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.75x " . TF::GREEN . "Energy Booster.");
                         # remove 1 from stack
@@ -99,14 +76,14 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 5:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(2.0))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(2.0))) {
                         # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(2.0)));
+                        $player->getInventory()->addItem((EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(2.0)));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2x " . TF::GREEN . "Energy Booster.");
                         # remove 1 from stack
@@ -115,14 +92,14 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 6:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(2.25))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(2.25))) {
                         # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(2.25)));
+                        $player->getInventory()->addItem((EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(2.25)));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.25x " . TF::GREEN . "Energy Booster.");
                         # remove 1 from stack
@@ -131,14 +108,14 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 7:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(2.5))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(2.5))) {
                         # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(2.5)));
+                        $player->getInventory()->addItem((EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(2.5)));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.5x " . TF::GREEN . "Energy Booster.");
                         # remove 1 from stack
@@ -147,14 +124,14 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 8:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(2.75))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(2.75))) {
                         # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(2.75)));
+                        $player->getInventory()->addItem((EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(2.75)));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.75x " . TF::GREEN . "Energy Booster.");
                         # remove 1 from stack
@@ -163,14 +140,14 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 9:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(3.0))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(3.0))) {
                         # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(3.0)));
+                        $player->getInventory()->addItem((EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(3.0)));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3x " . TF::GREEN . "Energy Booster.");
                         # remove 1 from stack
@@ -179,14 +156,14 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 10:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(3.25))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(3.25))) {
                         # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(3.25)));
+                        $player->getInventory()->addItem((EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(3.25)));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3.25x " . TF::GREEN . "Energy Booster.");
                         # remove 1 from stack
@@ -195,14 +172,14 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 11:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(3.5))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(3.5))) {
                         # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(3.5)));
+                        $player->getInventory()->addItem((EmporiumPrison::getInstance()->getBoosters()->EnergyBooster(3.5)));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3.5x " . TF::GREEN . "Energy Booster.");
                         # remove 1 from stack
@@ -211,7 +188,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
             }
@@ -219,16 +196,16 @@ class EnergyListener implements Listener {
 
         if ($hand->getNamedTag()->getTag("EnergyBooster")) {
             $multiplier = $hand->getNamedTag()->getFloat("EnergyBooster");
-            $activeMultiplier = $this->energyManager->getMultiplier($player);
+            $activeMultiplier = EmporiumPrison::getInstance()->getEnergyManager()->getMultiplier($player);
 
             if ($activeMultiplier > 1) {
                 if (!$multiplier == $activeMultiplier) {
-                    $player->sendMessage(Variables::SERVER_PREFIX . "You already have an active Energy Booster.");
+                    $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "You already have an active Energy Booster.");
                 } else {
                     $player->broadcastSound(new BlazeShootSound(), [$player]);
                     $hand->setCount($count - 1);
                     $player->getInventory()->setItemInHand($hand);
-                    $this->energyManager->addTime($player);
+                    EmporiumPrison::getInstance()->getEnergyManager()->addTime($player);
                 }
             } else {
                 switch ($multiplier) {
@@ -249,221 +226,7 @@ class EnergyListener implements Listener {
                         $player->broadcastSound(new XpLevelUpSound(mt_rand(1, 10)), [$player]);
 
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have applied a " . TF::WHITE . $multiplier . "x" . TF::AQUA . " Energy Booster");
-                        $this->energyManager->start($player, $multiplier);
-                        break;
-
-                }
-            }
-        }
-    }
-
-    /**
-     * @throws JsonException
-     */
-    public function onInteractBlock(PlayerInteractEvent $event) {
-        $player = $event->getPlayer();
-        $hand = $player->getInventory()->getItemInHand();
-        $count = $hand->getCount();
-
-        if ($hand->getNamedTag()->getTag("MysteryEnergyBooster")) {
-            $booster = $hand->getNamedTag()->getInt("MysteryEnergyBooster");
-            switch ($booster) {
-
-                case 2:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(1.25))) {
-                        # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(1.25)));
-                        # send confirmation
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.25x " . TF::GREEN . "Energy Booster.");
-                        # remove 1 from stack
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-                        # play sound
-                        $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
-                    }
-                    break;
-
-                case 3:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(1.5))) {
-                        # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(1.5)));
-                        # send confirmation
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.5x " . TF::GREEN . "Energy Booster.");
-                        # remove 1 from stack
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-                        # play sound
-                        $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
-                    }
-                    break;
-
-                case 4:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(1.75))) {
-                        # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(1.75)));
-                        # send confirmation
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.75x " . TF::GREEN . "Energy Booster.");
-                        # remove 1 from stack
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-                        # play sound
-                        $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
-                    }
-                    break;
-
-                case 5:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(2.0))) {
-                        # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(2.0)));
-                        # send confirmation
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2x " . TF::GREEN . "Energy Booster.");
-                        # remove 1 from stack
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-                        # play sound
-                        $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
-                    }
-                    break;
-
-                case 6:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(2.25))) {
-                        # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(2.25)));
-                        # send confirmation
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.25x " . TF::GREEN . "Energy Booster.");
-                        # remove 1 from stack
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-                        # play sound
-                        $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
-                    }
-                    break;
-
-                case 7:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(2.5))) {
-                        # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(2.5)));
-                        # send confirmation
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.5x " . TF::GREEN . "Energy Booster.");
-                        # remove 1 from stack
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-                        # play sound
-                        $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
-                    }
-                    break;
-
-                case 8:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(2.75))) {
-                        # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(2.75)));
-                        # send confirmation
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.75x " . TF::GREEN . "Energy Booster.");
-                        # remove 1 from stack
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-                        # play sound
-                        $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
-                    }
-                    break;
-
-                case 9:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(3.0))) {
-                        # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(3.0)));
-                        # send confirmation
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3x " . TF::GREEN . "Energy Booster.");
-                        # remove 1 from stack
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-                        # play sound
-                        $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
-                    }
-                    break;
-
-                case 10:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(3.25))) {
-                        # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(3.25)));
-                        # send confirmation
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3.25x " . TF::GREEN . "Energy Booster.");
-                        # remove 1 from stack
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-                        # play sound
-                        $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
-                    }
-                    break;
-
-                case 11:
-                    if($player->getInventory()->canAddItem($this->boosters->EnergyBooster(3.5))) {
-                        # give player item
-                        $player->getInventory()->addItem(($this->boosters->EnergyBooster(3.5)));
-                        # send confirmation
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3.5x " . TF::GREEN . "Energy Booster.");
-                        # remove 1 from stack
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-                        # play sound
-                        $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
-                    }
-                    break;
-            }
-        }
-
-        if ($hand->getNamedTag()->getTag("EnergyBooster")) {
-            $multiplier = $hand->getNamedTag()->getFloat("EnergyBooster");
-            $activeMultiplier = $this->energyManager->getMultiplier($player);
-
-            if ($activeMultiplier > 1) {
-                if (!$multiplier == $activeMultiplier) {
-                    $player->sendMessage(Variables::SERVER_PREFIX . "You already have an active Energy Booster.");
-                } else {
-                    $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    $hand->setCount($count - 1);
-                    $player->getInventory()->setItemInHand($hand);
-                    $this->energyManager->addTime($player);
-                }
-            } else {
-                switch ($multiplier) {
-
-                    case 1.5:
-                    case 1.75:
-                    case 2.0:
-                    case 2.25:
-                    case 2.5:
-                    case 2.75:
-                    case 3.0:
-                    case 3.25:
-                    case 3.5:
-                    case 1.25:
-                        $hand->setCount($count - 1);
-                        $player->getInventory()->setItemInHand($hand);
-
-                        $player->broadcastSound(new XpLevelUpSound(mt_rand(1, 10)), [$player]);
-
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have applied a " . TF::WHITE . $multiplier . "x" . TF::AQUA . " Energy Booster");
-                        $this->energyManager->start($player, $multiplier);
+                        EmporiumPrison::getInstance()->getEnergyManager()->start($player, $multiplier);
                         break;
 
                 }
@@ -474,27 +237,58 @@ class EnergyListener implements Listener {
     /**
      * @priority HIGHEST
      */
-    public function onApplyEnergyOrbToPickaxe(InventoryTransactionEvent $event): void {
+    public function applyEnergyToEnergyOrPickaxe(InventoryTransactionEvent $event): void {
         $player = $event->getTransaction()->getSource();
         $transaction = $event->getTransaction();
         $actions = array_values($transaction->getActions());
-        $applyEnergySuccessful = false;
 
         if (count($actions) === 2) {
             foreach ($actions as $i => $action) {
                 if ($action instanceof SlotChangeAction && ($otherAction = $actions[($i + 1) % 2]) instanceof SlotChangeAction && ($itemClickedWith = $action->getTargetItem())->getId() === ItemIds::DYE && ($itemClicked = $action->getSourceItem())->getId() !== ItemIds::AIR) {
-                    if ($itemClickedWith->getNamedTag()->getString("EnergyOrb") === null) {
-                        return;
+                    # item clicked with has to be an energy orb
+                    if ($itemClickedWith->getNamedTag()->getTag("EnergyOrb") === null) return;
+                    # item clicked with has to have energy
+                    if ($itemClickedWith->getNamedTag()->getTag("Energy") === null) return;
+                    # cancel event
+                    $event->cancel();
+                    # item clicked has to be pickaxe or energy orb
+                    if($itemClicked->getNamedTag()->getTag("EnergyOrb") !== null) {
+                        # get energy data
+                        $energyOrb1Energy = $itemClickedWith->getNamedTag()->getInt("Energy");
+                        $energyOrb2Energy = $itemClicked->getNamedTag()->getInt("Energy");
+                        $newEnergyData = $energyOrb1Energy + $energyOrb2Energy;
+                        if($newEnergyData > 2000000000) {
+                            $maxApplicableEnergy = 2000000000 - $energyOrb1Energy;
+                            if($maxApplicableEnergy > 0) {
+                                $energyToAdd = $maxApplicableEnergy + $energyOrb1Energy;
+                                # add the energy
+                                $itemClicked->getNamedTag()->setInt("Energy", $energyToAdd);
+                                # create new energy orb
+                                $newOrbValue = $energyOrb1Energy - $maxApplicableEnergy;
+                                $newEnergyOrb = EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($newOrbValue);
+                                # update items
+                                $updatedEnergyOrb = EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($newOrbValue);
+                                $event->cancel();
+                                # give player new items
+                                $action->getInventory()->setItem($action->getSlot(), $updatedEnergyOrb);
+                                $otherAction->getInventory()->setItem($otherAction->getSlot(), $newEnergyOrb);
+                                $player->broadcastSound(new XpCollectSound(), [$player]);
+                                # set to false so energy orb doesnt get removed
+                                return;
+                            }
+                        } else {
+                            $newEnergyOrb = EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($newEnergyData);
+                            # remove energy orb
+                            # give player new pickaxe
+                            $action->getInventory()->setItem($action->getSlot(), $newEnergyOrb);
+                            # remove energy orb
+                            $otherAction->getInventory()->setItem($otherAction->getSlot(), VanillaItems::AIR());
+                            $player->broadcastSound(new XpCollectSound(), [$player]);
+                            return;
+                        }
                     }
-                    if ($itemClickedWith->getNamedTag()->getTag("Energy") === null) {
-                        return;
-                    }
-                    if ($itemClicked->getNamedTag()->getTag("PickaxeType") === null) {
-                        return;
-                    }
-                    if ($itemClicked->getNamedTag()->getTag("Energy") === null) {
-                        return;
-                    } else {
+
+                    if($itemClicked->getNamedTag()->getTag("PickaxeType") !== null) {
                         # cancel event
                         $event->cancel();
                         # get energy data
@@ -511,113 +305,31 @@ class EnergyListener implements Listener {
                                 $itemClicked->getNamedTag()->setInt("Energy", $energyToAdd);
                                 # create new energy orb
                                 $newOrbValue = $energyOrb - $maxApplicableEnergy;
-                                $newEnergyOrb = $this->orbs->EnergyOrb($newOrbValue);
+                                $newEnergyOrb = EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($newOrbValue);
                                 # update items
-                                $updatedPickaxe = $this->pickaxeManager->updatePickaxe($itemClicked);
+                                $updatedPickaxe = EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxe($itemClicked);
                                 $event->cancel();
                                 # give player new items
                                 $action->getInventory()->setItem($action->getSlot(), $updatedPickaxe);
                                 $otherAction->getInventory()->setItem($otherAction->getSlot(), $newEnergyOrb);
                                 $player->broadcastSound(new XpCollectSound(), [$player]);
-                                # set to false so energy orb doesnt get removed
-                                $applyEnergySuccessful = false;
+                                return;
                             }
                         } else {
+                            # set new energy data
                             $itemClicked->getNamedTag()->setInt("Energy", $newData);
-                            $applyEnergySuccessful = true;
+                            # update pickaxe information
+                            $updatedPickaxe = EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxe($itemClicked);
+                            # give player new pickaxe
+                            $action->getInventory()->setItem($action->getSlot(), $updatedPickaxe);
+                            # remove energy orb
+                            $otherAction->getInventory()->setItem($otherAction->getSlot(), VanillaItems::AIR());
+                            # play sound
+                            $player->broadcastSound(new XpCollectSound(), [$player]);
+                            return;
                         }
-                    }
-                    if ($applyEnergySuccessful) {
-                        # update pickaxe information
-                        $updatedPickaxe = $this->pickaxeManager->updatePickaxe($itemClicked);
-                        # remove energy orb
-                        $event->cancel();
-                        # give player new pickaxe
-                        $action->getInventory()->setItem($action->getSlot(), $updatedPickaxe);
-                        # remove energy orb
-                        $otherAction->getInventory()->setItem($otherAction->getSlot(), VanillaItems::AIR());
-                        $player->broadcastSound(new XpCollectSound(), [$player]);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @priority HIGHEST
-     */
-    public function onApplyEnergyOrbToBook(InventoryTransactionEvent $event): void {
-
-        $player = $event->getTransaction()->getSource();
-        $transaction = $event->getTransaction();
-        $actions = array_values($transaction->getActions());
-        $applyPickaxeEnergySuccessful = false;
-        $applyBookEnergySuccessful = false;
-
-        if (count($actions) === 2) {
-            foreach ($actions as $i => $action) {
-                if ($action instanceof SlotChangeAction && ($otherAction = $actions[($i + 1) % 2]) instanceof SlotChangeAction && ($itemClickedWith = $action->getTargetItem())->getId() === ItemIds::DYE && ($itemClicked = $action->getSourceItem())->getId() !== ItemIds::AIR) {
-                    if($itemClickedWith->getMeta() !== 12) {
-                        return;
-                    }
-                    if ($itemClickedWith->getNamedTag()->getString("EnergyOrb") === null) {
-                        return;
-                    }
-                    if ($itemClickedWith->getNamedTag()->getTag("Energy") === null) {
-                        return;
-                    }
-                    # is item pickaxe or enchant book?
-                    if ($itemClicked->getNamedTag()->getTag("CustomEnchantBook") === null) {
-                        return;
-                    }
-                    # does item have energy?
-                    if ($itemClicked->getNamedTag()->getTag("Energy") === null) {
-                        return;
                     } else {
-                        # cancel event
-                        $event->cancel();
-                        # get energy data
-                        $bookEnergy = $itemClicked->getNamedTag()->getInt("Energy");
-                        $energyOrbEnergy = $itemClickedWith->getNamedTag()->getInt("Energy");
-                        # energy calculation
-                        $newData = $bookEnergy + $energyOrbEnergy;
-                        # add max amount of energy (if newData more than 2B)
-                        if($newData > 2000000000) {
-                            $maxApplicableEnergy = 2000000000 - $bookEnergy;
-                            if($maxApplicableEnergy > 0) {
-                                $energyToAdd = $maxApplicableEnergy + $bookEnergy;
-                                # add the energy
-                                $itemClicked->getNamedTag()->setInt("Energy", $energyToAdd);
-                                # create new energy orb
-                                $newOrbValue = $energyOrbEnergy - $maxApplicableEnergy;
-                                $newEnergyOrb = $this->orbs->EnergyOrb($newOrbValue);
-                                # update items
-                                $updatedBook = $this->bookManager->updateBook($itemClicked);
-                                $event->cancel();
-                                # give player new items
-                                $action->getInventory()->setItem($action->getSlot(), $updatedBook);
-                                $otherAction->getInventory()->setItem($otherAction->getSlot(), $newEnergyOrb);
-                                $player->broadcastSound(new XpCollectSound(), [$player]);
-                                # set to false so energy orb doesnt get removed
-                                $applyBookEnergySuccessful = false;
-                            }
-                        } else {
-                            $itemClicked->getNamedTag()->setInt("Energy", $newData);
-                            $applyBookEnergySuccessful = true;
-                        }
-                    }
-
-                    # update book if successful
-                    if ($applyBookEnergySuccessful) {
-                        # update book information
-                        $updatedBook = $this->bookManager->updateBook($itemClicked);
-                        # remove energy orb
-                        $event->cancel();
-                        # give player new pickaxe
-                        $action->getInventory()->setItem($action->getSlot(), $updatedBook);
-                        # remove energy orb
-                        $otherAction->getInventory()->setItem($otherAction->getSlot(), VanillaItems::AIR());
-                        $player->broadcastSound(new XpCollectSound(), [$player]);
+                        return;
                     }
                 }
             }

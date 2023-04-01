@@ -2,42 +2,39 @@
 
 namespace Emporium\Prison\listeners\mines;
 
-use Emporium\Prison\EmporiumPrison;
-
-use EmporiumData\DataManager;
 use Emporium\Prison\Managers\EnergyManager;
 use Emporium\Prison\Managers\MiningManager;
 use Emporium\Prison\Managers\PickaxeManager;
-use Emporium\Prison\Managers\PlayerLevelManager;
-
+use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\tasks\BedrockSpawnTask;
 use Emporium\Prison\tasks\Ores\EmeraldBlockSpawnTask;
 use Emporium\Prison\tasks\Ores\OreRegenTask;
 
-use Emporium\Prison\Variables;
+use EmporiumData\DataManager;
 
 use JsonException;
 
 use pocketmine\block\BlockLegacyIds;
-
+use pocketmine\block\VanillaBlocks;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
-
+use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
 class EmeraldMineListener implements Listener {
 
+    private array $ores = [ItemIds::EMERALD_ORE, ItemIds::EMERALD_BLOCK];
+
     private PickaxeManager $pickaxeManager;
-    private PlayerLevelManager $playerLevelManager;
     private EnergyManager $energyManager;
     private MiningManager $miningManager;
 
     public function __construct() {
-        # Managers
-        $this->pickaxeManager = EmporiumPrison::getPickaxeManager();
-        $this->playerLevelManager = EmporiumPrison::getPlayerLevelManager();
-        $this->energyManager = EmporiumPrison::getEnergyManager();
-        $this->miningManager = EmporiumPrison::getMiningManager();
+        $this->pickaxeManager = EmporiumPrison::getInstance()->getPickaxeManager();
+        $this->energyManager = EmporiumPrison::getInstance()->getEnergyManager();
+        $this->miningManager = EmporiumPrison::getInstance()->getMiningManager();
     }
 
     /**
@@ -45,325 +42,251 @@ class EmeraldMineListener implements Listener {
      */
     public function onMine(BlockBreakEvent $event) {
 
+        # event info
         $player = $event->getPlayer();
+        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
         $world = $event->getPlayer()->getWorld()->getFolderName();
 
-        if($world == "world") {
+        # world check
+        if($world != "world") return;
 
-            # block info
-            $block = $event->getBlock();
-            $blockId = $event->getBlock()->getIdInfo()->getBlockId();
-            $blockPosition = $block->getPosition();
+        # ore check
+        if(!in_array($blockId, $this->ores)) {
+            $event->cancel();
+            return;
+        }
 
-            # item info
-            $item = $event->getPlayer()->getInventory()->getItemInHand();
-            $itemId = $item->getId();
+        # item info
+        $item = $event->getPlayer()->getInventory()->getItemInHand();
 
-            if($blockId === 129 || $blockId === 133) {
-                if($itemId === 278) {
-                    # energy
-                    $energy = $item->getNamedTag()->getInt("Energy");
-                    $energyNeeded = $this->pickaxeManager->getEnergyNeeded($item);
+        # pickaxe checks
+        if($item->getNamedTag()->getTag("PickaxeType") === null) {
+            $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Try using a pickaxe");
+            $event->cancel();
+            return;
+        }
+        if($item->getNamedTag()->getTag("Level") === null) {
+            $event->cancel();
+            return;
+        }
+        if($item->getNamedTag()->getTag("Energy") === null) {
+            $event->cancel();
+            return;
+        }
 
-                    # boosters
-                    $energyBoosterTime = $this->energyManager->getTime($player);
-                    $energyMultiplier = $this->energyManager->getMultiplier($player);
-                    $miningBoosterTime = $this->miningManager->getTime($player);
-                    $miningMultiplier = $this->miningManager->getMultiplier($player);
+        # pickaxe data
+        $pickaxeLevel = $item->getNamedTag()->getInt("Level");
+        $energy = $item->getNamedTag()->getInt("Energy");
+        $energyNeeded = $this->pickaxeManager->getEnergyNeeded($item);
 
-                    if($item->getNamedTag()->getTag("Level") !== null) {
-                        $pickaxeLevel = $item->getNamedTag()->getInt("Level");
+        if(!in_array($blockId, $this->ores)) return;
+
+        # check pickaxe type
+        if($item->getNamedTag()->getString("PickaxeType") != "Diamond") {
+            $event->cancel();
+            $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You can only use a" . TF::BOLD . TF::GREEN . " Diamond Pickaxe" . TF::RESET . TF::RED . " here!");
+            return;
+        }
+
+        # block info
+        $block = $event->getBlock();
+        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockPosition = $block->getPosition();
+
+        # player boosters data
+        $energyBoosterTime = $this->energyManager->getTime($player);
+        $energyMultiplier = $this->energyManager->getMultiplier($player);
+        $miningBoosterTime = $this->miningManager->getTime($player);
+        $miningMultiplier = $this->miningManager->getMultiplier($player);
+
+        # remove drops
+        $event->setDrops([]);
+        $event->setXpDropAmount(0);
+
+        # block regen chance
+        $chance = mt_rand(1, 30);
+
+        # max pickaxe level (don't check for energy)
+        if($pickaxeLevel == 100) {
+
+            # ore regen
+            switch($blockId) {
+
+                case BlockLegacyIds::EMERALD_ORE:
+
+                    if($chance === 1) {
+                        # spawn coal block
+                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new EmeraldBlockSpawnTask($block, $blockPosition), 1);
                     } else {
-                        $event->cancel();
-                        return;
+                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new BedrockSpawnTask($block, $blockPosition), 1);
+                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new OreRegenTask($block, $blockPosition, $blockId), 20 * 10);
                     }
 
-                    # player Data
-                    $playerLevel = $this->playerLevelManager->getPlayerLevel($player);
+                    # energy to add
+                    $energy = mt_rand(80, 90);
 
-                    if($energy >= $energyNeeded) {
-                        if($pickaxeLevel >= 100) {
-                            switch($blockId) {
-                                case BlockLegacyIds::EMERALD_ORE: # 129 (diamond pickaxe required to break)
-                                    if($playerLevel < 60) {
-                                        $event->cancel();
-                                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your player" . TF::GOLD . " /level" . TF::RED . " is too low!");
-                                    } else {
-                                        $chance = mt_rand(1, 60);
-                                        if($chance === 1) {
-                                            # spawn coal block
-                                            EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new EmeraldBlockSpawnTask($block, $blockPosition), 1);
-                                        } else {
-                                            # spawn bedrock schedule regen
-                                            EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new BedrockSpawnTask($block, $blockPosition), 1);
-                                            EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new OreRegenTask($block, $blockPosition, $blockId), 20 * 6);
-                                        }
-                                        # add energy to player
-                                        $energy = mt_rand(70, 80);
-                                        if($energyBoosterTime > 0) {
-                                            $multipliedEnergy = $energy * $energyMultiplier;
-                                            $oldData = $item->getNamedTag()->getInt("Energy");
-                                            $newData = $oldData + $multipliedEnergy;
-                                            $item->getNamedTag()->setInt("Energy", $newData);
-                                        } else {
-                                            $oldData = $item->getNamedTag()->getInt("Energy");
-                                            $newData = $oldData + $energy;
-                                            $item->getNamedTag()->setInt("Energy", $newData);
-                                        }
-                                        # add xp to player
-                                        $xp = 16;
-                                        if ($miningBoosterTime > 0) {
-                                            $multipliedXp = $xp * $miningMultiplier;
-                                            $player->sendTip("+$multipliedXp xp");
-                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $multipliedXp);
-                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $multipliedXp);
-                                        } else {
-                                            $player->sendTip("+$xp xp");
-                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $xp);
-                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $xp);
-                                        }
-                                        # add pickaxe Data
-                                        $oldData = $item->getNamedTag()->getInt("BlocksMined");
-                                        $newData = $oldData + 1;
-                                        $item->getNamedTag()->setInt("BlocksMined", $newData);
-                                        # auto pickup (blocks)
-                                        foreach ($event->getDrops() as $drop) {
-                                            if($player->getInventory()->canAddItem($drop)) {
-                                                if($event->isCancelled()) {
-                                                    $event->setDrops([]);
-                                                    return;
-                                                } else {
-                                                    $event->setDrops([]);
-                                                    $event->getPlayer()->getInventory()->addItem($drop);
-                                                }
-                                            } else {
-                                                $event->setDrops([]);
-                                                $player->sendTitle(TF::DARK_RED . "Inventory Full!");
-                                            }
-                                        }
-                                        # auto pickup (xp)
-                                        $player->getXpManager()->addXp($event->getXpDropAmount());
-                                        $event->setXpDropAmount(0);
-                                        # check for pickaxe and player level up
-                                        $this->pickaxeManager->updatePickaxeSetInHand($player, $item);
-                                        #$pickaxeBarManager->updateDiamondBar();
-                                        $this->playerLevelManager->checkPlayerLevelUp($player);
-                                    }
-                                    break;
+                    # xp to add
+                    $xp = 16;
 
-                                case BlockLegacyIds::EMERALD_BLOCK: # (diamond pickaxe required to break)
-                                    if($playerLevel < 60) {
-                                        $event->cancel();
-                                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your player" . TF::GOLD . " /level" . TF::RED . " is too low!");
-                                    } else {
-                                        $chance = mt_rand(1, 30);
-                                        if($chance === 1) {
-                                            # spawn coal block
-                                            EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new EmeraldBlockSpawnTask($block, $blockPosition), 1);
-                                        } else {
-                                            # spawn bedrock schedule regen
-                                            EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new BedrockSpawnTask($block, $blockPosition), 1);
-                                            EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new OreRegenTask($block, $blockPosition, $blockId), 20 * 6);
-                                        }
-                                        # add energy to player
-                                        $energy = mt_rand(140, 160);
-                                        if($energyBoosterTime > 0) {
-                                            $multipliedEnergy = $energy * $energyMultiplier;
-                                            $oldData = $item->getNamedTag()->getInt("Energy");
-                                            $newData = $oldData + $multipliedEnergy;
-                                            $item->getNamedTag()->setInt("Energy", $newData);
-                                        } else {
-                                            $oldData = $item->getNamedTag()->getInt("Energy");
-                                            $newData = $oldData + $energy;
-                                            $item->getNamedTag()->setInt("Energy", $newData);
-                                        }
-                                        # add xp to player
-                                        $xp = 32;
-                                        if ($miningBoosterTime > 0) {
-                                            $multipliedXp = $xp * $miningMultiplier;
-                                            $player->sendTip("+$multipliedXp xp");
-                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $multipliedXp);
-                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $multipliedXp);
-                                        } else {
-                                            $player->sendTip("+$xp xp");
-                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $xp);
-                                            DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $xp);
-                                        }
-                                        # add pickaxe Data
-                                        $oldData = $item->getNamedTag()->getInt("BlocksMined");
-                                        $newData = $oldData + 1;
-                                        $item->getNamedTag()->setInt("BlocksMined", $newData);
-                                        # auto pickup (blocks)
-                                        foreach ($event->getDrops() as $drop) {
-                                            if($player->getInventory()->canAddItem($drop)) {
-                                                if($event->isCancelled()) {
-                                                    $event->setDrops([]);
-                                                    return;
-                                                } else {
-                                                    $event->setDrops([]);
-                                                    $event->getPlayer()->getInventory()->addItem($drop);
-                                                }
-                                            } else {
-                                                $event->setDrops([]);
-                                                $player->sendTitle(TF::DARK_RED . "Inventory Full!");
-                                            }
-                                        }
-                                        # auto pickup (xp)
-                                        $player->getXpManager()->addXp($event->getXpDropAmount());
-                                        $event->setXpDropAmount(0);
-                                        # update pickaxe and check player level up
-                                        $this->pickaxeManager->updatePickaxeSetInHand($player, $item);
-                                        $this->playerLevelManager->checkPlayerLevelUp($player);
-                                    }
-                                    break;
-                            }
-                        } else {
-                            $event->cancel();
-                            $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Your pickaxe is full of energy");
-                            $player->sendMessage(TF::GRAY . "You must get the Wormhole to Forge your pickaxe! He can be found near " . TF::AQUA . "/spawn");
-                            $player->sendMessage(TF::GRAY . "This will level up your pickaxe, and give you the chance to gain or upgrade an Enchant.");
-                        }
+                    # auto pickup
+                    if($player->getInventory()->canAddItem(VanillaBlocks::EMERALD_ORE()->asItem())) {
+                        $player->getInventory()->addItem(VanillaBlocks::EMERALD_ORE()->asItem());
                     } else {
-                        switch($blockId) {
-                            case BlockLegacyIds::EMERALD_ORE: # 129 (diamond pickaxe required to break)
-                                if($playerLevel < 60) {
-                                    $event->cancel();
-                                    $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your player" . TF::GOLD . " /level" . TF::RED . " is too low!");
-                                } else {
-                                    $chance = mt_rand(1, 60);
-                                    if($chance === 1) {
-                                        # spawn coal block
-                                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new EmeraldBlockSpawnTask($block, $blockPosition), 1);
-                                    } else {
-                                        # spawn bedrock schedule regen
-                                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new BedrockSpawnTask($block, $blockPosition), 1);
-                                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new OreRegenTask($block, $blockPosition, $blockId), 20 * 6);
-                                    }
-                                    # add energy to player
-                                    $energy = mt_rand(70, 80);
-                                    if($energyBoosterTime > 0) {
-                                        $multipliedEnergy = $energy * $energyMultiplier;
-                                        $oldData = $item->getNamedTag()->getInt("Energy");
-                                        $newData = $oldData + $multipliedEnergy;
-                                        $item->getNamedTag()->setInt("Energy", $newData);
-                                    } else {
-                                        $oldData = $item->getNamedTag()->getInt("Energy");
-                                        $newData = $oldData + $energy;
-                                        $item->getNamedTag()->setInt("Energy", $newData);
-                                    }
-                                    # add xp to player
-                                    $xp = 16;
-                                    if ($miningBoosterTime > 0) {
-                                        $multipliedXp = $xp * $miningMultiplier;
-                                        $player->sendTip("+$multipliedXp xp");
-                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $multipliedXp);
-                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $multipliedXp);
-                                    } else {
-                                        $player->sendTip("+$xp xp");
-                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $xp);
-                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $xp);
-                                    }
-                                    # add pickaxe Data
-                                    $oldData = $item->getNamedTag()->getInt("BlocksMined");
-                                    $newData = $oldData + 1;
-                                    $item->getNamedTag()->setInt("BlocksMined", $newData);
-                                    # auto pickup (blocks)
-                                    foreach ($event->getDrops() as $drop) {
-                                        if($player->getInventory()->canAddItem($drop)) {
-                                            if($event->isCancelled()) {
-                                                $event->setDrops([]);
-                                                return;
-                                            } else {
-                                                $event->setDrops([]);
-                                                $event->getPlayer()->getInventory()->addItem($drop);
-                                            }
-                                        } else {
-                                            $event->setDrops([]);
-                                            $player->sendTitle(TF::DARK_RED . "Inventory Full!");
-                                        }
-                                    }
-                                    # auto pickup (xp)
-                                    $player->getXpManager()->addXp($event->getXpDropAmount());
-                                    $event->setXpDropAmount(0);
-                                    # check for pickaxe and player level up
-                                    $this->pickaxeManager->updatePickaxeSetInHand($player, $item);
-                                    #$pickaxeBarManager->updateDiamondBar();
-                                    $this->playerLevelManager->checkPlayerLevelUp($player);
-                                }
-                                break;
-
-                            case BlockLegacyIds::EMERALD_BLOCK: # (diamond pickaxe required to break)
-                                if($playerLevel < 60) {
-                                    $event->cancel();
-                                    $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your player" . TF::GOLD . " /level" . TF::RED . " is too low!");
-                                } else {
-                                    $chance = mt_rand(1, 30);
-                                    if($chance === 1) {
-                                        # spawn coal block
-                                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new EmeraldBlockSpawnTask($block, $blockPosition), 1);
-                                    } else {
-                                        # spawn bedrock schedule regen
-                                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new BedrockSpawnTask($block, $blockPosition), 1);
-                                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new OreRegenTask($block, $blockPosition, $blockId), 20 * 6);
-                                    }
-                                    # add energy to player
-                                    $energy = mt_rand(140, 160);
-                                    if($energyBoosterTime > 0) {
-                                        $multipliedEnergy = $energy * $energyMultiplier;
-                                        $oldData = $item->getNamedTag()->getInt("Energy");
-                                        $newData = $oldData + $multipliedEnergy;
-                                        $item->getNamedTag()->setInt("Energy", $newData);
-                                    } else {
-                                        $oldData = $item->getNamedTag()->getInt("Energy");
-                                        $newData = $oldData + $energy;
-                                        $item->getNamedTag()->setInt("Energy", $newData);
-                                    }
-                                    # add xp to player
-                                    $xp = 32;
-                                    if ($miningBoosterTime > 0) {
-                                        $multipliedXp = $xp * $miningMultiplier;
-                                        $player->sendTip("+$multipliedXp xp");
-                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $multipliedXp);
-                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $multipliedXp);
-                                    } else {
-                                        $player->sendTip("+$xp xp");
-                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "xp") + $xp);
-                                        DataManager::getInstance()->setPlayerData($player->getXuid(), "total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp") + $xp);
-                                    }
-                                    # add pickaxe Data
-                                    $oldData = $item->getNamedTag()->getInt("BlocksMined");
-                                    $newData = $oldData + 1;
-                                    $item->getNamedTag()->setInt("BlocksMined", $newData);
-                                    # auto pickup (blocks)
-                                    foreach ($event->getDrops() as $drop) {
-                                        if($player->getInventory()->canAddItem($drop)) {
-                                            if($event->isCancelled()) {
-                                                $event->setDrops([]);
-                                                return;
-                                            } else {
-                                                $event->setDrops([]);
-                                                $event->getPlayer()->getInventory()->addItem($drop);
-                                            }
-                                        } else {
-                                            $event->setDrops([]);
-                                            $player->sendTitle(TF::DARK_RED . "Inventory Full!");
-                                        }
-                                    }
-                                    # auto pickup (xp)
-                                    $player->getXpManager()->addXp($event->getXpDropAmount());
-                                    $event->setXpDropAmount(0);
-                                    # update pickaxe and check player level up
-                                    $this->pickaxeManager->updatePickaxeSetInHand($player, $item);
-                                    $this->playerLevelManager->checkPlayerLevelUp($player);
-                                }
-                                break;
-                        }
+                        $player->sendMessage(TF::RED . "Your inventory is full");
+                        $player->getWorld()->dropItem($block->getPosition()->asVector3()->up(), VanillaBlocks::EMERALD_ORE()->asItem());
                     }
-                } else {
-                    $event->cancel();
-                    $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "Try using a " . TF::BOLD . TF::AQUA . "Diamond Pickaxe");
-                }
+                    break;
+
+                case BlockLegacyIds::EMERALD_BLOCK:
+
+                    if($chance === 1) {
+                        # spawn coal block
+                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new EmeraldBlockSpawnTask($block, $blockPosition), 1);
+                    }
+                    if($chance > 1) {
+                        # spawn placeholder block
+                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new BedrockSpawnTask($block, $blockPosition), 1);
+                        # schedule regen
+                        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new OreRegenTask($block, $blockPosition, $blockId), 20 * 20);
+                    }
+
+                    # energy to add
+                    $energy = mt_rand(160, 180);
+
+                    # xp to add
+                    $xp = 32;
+
+                    # auto pickup (block)
+                    if($player->getInventory()->canAddItem(VanillaBlocks::EMERALD()->asItem())) {
+                        $player->getInventory()->addItem(VanillaBlocks::EMERALD()->asItem());
+                    } else {
+                        $player->sendMessage(TF::RED . "Your inventory is full");
+                        $player->getWorld()->dropItem($block->getPosition()->asVector3()->up(), VanillaBlocks::EMERALD()->asItem());
+                    }
+                    break;
+
+                default:
+                    $xp = 0;
+                    $energy = 0;
             }
+            # check for player level up
+            EmporiumPrison::getInstance()->getPlayerLevelManager()->checkPlayerLevelUp($player);
+
+            # add pickaxe Data
+            $item->getNamedTag()->setInt("BlocksMined", $item->getNamedTag()->getInt("BlocksMined") + 1);
+
+            $this->addXpToPlayer($xp, $player, $miningBoosterTime, $miningMultiplier);
+            $this->addEnergyToPickaxe($energy, $item, $energyBoosterTime, $energyMultiplier);
+
+            # pickaxe update
+            $this->pickaxeManager->updatePickaxeSetInHand($player, $item);
+            return;
+        }
+
+        # pickaxe energy is full
+        if($energy >= $energyNeeded) {
+            $event->cancel();
+            $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Your pickaxe is full of energy");
+            $player->sendMessage(TF::GRAY . "You must Forge your pickaxe at the Wormhole! It can be found near " . TF::AQUA . "/spawn");
+            $player->sendMessage(TF::GRAY . "This will level up your pickaxe, and give you the chance to gain or upgrade an Enchant.");
+            return;
+        }
+
+        # ore regen
+        switch($blockId) {
+
+            case BlockLegacyIds::EMERALD_ORE:
+
+                if($chance === 1) {
+                    # spawn coal block
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new EmeraldBlockSpawnTask($block, $blockPosition), 1);
+                } else {
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new BedrockSpawnTask($block, $blockPosition), 1);
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new OreRegenTask($block, $blockPosition, $blockId), 20 * 10);
+                }
+
+                # energy to add
+                $energy = mt_rand(80, 90);
+
+                # xp to add
+                $xp = 16;
+
+                # auto pickup
+                if($player->getInventory()->canAddItem(VanillaBlocks::EMERALD_ORE()->asItem())) {
+                    $player->getInventory()->addItem(VanillaBlocks::EMERALD_ORE()->asItem());
+                } else {
+                    $player->sendMessage(TF::RED . "Your inventory is full");
+                    $player->getWorld()->dropItem($block->getPosition()->asVector3()->up(), VanillaBlocks::EMERALD_ORE()->asItem());
+                }
+                break;
+
+            case BlockLegacyIds::EMERALD_BLOCK:
+
+                if($chance === 1) {
+                    # spawn coal block
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new EmeraldBlockSpawnTask($block, $blockPosition), 1);
+                }
+                if($chance > 1) {
+                    # spawn placeholder block
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new BedrockSpawnTask($block, $blockPosition), 1);
+                    # schedule regen
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new OreRegenTask($block, $blockPosition, $blockId), 20 * 20);
+                }
+
+                # energy to add
+                $energy = mt_rand(160, 180);
+
+                # xp to add
+                $xp = 32;
+
+                # auto pickup (block)
+                if($player->getInventory()->canAddItem(VanillaBlocks::EMERALD()->asItem())) {
+                    $player->getInventory()->addItem(VanillaBlocks::EMERALD()->asItem());
+                } else {
+                    $player->sendMessage(TF::RED . "Your inventory is full");
+                    $player->getWorld()->dropItem($block->getPosition()->asVector3()->up(), VanillaBlocks::EMERALD()->asItem());
+                }
+                break;
+
+            default:
+                $xp = 0;
+                $energy = 0;
+        }
+
+        $this->addXpToPlayer($xp, $player, $miningBoosterTime, $miningMultiplier);
+        $this->addEnergyToPickaxe($energy, $item, $energyBoosterTime, $energyMultiplier);
+
+        # add pickaxe Data
+        $item->getNamedTag()->setInt("BlocksMined", $item->getNamedTag()->getInt("BlocksMined") + 1);
+
+        # check player level up
+        EmporiumPrison::getInstance()->getPlayerLevelManager()->checkPlayerLevelUp($player);
+
+        # update pickaxe
+        $this->pickaxeManager->updatePickaxeSetInHand($player, $item);
+
+    }
+
+    private function addEnergyToPickaxe(int $energy, Item $item, int $boosterTime, int $energyMultiplier): void {
+        # with booster
+        if($boosterTime >= 1) {
+            $item->getNamedTag()->setInt("Energy", $item->getNamedTag()->getInt("Energy") + ($energy * 2) * $energyMultiplier);
+            return;
+        }
+        # no booster
+        $item->getNamedTag()->setInt("Energy", $item->getNamedTag()->getInt("Energy") + ($energy * 2));
+    }
+
+    private function addXpToPlayer(int $xp, Player $player, int $miningBoosterTime, int $miningMultiplier): void {
+        if ($miningBoosterTime >= 1) {
+            $player->sendTip("+" . $xp * $miningMultiplier . "xp");
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + ($xp * $miningMultiplier));
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.total-xp") + ($xp * $miningMultiplier));
+        }
+        if($miningBoosterTime < 1) {
+            $player->sendTip("+$xp xp");
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $xp);
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.total-xp") + $xp);
         }
     }
 }

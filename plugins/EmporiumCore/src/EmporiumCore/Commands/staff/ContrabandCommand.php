@@ -2,13 +2,13 @@
 
 namespace EmporiumCore\Commands\Staff;
 
+use Emporium\Prison\EmporiumPrison;
 use EmporiumCore\EmporiumCore;
-use Items\Contraband;
-
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use pocketmine\player\Player;
+use pocketmine\utils\TextFormat;
 use pocketmine\utils\TextFormat as TF;
 
 class ContrabandCommand extends Command {
@@ -24,6 +24,12 @@ class ContrabandCommand extends Command {
             return;
         }
 
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.contraband");
+        if(!$permission) {
+            $sender->sendMessage(TextFormat::RED . "No permission");
+            return;
+        }
+
         if(isset($args[0])) {
             $rarity = $args[0];
             if(isset($args[1])) {
@@ -32,23 +38,23 @@ class ContrabandCommand extends Command {
                     switch($rarity) {
 
                         case "elite":
-                            $target->getInventory()->addItem((new Contraband())->Elite(1));
+                            $target->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Elite(1));
                             break;
 
                         case "ultimate":
-                            $target->getInventory()->addItem((new Contraband())->Ultimate(1));
+                            $target->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1));
                             break;
 
                         case "legendary":
-                            $target->getInventory()->addItem((new Contraband())->Legendary(1));
+                            $target->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1));
                             break;
 
-                        case "Godly":
-                            $target->getInventory()->addItem((new Contraband())->Godly(1));
+                        case "godly":
+                            $target->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Godly(1));
                             break;
 
                         case "heroic":
-                            $target->getInventory()->addItem((new Contraband())->Heroic(1));
+                            $target->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1));
                             break;
                     }
                 } else {
@@ -58,23 +64,23 @@ class ContrabandCommand extends Command {
                 switch($rarity) {
 
                     case "elite":
-                        $sender->getInventory()->addItem((new Contraband())->Elite(1));
+                        $sender->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Elite(1));
                         break;
 
                     case "ultimate":
-                        $sender->getInventory()->addItem((new Contraband())->Ultimate(1));
+                        $sender->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1));
                         break;
 
                     case "legendary":
-                        $sender->getInventory()->addItem((new Contraband())->Legendary(1));
+                        $sender->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1));
                         break;
 
                     case "Godly":
-                        $sender->getInventory()->addItem((new Contraband())->Godly(1));
+                        $sender->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Godly(1));
                         break;
 
                     case "heroic":
-                        $sender->getInventory()->addItem((new Contraband())->Heroic(1));
+                        $sender->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1));
                         break;
                 }
             }

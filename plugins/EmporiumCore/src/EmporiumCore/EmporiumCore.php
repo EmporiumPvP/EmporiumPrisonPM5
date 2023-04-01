@@ -3,6 +3,7 @@
 namespace EmporiumCore;
 
 # default Commands
+use customiesdevs\customies\item\CustomiesItemFactory;
 use EmporiumCore\Commands\Default\BalanceCommand;
 use EmporiumCore\Commands\Default\BragCommand;
 use EmporiumCore\Commands\Default\CustomEnchantShopCommand;
@@ -18,13 +19,11 @@ use EmporiumCore\Commands\Default\ShopCommand;
 use EmporiumCore\Commands\Default\TagsCommand;
 use EmporiumCore\Commands\Default\TrashCommand;
 use EmporiumCore\Commands\Default\VoteShopCommand;
-# rank commands
 use EmporiumCore\Commands\Rank\ClearCommand;
 use EmporiumCore\Commands\Rank\FeedCommand;
 use EmporiumCore\Commands\Rank\HealCommand;
 use EmporiumCore\Commands\Rank\MilkCommand;
 use EmporiumCore\Commands\Rank\SellCommand;
-# staff commands
 use EmporiumCore\Commands\Staff\BanCommand;
 use EmporiumCore\Commands\Staff\BossCommand;
 use EmporiumCore\Commands\Staff\BroadcastCommand;
@@ -41,11 +40,9 @@ use EmporiumCore\Commands\Staff\UnbanCommand;
 use EmporiumCore\Commands\Staff\UnfreezeCommand;
 use EmporiumCore\Commands\Staff\UnmuteCommand;
 use EmporiumCore\Commands\Staff\WarnCommand;
-# custom items
 use EmporiumCore\CustomItems\Filler;
 use EmporiumCore\CustomItems\Locked;
 use EmporiumCore\CustomItems\Unlocked;
-# listeners
 use EmporiumCore\Listeners\Events\PrisonBreakListener;
 use EmporiumCore\Listeners\Items\ContrabandListener;
 use EmporiumCore\Listeners\Items\GKitListener;
@@ -56,35 +53,85 @@ use EmporiumCore\Listeners\Player\ChatEvent;
 use EmporiumCore\Listeners\Player\MoveEvent;
 use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Listeners\world\PlayerInteractListener;
-# managers
-use EmporiumCore\Managers\Data\ServerManager;
 use EmporiumCore\Managers\player\PlayerManager;
-# tasks
+use EmporiumCore\Menus\Blacksmith;
+use EmporiumCore\Menus\Chef;
+use EmporiumCore\Menus\CustomEnchantMenu;
+use EmporiumCore\Menus\GKitsMenu;
+use EmporiumCore\Menus\KitsMenu;
+use EmporiumCore\Menus\RankKitsMenu;
+use EmporiumCore\Menus\RulesMenu;
+use EmporiumCore\Menus\Tags;
 use EmporiumCore\Tasks\AntiCheatTask;
 use EmporiumCore\Tasks\CooldownTask;
 use EmporiumCore\Tasks\CosmeticsTask;
 use EmporiumCore\Tasks\TimerTask;
-# libraries
-use customiesdevs\customies\item\CustomiesItemFactory;
-# pocketmine
-use pocketmine\item\Item;
+use Items\Crystals;
+use Items\GKits;
+use Items\Lootboxes;
+use Items\PlayerTags;
+use Items\RankKitItems\Emperor;
+use Items\RankKitItems\Imperial;
+use Items\RankKitItems\Majesty;
+use Items\RankKitItems\Noble;
+use Items\RankKitItems\President;
+use Items\RankKitItems\Supreme;
+use Items\RankKits;
 use pocketmine\plugin\PluginBase;
-use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
-# other
-use JsonException;
 
 class EmporiumCore extends PluginBase {
 
     private static EmporiumCore $instance;
+    private Crystals $crystals;
+    private GKits $gkits;
+    private Lootboxes $lootboxes;
+    private PlayerTags $playerTags;
+    private RankKits $rankKits;
+    private Noble $nobleItems;
+    private Imperial $imperialItems;
+    private Majesty $majestyItems;
+    private Supreme $supremeItems;
+    private Emperor $emperorItems;
+    private President $presidentItems;
+    private Chef $chef;
+    private Blacksmith $blacksmith;
+    private CustomEnchantMenu $customEnchantMenu;
+    private Tags $tagsMenu;
+    private GKitsMenu $gkitsMenu;
+    private RankKitsMenu $rankKitsMenu;
+    private RulesMenu $getRulesMenu;
+    private KitsMenu $kitsMenu;
 
     public static function getInstance(): EmporiumCore {
         return self::$instance;
     }
 
-    /**
-     * @throws JsonException
-     */
+    protected function onLoad(): void
+    {
+        # items
+        $this->crystals = new Crystals();
+        $this->gkits = new GKits();
+        $this->lootboxes = new Lootboxes();
+        $this->playerTags = new PlayerTags();
+        $this->rankKits = new RankKits();
+        $this->nobleItems = new Noble();
+        $this->imperialItems = new Imperial();
+        $this->majestyItems = new Majesty();
+        $this->supremeItems = new Supreme();
+        $this->emperorItems = new Emperor();
+        $this->presidentItems = new President();
+        # menus
+        $this->chef = new Chef();
+        $this->blacksmith = new Blacksmith();
+        $this->customEnchantMenu = new CustomEnchantMenu();
+        $this->tagsMenu = new Tags();
+        $this->gkitsMenu = new GKitsMenu();
+        $this->rankKitsMenu = new RankKitsMenu();
+        $this->getRulesMenu = new RulesMenu();
+        $this->kitsMenu = new KitsMenu();
+    }
+
     public function onEnable(): void {
 
         self::$instance = $this;
@@ -139,23 +186,20 @@ class EmporiumCore extends PluginBase {
         foreach($commands as $command) {
             $map->unregister($map->getCommand($command));
         }
+
         # register items
-        # lootboxes
-        # crystals
-        # dust
-        # shard
-        # scroll
         # ui
         CustomiesItemFactory::getInstance()->registerItem(Locked::class, "customies:locked", "Locked");
         CustomiesItemFactory::getInstance()->registerItem(Unlocked::class, "customies:unlocked", "Unlocked");
         CustomiesItemFactory::getInstance()->registerItem(Filler::class, "customies:filler", "Filler");
-        # energy
+
         # register listeners
         # item listeners
         $this->getServer()->getPluginManager()->registerEvents(new ContrabandListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GKitListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new RankKitListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new LootboxListener(), $this);
+
         # other
         $this->getServer()->getPluginManager()->registerEvents(new MoveEvent(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new AntiCheatEvent($this), $this);
@@ -164,6 +208,7 @@ class EmporiumCore extends PluginBase {
         $this->getServer()->getPluginManager()->registerEvents(new PrisonBreakListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new PlayerInteractListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new ChatEvent(), $this);
+
         # register Commands
         # default commands
         $this->getServer()->getCommandMap()->register("balance", new BalanceCommand($this));
@@ -180,12 +225,14 @@ class EmporiumCore extends PluginBase {
         $this->getServer()->getCommandMap()->register("tags", new TagsCommand());
         $this->getServer()->getCommandMap()->register("trash", new TrashCommand());
         $this->getServer()->getCommandMap()->register("voteshop", new VoteShopCommand());
+
         # rank commands
         $this->getServer()->getCommandMap()->register("clear", new ClearCommand());
         $this->getServer()->getCommandMap()->register("feed", new FeedCommand());
         $this->getServer()->getCommandMap()->register("heal", new HealCommand());
         $this->getServer()->getCommandMap()->register("milk", new MilkCommand());
         $this->getServer()->getCommandMap()->register("sell", new SellCommand());
+
         # staff commands
         $this->getServer()->getCommandMap()->register("ban", new BanCommand());
         $this->getServer()->getCommandMap()->register("broadcast", new BroadcastCommand());
@@ -204,100 +251,163 @@ class EmporiumCore extends PluginBase {
         $this->getServer()->getCommandMap()->register("warn", new WarnCommand());
         $this->getServer()->getCommandMap()->register("boss", new BossCommand());
         $this->getServer()->getCommandMap()->register("contraband", new ContrabandCommand());
+
         # register tasks
         $this->getScheduler()->scheduleRepeatingTask(new AntiCheatTask($this), 20);
         $this->getScheduler()->scheduleRepeatingTask(new CooldownTask($this), 20);
         $this->getScheduler()->scheduleRepeatingTask(new CosmeticsTask($this), 1);
         $this->getScheduler()->scheduleRepeatingTask(new TimerTask($this), 20);
-        # reset events and boosters
-        $this->resetEvents();
-        $this->resetBoosters();
     }
 
     /**
-     * @throws JsonException
+     * @return Crystals
      */
-    public function generateFiles(): void {
-
-        $defaultSettingsData = array(
-            "Version" => "PreAlpha v1.0.0"
-        );
-        $defaultEventsData = array(
-            "PrisonBreak" => false,
-            "AlienInvasion" => false,
-            "MeteorCompetition" => false,
-            "StrongHold" => false,
-            "EventsTimer" => 0
-        );
-        $defaultBoostersData = array(
-            "Money" => false,
-            "MoneyTimer" => 0,
-            "Relic" => false,
-            "RelicTimer" => 0,
-            "Key" => false,
-            "KeyTimer" => 0);
-
-        # create directories
-        @mkdir($this->getDataFolder() . "PlayerData/");
-        @mkdir($this->getDataFolder() . "PlayerData/Players/");
-        @mkdir($this->getDataFolder() . "PlayerData/Permissions/");
-        @mkdir($this->getDataFolder() . "PlayerData/Cooldowns/");
-        @mkdir($this->getDataFolder() . "Server/");
-
-        # create boosters file
-        if(!file_exists($this->getDataFolder() . "Server/Boosters.yml")) {
-            $serverBoostersConfig = new Config($this->getDataFolder() . "Server/Boosters.yml", Config::YAML, $defaultBoostersData);
-            $serverBoostersConfig->save();
-        }
-        # create events file
-        if(!file_exists($this->getDataFolder() . "Server/Events.yml")) {
-            $serverEventsConfig = new Config($this->getDataFolder() . "Server/Events.yml", Config::YAML, $defaultEventsData);
-            $serverEventsConfig->save();
-        }
-        # create server settings file
-        if(!file_exists($this->getDataFolder() . "Server/Settings.yml")) {
-            $serverSettingsConfig = new Config($this->getDataFolder() . "Server/Settings.yml", Config::YAML, $defaultSettingsData);
-            $serverSettingsConfig->save();
-        }
-        # create top money leaderboard file
-        if(!file_exists($this->getDataFolder() . "Server/TopMoneyLeaderboardData.yml")) {
-            $topMoneyConfig = new Config($this->getDataFolder() . "Server/TopMoneyLeaderboardData.yml", Config::YAML);
-            $topMoneyConfig->save();
-        }
-        # create top prison break leaderboard file
-        if(!file_exists($this->getDataFolder() . "Server/TopPrisonBreakLeaderboardData.yml")) {
-            $topPrisonBreakConfig = new Config($this->getDataFolder() . "Server/TopPrisonBreakLeaderboardData.yml", Config::YAML);
-            $topPrisonBreakConfig->save();
-        }
-        # create top player level leaderboard file
-        if(!file_exists($this->getDataFolder() . "Server/TopPlayerLevelLeaderboardData.yml")) {
-            $topPrisonBreakConfig = new Config($this->getDataFolder() . "Server/TopPlayerLevelLeaderboardData.yml", Config::YAML);
-            $topPrisonBreakConfig->save();
-        }
+    public function getCrystals(): Crystals
+    {
+        return $this->crystals;
     }
+
     /**
-     * @throws JsonException
+     * @return GKits
      */
-    public function resetEvents(): void {
-        if(file_exists($this->getDataFolder() . "Server/Events.yml")) {
-            ServerManager::setData("Events", "PrisonBreak", false);
-            ServerManager::setData("Events", "AlienInvasion", false);
-            ServerManager::setData("Events", "MeteorCompetition", false);
-            ServerManager::setData("Events", "StrongHold", false);
-            ServerManager::setData("Events", "EventsTimer", 0);
-        }
+    public function getGkits(): GKits
+    {
+        return $this->gkits;
     }
+
     /**
-     * @throws JsonException
+     * @return Lootboxes
      */
-    public function resetBoosters(): void {
-        if(file_exists($this->getDataFolder() . "Server/Boosters.yml")) {
-            ServerManager::setData("Boosters", "Money", false);
-            ServerManager::setData("Boosters", "MoneyTimer", 0);
-            ServerManager::setData("Boosters", "Relic", false);
-            ServerManager::setData("Boosters", "RelicTimer", 0);
-            ServerManager::setData("Boosters", "Key", false);
-            ServerManager::setData("Boosters", "KeyTimer", 0);
-        }
+    public function getLootboxes(): Lootboxes
+    {
+        return $this->lootboxes;
+    }
+
+    /**
+     * @return PlayerTags
+     */
+    public function getPlayerTags(): PlayerTags
+    {
+        return $this->playerTags;
+    }
+
+    /**
+     * @return RankKits
+     */
+    public function getRankKits(): RankKits
+    {
+        return $this->rankKits;
+    }
+
+    /**
+     * @return Noble
+     */
+    public function getNobleItems(): Noble
+    {
+        return $this->nobleItems;
+    }
+
+    /**
+     * @return Imperial
+     */
+    public function getImperialItems(): Imperial
+    {
+        return $this->imperialItems;
+    }
+
+    /**
+     * @return Supreme
+     */
+    public function getSupremeItems(): Supreme
+    {
+        return $this->supremeItems;
+    }
+
+    /**
+     * @return Majesty
+     */
+    public function getMajestyItems(): Majesty
+    {
+        return $this->majestyItems;
+    }
+
+    /**
+     * @return Emperor
+     */
+    public function getEmperorItems(): Emperor
+    {
+        return $this->emperorItems;
+    }
+
+    /**
+     * @return President
+     */
+    public function getPresidentItems(): President
+    {
+        return $this->presidentItems;
+    }
+
+    /**
+     * @return Chef
+     */
+    public function getChef(): Chef
+    {
+        return $this->chef;
+    }
+
+    /**
+     * @return Blacksmith
+     */
+    public function getBlacksmith(): Blacksmith
+    {
+        return $this->blacksmith;
+    }
+
+    /**
+     * @return CustomEnchantMenu
+     */
+    public function getCustomEnchantMenu(): CustomEnchantMenu
+    {
+        return $this->customEnchantMenu;
+    }
+
+    /**
+     * @return Tags
+     */
+    public function getTags(): Tags
+    {
+        return $this->tagsMenu;
+    }
+
+    /**
+     * @return GKitsMenu
+     */
+    public function getGkitsMenu(): GKitsMenu
+    {
+        return $this->gkitsMenu;
+    }
+
+    /**
+     * @return RankKitsMenu
+     */
+    public function getRankKitsMenu(): RankKitsMenu
+    {
+        return $this->rankKitsMenu;
+    }
+
+    /**
+     * @return RulesMenu
+     */
+    public function getRulesMenu(): RulesMenu
+    {
+        return $this->getRulesMenu;
+    }
+
+    /**
+     * @return KitsMenu
+     */
+    public function getKitsMenu(): KitsMenu
+    {
+        return $this->kitsMenu;
     }
 }

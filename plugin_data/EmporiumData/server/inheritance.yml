@@ -1,0 +1,17 @@
+player: null
+noble: player
+imperial: noble
+supreme: imperial
+majesty: supreme
+emperor: majesty
+president: emperor
+trial: player
+builder: player
+helper: trial
+mod: helper
+admin: mod
+developer: mod
+manager: mod
+owner: mod
+founder: mod
+

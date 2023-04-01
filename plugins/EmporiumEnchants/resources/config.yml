@@ -6,7 +6,6 @@ rarity-colors:
   godly: light_purple
   heroic: red
   executive: black
-  pickaxe: white
 
 # Enchant Configuration
 enchants:

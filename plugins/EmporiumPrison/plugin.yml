@@ -6,6 +6,7 @@ main: Emporium\Prison\EmporiumPrison
 
 depend:
   - EmporiumCore
+  - EmporiumEnchants
 
 permissions:
     # default commands
@@ -39,3 +40,5 @@ permissions:
     default: false
   emporiumprison.command.npc:
     default: false
+  emporiumprison.command.randcoord:
+    default: true

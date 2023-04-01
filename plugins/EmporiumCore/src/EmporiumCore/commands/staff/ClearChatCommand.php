@@ -2,15 +2,13 @@
 
 namespace EmporiumCore\Commands\Staff;
 
-use pocketmine\command\{Command, CommandSender};
-
 use EmporiumCore\EmporiumCore;
 use EmporiumCore\Listeners\WebhookEvent;
-use EmporiumCore\Managers\Data\DataManager;
 use EmporiumCore\Variables;
-
+use EmporiumData\PermissionsManager;
+use pocketmine\command\{Command, CommandSender};
 use pocketmine\player\Player;
-
+use pocketmine\utils\TextFormat;
 use pocketmine\utils\TextFormat as TF;
 
 class ClearChatCommand extends Command {
@@ -29,9 +27,9 @@ class ClearChatCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.clearchat");
-        if ($permission === false) {
-            $sender->sendMessage("§cYou do not have permission to use this command.");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.clearchat");
+        if (!$permission) {
+            $sender->sendMessage(TextFormat::RED . "No permission");
             return false;
         }
 

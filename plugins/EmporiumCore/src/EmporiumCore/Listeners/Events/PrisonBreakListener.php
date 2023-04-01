@@ -2,10 +2,7 @@
 
 namespace EmporiumCore\Listeners\Events;
 
-use EmporiumCore\Managers\Data\ServerManager;
-
-use JsonException;
-
+use EmporiumData\ServerManager;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
@@ -22,18 +19,15 @@ class PrisonBreakListener implements Listener {
         BlockLegacyIds::EMERALD_ORE, BlockLegacyIds::EMERALD_BLOCK
     ];
 
-    /**
-     * @throws JsonException
-     */
     public function onBlockBreak(BlockBreakEvent $event): void {
 
-        $prisonBreak = ServerManager::getData("Events", "PrisonBreak");
+        $prisonBreak = ServerManager::getInstance()->getData("events.prisonbreak");
         $player = $event->getPlayer();
         $blockId = $event->getBlock()->getIdInfo()->getBlockId();
 
         if($prisonBreak === true) {
             if(in_array($blockId, $this->ores)) {
-                ServerManager::addData("PrisonBreak", $player->getName(), 1);
+                ServerManager::getInstance()->setData("events.prisonBreak." . $player->getXuid(), ServerManager::getInstance()->getData("events.prisonBreak." . $player->getXuid()) + 1);
             }
         }
     }

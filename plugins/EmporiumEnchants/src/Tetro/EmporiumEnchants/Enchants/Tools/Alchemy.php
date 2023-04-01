@@ -3,29 +3,29 @@
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
 use Emporium\Prison\Managers\misc\Translator;
-use EmporiumCore\managers\data\DataManager;
-use JsonException;
+
+use EmporiumData\DataManager;
+
+use pocketmine\block\BlockLegacyIds;
+use Tetro\EmporiumEnchants\Core\CustomEnchant;
+use Tetro\EmporiumEnchants\Core\Types\ReactiveEnchantment;
+
 use pocketmine\item\Item;
 use pocketmine\event\Event;
 use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
 use pocketmine\inventory\Inventory;
 use pocketmine\event\block\BlockBreakEvent;
-
-# Used Files
-
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\BlazeShootSound;
-use Tetro\EmporiumEnchants\Core\CustomEnchant;
-use Tetro\EmporiumEnchants\Core\Types\ReactiveEnchantment;
 
 class Alchemy extends ReactiveEnchantment {
 
     # Register Enchantment
     public string $name = "Alchemy";
     public string $description = "Chance to turn mined ores into money";
-    public int $rarity = CustomEnchant::RARITY_PICKAXE;
-    public int $cooldownDuration = 0;
+    public int $rarity = CustomEnchant::RARITY_ELITE;
+    public int $cooldownDuration = 60;
     public int $maxLevel = 3;
     public int $chance = 1;
 
@@ -38,6 +38,25 @@ class Alchemy extends ReactiveEnchantment {
         return [BlockBreakEvent::class];
     }
 
+    private array $ores = [
+        BlockLegacyIds::COAL_ORE,
+        BlockLegacyIds::COAL_BLOCK,
+        BlockLegacyIds::IRON_ORE,
+        BlockLegacyIds::IRON_BLOCK,
+        BlockLegacyIds::LAPIS_ORE,
+        BlockLegacyIds::LAPIS_BLOCK,
+        BlockLegacyIds::REDSTONE_ORE,
+        BlockLegacyIds::LIT_REDSTONE_ORE,
+        BlockLegacyIds::REDSTONE_BLOCK,
+        BlockLegacyIds::GOLD_ORE,
+        BlockLegacyIds::GOLD_BLOCK,
+        BlockLegacyIds::DIAMOND_ORE,
+        BlockLegacyIds::DIAMOND_BLOCK,
+        BlockLegacyIds::EMERALD_ORE,
+        BlockLegacyIds::EMERALD_BLOCK,
+        BlockLegacyIds::QUARTZ_ORE
+    ];
+
     private array $sellables = [
         16, 173, 263, # coal
         15, 42, 265, # iron
@@ -49,14 +68,20 @@ class Alchemy extends ReactiveEnchantment {
     ];
 
     # Enchantment
-    /**
-     * @throws JsonException
-     */
     public function react(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void {
 
         if ($event instanceof BlockBreakEvent) {
 
-            // Chance
+            if($event->isCancelled()) return;
+
+            $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+
+            if(!in_array($blockId, $this->ores)) {
+                $event->cancel();
+                return;
+            }
+
+            # chance
             $chance = floor(150 / $level);
             if (mt_rand(1, $chance) !== mt_rand(1, $chance)) {
                 return;
@@ -179,16 +204,23 @@ class Alchemy extends ReactiveEnchantment {
                         $sellprice = $sellprice + (579.68 * $count);
                     }
                     $player->getInventory()->remove($item);
+                    $this->setCooldown($player, 60);
                 }
             }
+
+
             # sell messages
             if ($sellprice > 0) {
-                DataManager::addData($player, "Players", "Money", $sellprice);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.money") + $sellprice);
                 $player->sendMessage(TF::GREEN . "Alchemy +$" . TF::WHITE . Translator::shortNumber($sellprice));
                 $player->broadcastSound(new BlazeShootSound());
-                DataManager::addData($player, "Players", "Money", $sellprice);
             }
         }
+    }
+
+    public function getPriority(): int
+    {
+        return 1;
     }
 
 }

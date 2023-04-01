@@ -2,6 +2,8 @@
 
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
+use Emporium\Prison\Managers\misc\Translator;
+use pocketmine\block\BlockLegacyIds;
 use pocketmine\item\Item;
 use pocketmine\event\Event;
 use pocketmine\item\ItemIds;
@@ -10,7 +12,7 @@ use pocketmine\player\Player;
 use pocketmine\inventory\Inventory;
 use pocketmine\event\block\BlockBreakEvent;
 
-use pocketmine\utils\TextFormat;
+use pocketmine\utils\TextFormat as TF;
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\Core\Types\ReactiveEnchantment;
 
@@ -19,8 +21,8 @@ class OreMagnetCE extends ReactiveEnchantment {
     # Register Enchantment
     public string $name = "Ore Magnet";
     public string $description = "Receive more ores from mining.";
-    public int $rarity = CustomEnchant::RARITY_PICKAXE;
-    public int $cooldownDuration = 0;
+    public int $rarity = CustomEnchant::RARITY_ELITE;
+    public int $cooldownDuration = 30;
     public int $maxLevel = 5;
     public int $chance = 1;
 
@@ -32,6 +34,25 @@ class OreMagnetCE extends ReactiveEnchantment {
     public function getReagent(): array {
         return [BlockBreakEvent::class];
     }
+
+    private array $ores = [
+        BlockLegacyIds::COAL_ORE,
+        BlockLegacyIds::COAL_BLOCK,
+        BlockLegacyIds::IRON_ORE,
+        BlockLegacyIds::IRON_BLOCK,
+        BlockLegacyIds::LAPIS_ORE,
+        BlockLegacyIds::LAPIS_BLOCK,
+        BlockLegacyIds::REDSTONE_ORE,
+        BlockLegacyIds::LIT_REDSTONE_ORE,
+        BlockLegacyIds::REDSTONE_BLOCK,
+        BlockLegacyIds::GOLD_ORE,
+        BlockLegacyIds::GOLD_BLOCK,
+        BlockLegacyIds::DIAMOND_ORE,
+        BlockLegacyIds::DIAMOND_BLOCK,
+        BlockLegacyIds::EMERALD_ORE,
+        BlockLegacyIds::EMERALD_BLOCK,
+        BlockLegacyIds::QUARTZ_ORE
+    ];
 
     private array $blocks = [
         ItemIds::COAL_ORE, ItemIds::COAL_BLOCK,
@@ -86,10 +107,14 @@ class OreMagnetCE extends ReactiveEnchantment {
                         $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("emerald_ore")->setCount($amount));
                         break;
                 }
-                $player->sendMessage("§cOre Magnet§8 | §a+ " . $amount . "§r");
-                $this->setCooldown($player, 1);
+                $player->sendMessage(TF::RED . "Ore Magnet" . TF::GREEN . " +$" . TF::WHITE . Translator::shortNumber($amount));
+                $this->setCooldown($player, 30);
             }
         }
     }
 
+    public function getPriority(): int
+    {
+        return 1;
+    }
 }

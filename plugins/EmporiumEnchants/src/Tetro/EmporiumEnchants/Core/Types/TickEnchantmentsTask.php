@@ -15,7 +15,7 @@ use pocketmine\Utils\TextFormat;
 use Tetro\EmporiumEnchants\enchants\TickingEnchantment;
 use Tetro\EmporiumEnchants\enchants\CustomEnchant;
 use Tetro\EmporiumEnchants\Utils\Utils;
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 
 # Tick Enchant Task
 class TickEnchantmentsTask extends Task {
@@ -24,7 +24,7 @@ class TickEnchantmentsTask extends Task {
     private static $r = 0;
     
     # Constructor
-    public function __construct(private Loader $plugin) {
+    public function __construct(private EmporiumEnchants $plugin) {
         self::$r = 0;
     }
 

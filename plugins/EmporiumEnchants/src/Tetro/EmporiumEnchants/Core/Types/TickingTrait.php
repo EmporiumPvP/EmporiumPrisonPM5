@@ -6,11 +6,11 @@ use pocketmine\inventory\Inventory;
 use pocketmine\player\Player;
 use pocketmine\item\Item;
 
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 
 trait TickingTrait {
     
-    protected Loader $plugin;
+    protected EmporiumEnchants $plugin;
 
     public function canTick(): bool
     {

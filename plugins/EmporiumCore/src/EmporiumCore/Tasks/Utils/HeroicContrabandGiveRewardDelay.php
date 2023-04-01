@@ -4,14 +4,14 @@ namespace EmporiumCore\Tasks\Utils;
 
 use Emporium\Prison\items\Orbs;
 use Emporium\Prison\Managers\misc\Translator;
-use EmporiumCore\managers\data\DataManager;
+use EmporiumData\DataManager;
 use Items\Crystals;
 use Items\RankKits;
-use JsonException;
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
 use pocketmine\utils\TextFormat as TF;
 use Tetro\EmporiumEnchants\Items\Books;
+
 
 class HeroicContrabandGiveRewardDelay extends Task {
 
@@ -27,9 +27,6 @@ class HeroicContrabandGiveRewardDelay extends Task {
         $this->reward = $reward;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function onRun(): void {
         switch($this->reward) {
 

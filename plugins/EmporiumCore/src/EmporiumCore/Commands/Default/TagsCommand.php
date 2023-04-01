@@ -2,9 +2,8 @@
 
 namespace EmporiumCore\Commands\Default;
 
-use EmporiumCore\Managers\Data\DataManager;
-use Menus\Tags;
-
+use EmporiumCore\EmporiumCore;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
@@ -23,14 +22,14 @@ class TagsCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.tags");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.tags");
+        if (!$permission) {
             $sender->sendMessage(TextFormat::RED . "No permission");
             return false;
         }
 
         // Execute Command
-        $tagForm = new Tags();
+        $tagForm = EmporiumCore::getInstance()->getTags();
         $tagForm->Form($sender);
         $sender->broadcastSound(new EnderChestOpenSound(), [$sender]);
         return true;

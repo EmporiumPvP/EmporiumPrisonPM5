@@ -5,12 +5,11 @@ namespace EmporiumCore\Commands\Staff;
 use EmporiumCore\EmporiumCore;
 use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Variables;
-use JsonException;
-
-use pocketmine\player\Player;
+use EmporiumData\DataManager;
+use EmporiumData\Loader;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
-
-use EmporiumCore\Managers\Data\DataManager;
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
 class UnfreezeCommand extends Command {
@@ -20,17 +19,14 @@ class UnfreezeCommand extends Command {
         $this->setPermission("emporiumcore.command.unfreeze");
     }
 
-    /**
-     * @throws JsonException
-     */
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
 
         if(!$sender instanceof Player) {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.unfreeze");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(),  "emporiumcore.command.unfreeze");
+        if (!$permission) {
             $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
@@ -38,25 +34,25 @@ class UnfreezeCommand extends Command {
         if (isset($args[0])) {
             $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
-                DataManager::setData($player, "Players", "Frozen", false);
+                DataManager::getInstance()->setPlayerData($sender->getXuid(), "profile.frozen", false);
                 $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have unfrozen {$player->getName()}.");
                 $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have been unfrozen and can now move.");
                 // Send Logs
                 WebhookEvent::staffWebhook($sender, $player->getName(), "Unfreeze");
                 return true;
             }
-            if (file_exists(EmporiumCore::getInstance()->getDataFolder() . "Players/$args[0].yml")) {
-                DataManager::setOfflinePlayerData($args[0], "Players", "Frozen", false);
-                $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have unfrozen $args[0].");
+            if (file_exists(Loader::PLAYER_FOLDER . $player->getXuid() . ".json")) {
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.frozen", false);
+                $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have unfrozen $player.");
                 // Send Logs
-                WebhookEvent::staffWebhook($sender, $args[0], "Unfreeze");
+                WebhookEvent::staffWebhook($sender, $player, "Unfreeze");
                 return true;
             } else {
-                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That player cannot be found.");
                 return false;
             }
         } else {
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /unfreeze <player>");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Usage: /unfreeze <player>");
             return false;
         }
     }

@@ -16,8 +16,8 @@ class CustomEnchantIds
     const DEATHBRINGER = 107;
     const DEFLECT = 108;
     const DIMINISH = 109;
-    const DIVINEARMORED = 110;
-    const DIVINEENIGHTENED = 111;
+    const CYBERNETICARMORED = 110;
+    const CYBERNETICENIGHTENED = 111;
     const DRUNK = 112;
     const ENDERSHIFT = 113;
     const ENDERWALKER = 114;
@@ -102,17 +102,18 @@ class CustomEnchantIds
     const OVERGROWTH = 508;
     const DEMONICSHARPENED = 509;
     const SHARPEN = 510;
-    const ALCHEMY = 511;
-    const ENERGY_COLLECTOR = 512;
-    const JACKPOT = 513;
-    const LUCK = 514;
-    const METEOR_HUNTER = 515;
-    const METEOR_SUMMONER = 516;
-    const MINERS_SIGHT = 517;
-    const ORE_MAGNET = 518;
-    const ORE_SURGE = 519;
-    const SHARD_DISCOVERER = 520;
-    const SHATTER = 521;
-    const SUPER_BREAKER = 522;
-    const TRANSFUSE = 523;
+    # pickaxe
+    const ENERGY_COLLECTOR = 1001;
+    const JACKPOT = 1002;
+    const LUCK = 1003;
+    const METEOR_HUNTER = 1004;
+    const METEOR_SUMMONER = 1005;
+    const MINERS_SIGHT = 1006;
+    const ORE_MAGNET = 1007;
+    const ORE_SURGE = 1008;
+    const SHARD_DISCOVERER = 1009;
+    const SHATTER = 1010;
+    const SUPER_BREAKER = 1011;
+    const TRANSFUSE = 1012;
+    const ALCHEMY = 1013;
 }

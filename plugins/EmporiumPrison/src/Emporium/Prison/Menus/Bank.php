@@ -2,7 +2,6 @@
 
 namespace Emporium\Prison\Menus;
 
-
 use Emporium\Prison\library\formapi\SimpleForm;
 
 use pocketmine\player\Player;

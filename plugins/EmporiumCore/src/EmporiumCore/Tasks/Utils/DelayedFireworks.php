@@ -2,9 +2,9 @@
 
 namespace EmporiumCore\Tasks\Utils;
 
-use Emporium\Wormhole\Utils\FireworksParticle;
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
+use Tetro\EmporiumWormhole\Utils\FireworksParticle;
 
 class DelayedFireworks extends Task {
 

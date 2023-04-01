@@ -13,7 +13,7 @@ use pocketmine\item\Item;
 use Tetro\EmporiumEnchants\Core\Types\ToggleableEnchantment;
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\Utils\Utils;
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 
 # Type Enchant
 class ToggleableEffectEnchant extends ToggleableEnchantment {
@@ -22,7 +22,7 @@ class ToggleableEffectEnchant extends ToggleableEnchantment {
     private array $previousEffect = [];
 
     # Constructor
-    public function __construct(Loader $plugin, int $id, string $name, int $maxLevel, int $usageType, int $itemType, private Effect $effect, private int $baseAmplifier = 0, private int $amplifierMultiplier = 1, int $rarity = CustomEnchant::RARITY_ELITE) {
+    public function __construct(EmporiumEnchants $plugin, int $id, string $name, int $maxLevel, int $usageType, int $itemType, private Effect $effect, private int $baseAmplifier = 0, private int $amplifierMultiplier = 1, int $rarity = CustomEnchant::RARITY_ELITE) {
         $this->name = $name;
         $this->rarity = $rarity;
         $this->maxLevel = $maxLevel;

@@ -13,13 +13,13 @@ use pocketmine\player\Player;
 # Used Files
 use Tetro\EmporiumEnchants\Core\Types\ReactiveEnchantment;
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 
 # Type Enchant
 class ConditionalDamageMultiplierEnchant extends ReactiveEnchantment {
     
     # Constructor
-    public function __construct(Loader $plugin, int $id, string $name, private $condition, int $rarity = CustomEnchant::RARITY_ELITE) {
+    public function __construct(EmporiumEnchants $plugin, int $id, string $name, private $condition, int $rarity = CustomEnchant::RARITY_ELITE) {
         $this->name = $name;
         $this->rarity = $rarity;
         parent::__construct($plugin, $id);

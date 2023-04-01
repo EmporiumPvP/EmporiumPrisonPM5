@@ -5,15 +5,11 @@ namespace Emporium\Prison\listeners\worlds;
 use diamondgold\MiniBosses\Boss;
 
 use pocketmine\block\BlockLegacyIds;
-
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
-
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-
 use pocketmine\event\Listener;
-
 use pocketmine\player\Player;
 
 class WorldListener implements Listener {
@@ -64,11 +60,15 @@ class WorldListener implements Listener {
         "DiamondBadlands"
     ];
 
+    /**
+     * @priority HIGHEST
+     */
     public function onBreak(BlockBreakEvent $event) {
 
         $player = $event->getPlayer();
         $world = $player->getWorld()->getFolderName();
         $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+
 
         if(in_array($world, $this->buildProtectedWorlds)) {
             if(!in_array($blockId, $this->ores)) {
@@ -93,15 +93,12 @@ class WorldListener implements Listener {
         $entity = $event->getEntity();
 
         if(in_array($world, $this->pvpProtectedWorlds)) {
+
+            if($damager instanceof Boss && $entity instanceof Player) return;
+            if($damager instanceof Player && $entity instanceof Boss) return;
+
             if($damager instanceof Player && $entity instanceof Player) {
                 $event->cancel();
-                return;
-            }
-            if($damager instanceof Boss && $entity instanceof Player) {
-                return;
-            }
-            if($damager instanceof Player && $entity instanceof Boss) {
-                return;
             }
         }
     }

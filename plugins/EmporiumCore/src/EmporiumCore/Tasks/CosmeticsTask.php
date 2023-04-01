@@ -2,12 +2,11 @@
 
 namespace EmporiumCore\Tasks;
 
+use EmporiumCore\EmporiumCore;
+use EmporiumData\DataManager;
 use pocketmine\math\Vector3;
 use pocketmine\scheduler\Task;
 use pocketmine\world\particle\FlameParticle;
-
-use EmporiumCore\EmporiumCore;
-use EmporiumCore\Managers\Data\DataManager;
 
 class CosmeticsTask extends Task {
 
@@ -23,9 +22,10 @@ class CosmeticsTask extends Task {
 
         // For all Online Players
         foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
+            if (DataManager::getInstance()->getPlayerXuid($player->getName()) == "00") return;
 
             // Variables
-            $particles = DataManager::getData($player, "Players", "Particles");
+            $particles = DataManager::getInstance()->getPlayerData($player->getXuid(), "particles");
 
             // Flame-Twirl
             if ($particles === "FlameTwirl") {

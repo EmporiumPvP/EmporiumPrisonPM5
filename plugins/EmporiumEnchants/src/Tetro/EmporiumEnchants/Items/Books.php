@@ -12,7 +12,8 @@ class Books {
         $item = VanillaItems::BOOK();
         $item->setCustomName(TF::BOLD .  TF::BLUE . "Elite " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setByte("EliteBook", 1);
+        $item->getNamedTag()->setString("EliteCustomEnchantBook", "elite");
+        $item->getNamedTag()->setString("Rarity", "elite");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::BLUE . "Elite " . TF::GRAY . "enchantment book.",
@@ -27,7 +28,8 @@ class Books {
         $item = VanillaItems::BOOK();
         $item->setCustomName(TF::BOLD .  TF::YELLOW . "Ultimate " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setByte("UltimateBook", 1);
+        $item->getNamedTag()->setString("UltimateCustomEnchantBook", "ultimate");
+        $item->getNamedTag()->setString("Rarity", "ultimate");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::YELLOW . "Ultimate " . TF::GRAY . "enchantment book.",
@@ -42,7 +44,8 @@ class Books {
         $item = VanillaItems::BOOK();
         $item->setCustomName(TF::BOLD .  TF::GOLD . "Legendary " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setByte("LegendaryBook", 1);
+        $item->getNamedTag()->setString("LegendaryCustomEnchantBook", "legendary");
+        $item->getNamedTag()->setString("Rarity", "legendary");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::GOLD . "Legendary " . TF::GRAY . "enchantment book.",
@@ -57,7 +60,8 @@ class Books {
         $item = VanillaItems::BOOK();
         $item->setCustomName(TF::BOLD .  TF::LIGHT_PURPLE . "Godly " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setByte("GodlyBook", 1);
+        $item->getNamedTag()->setString("GodlyCustomEnchantBook", "godly");
+        $item->getNamedTag()->setString("Rarity", "godly");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::LIGHT_PURPLE . "Godly " . TF::GRAY . "enchantment book.",
@@ -72,7 +76,8 @@ class Books {
         $item = VanillaItems::BOOK();
         $item->setCustomName(TF::BOLD .  TF::RED . "Heroic " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setByte("HeroicBook", 1);
+        $item->getNamedTag()->setString("HeroicCustomEnchantBook", "heroic");
+        $item->getNamedTag()->setString("Rarity", "heroic");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::RED . "Heroic " . TF::GRAY . "enchantment book.",
@@ -87,7 +92,8 @@ class Books {
         $item = VanillaItems::BOOK();
         $item->setCustomName(TF::BOLD .  TF::BLACK . "Executive " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setByte("ExecutiveBook", 1);
+        $item->getNamedTag()->setString("ExecutiveCustomEnchantBook", "executive");
+        $item->getNamedTag()->setString("Rarity", "executive");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::BLACK . "Executive " . TF::GRAY . "enchantment book.",

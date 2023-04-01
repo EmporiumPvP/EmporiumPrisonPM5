@@ -2,14 +2,11 @@
 
 namespace EmporiumCore\Commands\Staff;
 
-use diamondgold\MiniBosses\Main;
-
-use Emporium\Prison\items\Pickaxes;
-use Emporium\Prison\items\Scrolls;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use pocketmine\player\Player;
+use pocketmine\utils\TextFormat;
 
 class BossCommand extends Command {
 
@@ -23,8 +20,22 @@ class BossCommand extends Command {
             return;
         }
 
-        $sender->getInventory()->addItem((new Scrolls())->whiteScroll());
-        $sender->getInventory()->addItem((new Pickaxes($sender))->Trainee());
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.boss");
+        if(!$permission) {
+            $sender->sendMessage(TextFormat::RED . "No permission");
+            return;
+        }
+
+        /*
+         * TODO
+         *
+         * create menu which shows all bosses and when they will next spawn
+         *
+         * add args to spawn specific boss
+         * add args to remove boss
+         * add args to disable boss
+         *
+         */
         #Main::getInstance()->spawnBoss("coal_bandit");
     }
 }

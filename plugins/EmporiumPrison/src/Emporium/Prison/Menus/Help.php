@@ -2,6 +2,7 @@
 
 namespace Emporium\Prison\Menus;
 
+use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\library\formapi\SimpleForm;
 
 use muqsit\invmenu\InvMenu;
@@ -11,10 +12,7 @@ use muqsit\invmenu\type\InvMenuTypeIds;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\StringToItemParser;
-
-use pocketmine\network\mcpe\protocol\types\DeviceOS;
 use pocketmine\player\Player;
-
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\EnderChestOpenSound;
 
@@ -34,7 +32,7 @@ class Help extends Menu {
                     $this->warpsForm($player);
                     break;
                 case 1: # player level
-                    $playerLevel = new PlayerLevel();
+                    $playerLevel = EmporiumPrison::getInstance()->getPlayerLevelMenu();
                     $playerLevel->Form($player);
                     break;
                 case 2: # pickaxe level
@@ -105,7 +103,7 @@ class Help extends Menu {
         $form->addButton("Wormhole");
         $form->addButton("Enchants");
         $form->addButton("Bank");
-        $form->addButton("Tinkerer");
+        $form->addButton("EmporiumTinker");
         $form->addButton("Mining");
         $form->addButton("Vaults");
         $form->addButton("Meteors");
@@ -116,7 +114,7 @@ class Help extends Menu {
     # help form sub menus
     public function warpsForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Warps");
@@ -126,7 +124,7 @@ class Help extends Menu {
     }
     public function pickaxeLevelsForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle("Pickaxe Levels");
@@ -137,7 +135,7 @@ class Help extends Menu {
     }
     public function playerPrestigeForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle("Player Levels");
@@ -147,7 +145,7 @@ class Help extends Menu {
     }
     public function pickaxePrestigeForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle("Pickaxe Levels");
@@ -158,7 +156,7 @@ class Help extends Menu {
     }
     public function energyForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle("Energy");
@@ -169,7 +167,7 @@ class Help extends Menu {
     }
     public function eventsForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Events");
@@ -180,7 +178,7 @@ class Help extends Menu {
     }
     public function gangsForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Gangs");
@@ -191,7 +189,7 @@ class Help extends Menu {
     }
     public function banditsForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Bandits");
@@ -202,7 +200,7 @@ class Help extends Menu {
     }
     public function bossesForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Bosses");
@@ -213,7 +211,7 @@ class Help extends Menu {
     }
     public function kitsForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Kits");
@@ -224,7 +222,7 @@ class Help extends Menu {
     }
     public function wormholeForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Wormhole");
@@ -235,7 +233,7 @@ class Help extends Menu {
     }
     public function enchantsForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Enchants");
@@ -246,7 +244,7 @@ class Help extends Menu {
     }
     public function bankForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) { $this->open($player); });
+        $form = new SimpleForm(function($player) { $this->open($player); });
         $form->setTitle(TF::BOLD . "Bank");
         $form->setContent(TF::BOLD . TF::GOLD . "Bank\n\n" . TF::RESET . TF::AQUA . "The bank is here for you to invest your hard earned cash!\n\nYou can deposit " . TF::GOLD . "/bank deposit" . TF::AQUA . " up to " . TF::GOLD . "$50,000" . TF::AQUA . " and this limit will increase every time you level up!\n\nOnce you have deposited some money, it will gain " . TF::GOLD . "+3.25%%% " . TF::AQUA . "interest each time you level up!\n\n" . TF::BOLD . TF::GREEN . "BONUS\n\n" . TF::RESET . TF::AQUA . "Players who support the Emporium Bank by maxing out their prospective investments before reaching level milestones will receive a bonus reward from the Bank!\n" . TF::BOLD . TF::WHITE . "Next Reward Milestone: " . TF::RESET . TF::GREEN . "Level 45\n\n" . TF::BOLD . TF::RED . "PENALTY\n" . TF::RESET . TF::RED . "However, players who are under Level 100 will have to pay a " . TF::BOLD . TF::WHITE . "25% Withdrawal Fee" . TF::RESET . TF::RED . " for using /bb withdraw too early!\n\n" . TF::GRAY . "NOTE\n * Your money is automatically extracted when you prestige!\n * You can only gain interest the first time you hit a level every prestige. Extracting xp and re-leveling will not incur interest!");
         $form->addButton("Back");
@@ -255,18 +253,18 @@ class Help extends Menu {
     }
     public function tinkererForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
-        $form->setTitle(TF::BOLD . "Tinkerer");
-        $form->setContent(TF::BOLD . TF::GOLD . "Tinkerer\n\n" . TF::RESET . TF::AQUA . "The tinkerer gives you the ability to recycle unwanted gear and enchants in return for more valuable items! Gear can be recycled in return for Energy");
+        $form->setTitle(TF::BOLD . "EmporiumTinker");
+        $form->setContent(TF::BOLD . TF::GOLD . "EmporiumTinker\n\n" . TF::RESET . TF::AQUA . "The tinkerer gives you the ability to recycle unwanted gear and enchants in return for more valuable items! Gear can be recycled in return for Energy");
         $form->addButton("Back");
         $player->sendForm($form);
 
     }
     public function miningForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Mining");
@@ -279,7 +277,7 @@ class Help extends Menu {
     }
     public function vaultsForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Vaults");
@@ -290,7 +288,7 @@ class Help extends Menu {
     }
     public function meteorsForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Meteors");
@@ -304,7 +302,7 @@ class Help extends Menu {
     }
     public function merchantsForm(Player $player): void {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->open($player);
         });
         $form->setTitle(TF::BOLD . "Merchants");
@@ -346,7 +344,7 @@ class Help extends Menu {
                         $transaction->getPlayer()->removeCurrentWindow();
 
                         $transaction->then(function (Player $player): void {
-                            $playerLevel = new PlayerLevel();
+                            $playerLevel = EmporiumPrison::getInstance()->getPlayerLevelMenu();
                             $playerLevel->open($player);
                         });
                         break;
@@ -537,7 +535,7 @@ class Help extends Menu {
         $item->setCustomName(TF::BOLD . TF::LIGHT_PURPLE . "Wormhole");
         $lore = [
             "§r",
-            TF::GRAY . "Click for information on " . TF::BOLD . TF::LIGHT_PURPLE . "Wormhole"
+            TF::GRAY . "Click for information on the " . TF::BOLD . TF::LIGHT_PURPLE . "Wormhole"
         ];
         $item->setLore($lore);
         return $item;
@@ -584,10 +582,10 @@ class Help extends Menu {
     }
     public function tinkerer(): Item {
         $item = ItemFactory::getInstance()->get(403);
-        $item->setCustomName(TF::BOLD . TF::DARK_AQUA . "Tinkerer");
+        $item->setCustomName(TF::BOLD . TF::DARK_AQUA . "EmporiumTinker");
         $lore = [
             "§r",
-            TF::GRAY . "Click for information on " . TF::BOLD . TF::DARK_AQUA . "Tinkerer"
+            TF::GRAY . "Click for information on " . TF::BOLD . TF::DARK_AQUA . "EmporiumTinker"
         ];
         $item->setLore($lore);
         return $item;

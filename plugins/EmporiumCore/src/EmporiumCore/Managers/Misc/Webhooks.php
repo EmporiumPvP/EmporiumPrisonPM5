@@ -6,10 +6,9 @@ use pocketmine\scheduler\AsyncTask;
 
 class Webhooks extends AsyncTask {
 
-    private $player, $webhook, $curlopts;
+    private $webhook, $curlopts;
 
-    public function __construct($player, $webhook, $curlopts) {
-        $this->player = $player;
+    public function __construct($webhook, $curlopts) {
         $this->webhook = $webhook;
         $this->curlopts = $curlopts;
     }

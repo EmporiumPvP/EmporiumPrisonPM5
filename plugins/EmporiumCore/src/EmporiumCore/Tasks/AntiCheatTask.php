@@ -2,17 +2,11 @@
 
 namespace EmporiumCore\Tasks;
 
-use EmporiumCore\Variables;
-
-use JsonException;
-
-use pocketmine\scheduler\Task;
-
 use EmporiumCore\EmporiumCore;
-
 use EmporiumCore\Managers\Misc\Webhooks;
-use EmporiumCore\Managers\Data\DataManager;
-
+use EmporiumCore\Variables;
+use EmporiumData\DataManager;
+use pocketmine\scheduler\Task;
 use pocketmine\utils\TextFormat as TF;
 
 class AntiCheatTask extends Task {
@@ -23,34 +17,32 @@ class AntiCheatTask extends Task {
         $this->plugin = $plugin;
 	}
 
-    /**
-     * @throws JsonException
-     */
     public function onRun(): void {
         
         // For Online Players
         foreach($this->plugin->getServer()->getOnlinePlayers() as $player) {
+            if (DataManager::getInstance()->getPlayerXuid($player->getName()) == "00") return;
 
             // Variables
-            $auto = DataManager::getData($player, "Players", "AntiAuto");
-            $nuke = DataManager::getData($player, "Players", "AntiNuke");
-            $wAuto = DataManager::getData($player, "Players", "AutoWarn");
-            $wNuke = DataManager::getData($player, "Players", "NukeWarn");
+            $auto = (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "anticheat.anti_auto");
+            $nuke = (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "anticheat.anti_nuke");
+            $warnAuto = (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "auto_warn");
+            $warnNuke = (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.nuke_warn");
 
             // Anti-Auto
-            if ($wAuto === 3) {
-                DataManager::setData($player, "Players", "AntiAuto", 0);
-                DataManager::setData($player, "Players", "AutoWarn", 0);
-                DataManager::setData($player, "Cooldowns", "Ban", 86400);
-                DataManager::setData($player, "Players", "Banned", true);
+            if ($warnAuto === 10) {
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "anticheat.anti_auto", 0);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "auto_warn", 0);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.ban", 86400);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.banned", true);
                 $player->kick("§cYou have been banned from Emporium.\n§bDuration: §f24 Hours\n§bReason: §fIgnoring CPS warnings");
             }
             if ($auto > 25) {
-                DataManager::addData($player, "Players", "AutoWarn", 1);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "auto_warn", 1);
                 $player->sendMessage(Variables::WARDEN_PREFIX . TF::GRAY . "Please keep your CPS below 20.");
                 // Create Webhook
                 $message = "**" . $player->getName() . "** has **25+** CPS.";
-                $webhook = "https://discord.com/api/webhooks/1023797835247910994/I9NqP41dBvS3ZySY9yNRQMr3UEvhZAvsLBjDIYFn6qYTF3SGYpkaMa23TUuoNaYBYbhD";
+                $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
                 $curlopts = [
 	    	        "content" => $message,
                     "username" => "EmporiumPvP | WardenAC"
@@ -60,19 +52,19 @@ class AntiCheatTask extends Task {
             }
 
             // Anti-Nuke
-            if ($wNuke === 2) {
-                DataManager::setData($player, "Players", "AntiNuke", 0);
-                DataManager::setData($player, "Players", "NukeWarn", 0);
-                DataManager::setData($player, "Cooldowns", "Ban", 86400);
-                DataManager::setData($player, "Players", "Banned", true);
+            if ($warnNuke === 10) {
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "anticheat.anti_nuke", 0);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.nuke_warn", 0);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.ban", 86400);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.banned", true);
                 $player->kick("§cYou have been banned from Emporium.\n§bDuration: §f24 Hours\n§bReason: §fYou have been flagged for nuking");
             }
             if ($nuke > 40) {
-                DataManager::addData($player, "Players", "NukeWarn", 1);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.nuke_warn", 1);
                 $player->sendMessage(Variables::WARDEN_PREFIX . TF::GRAY . "You have been flagged for nuking. Please mine slower or disable your hacks.");
                 // Create Webhook
                 $message = "**" . $player->getName() . "** has been flagged for **Nuking**.";
-                $webhook = "https://discord.com/api/webhooks/1023797835247910994/I9NqP41dBvS3ZySY9yNRQMr3UEvhZAvsLBjDIYFn6qYTF3SGYpkaMa23TUuoNaYBYbhD";
+                $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
                 $curlopts = [
 	    	        "content" => $message,
                     "username" => "Emporium | WardenAC"
@@ -80,7 +72,7 @@ class AntiCheatTask extends Task {
                 // Send Webhook
                 $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($player->getName(), $webhook, serialize($curlopts)));
             }
-            DataManager::setData($player, "Players", "AntiNuke", 0);
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "anticheat.anti_nuke", 0);
         }
     }
 }

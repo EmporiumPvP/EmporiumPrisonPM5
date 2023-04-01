@@ -273,7 +273,7 @@ class GKits {
 
     public function Blacksmith(int $amount): Item {
         $item = StringToItemParser::getInstance()->parse("ender_chest");
-        $item->setCustomName(TF::BOLD . TF::DARK_GRAY . "Wormhole " . TF::RESET . TF::DARK_GRAY . "GKit");
+        $item->setCustomName(TF::BOLD . TF::DARK_GRAY . "Blacksmith " . TF::RESET . TF::DARK_GRAY . "GKit");
         $item->getNamedTag()->setByte("BlacksmithGKit", 1);
         $item->setCount($amount);
 
@@ -292,7 +292,7 @@ class GKits {
             TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "2x " . TF::BOLD . TF::RED . "Heroic Enchantment Dust",
             TF::BOLD . TF::GRAY . " * " . TF::BOLD . TF::WHITE . "1,000,000 - 4,000,000" . TF::AQUA . " Energy",
             TF::BOLD . TF::GRAY . " * " . TF::BOLD . TF::WHITE . "White Scroll ",
-            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::DARK_GRAY . "Wormhole " . TF::RESET . TF::DARK_GRAY . "Boots",
+            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::DARK_GRAY . "Blacksmith " . TF::RESET . TF::DARK_GRAY . "Boots",
             "",
             TF::GRAY . "(Right-click to Claim)"
         ];

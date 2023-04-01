@@ -11,7 +11,6 @@ use pocketmine\network\mcpe\convert\TypeConverter;
 use pocketmine\inventory\ArmorInventory;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Utils\TextFormat;
-use pocketmine\item\ItemFactory;
 use pocketmine\player\Player;
 
 # Used Files
@@ -47,15 +46,14 @@ class Utils {
         CustomEnchant::RARITY_GODLY => "Godly",
         CustomEnchant::RARITY_HEROIC => "Heroic",
         CustomEnchant::RARITY_EXECUTIVE => "Executive",
-        CustomEnchant::RARITY_PICKAXE => "Pickaxe"
     ];
 
     # Register Incompatible Enchants
     const INCOMPATIBLE_ENCHANTS = [
         CustomEnchantIds::LIFESTEAL => [CustomEnchantIds::DEMONICLIFESTEAL],
-        CustomEnchantIds::DIVINEARMORED => [CustomEnchantIds::ARMORED, CustomEnchantIds::HEAVY, CustomEnchantIds::TANK],
+        CustomEnchantIds::CYBERNETICARMORED => [CustomEnchantIds::ARMORED, CustomEnchantIds::HEAVY, CustomEnchantIds::TANK],
         CustomEnchantIds::GODLYOVERLOAD => [CustomEnchantIds::OVERLOAD],
-        CustomEnchantIds::DIVINEENIGHTENED => [CustomEnchantIds::ENLIGHTENED],
+        CustomEnchantIds::CYBERNETICENIGHTENED => [CustomEnchantIds::ENLIGHTENED],
         CustomEnchantIds::RAGE => [CustomEnchantIds::ULTRARAGE],
         CustomEnchantIds::DRUNK => [CustomEnchantIds::TITANTRAP],
     ];
@@ -63,6 +61,25 @@ class Utils {
     public function getEnchant(int $rarity) {
         $enchantments = [];
         foreach (CustomEnchantManager::getEnchantments() as $enchants) {
+            $enchantments[$enchants->getRarity()][] = $enchants;
+        }
+        return $enchantments[$rarity];
+    }
+
+    public function getPickaxeEnchant(int $rarity) {
+        $enchantments = [];
+        foreach (CustomEnchantManager::getEnchantments() as $enchants) {
+            if($enchants->getItemType() === CustomEnchant::ITEM_TYPE_TOOLS) {
+                $enchantments[$enchants->getRarity()][] = $enchants;
+            }
+        }
+        return $enchantments[$rarity];
+    }
+
+    public function getEnchantNotPickaxe(int $rarity) {
+        $enchantments = [];
+        foreach (CustomEnchantManager::getEnchantments() as $enchants) {
+            if($enchants->getItemType() === CustomEnchant::ITEM_TYPE_TOOLS) break;
             $enchantments[$enchants->getRarity()][] = $enchants;
         }
         return $enchantments[$rarity];
@@ -104,11 +121,11 @@ class Utils {
                 break;
 
             case 8:
-                $enchant = CustomEnchantManager::getEnchantment(CustomEnchantIds::DIVINEARMORED);
+                $enchant = CustomEnchantManager::getEnchantment(CustomEnchantIds::CYBERNETICARMORED);
                 break;
 
             case 9:
-                $enchant = CustomEnchantManager::getEnchantment(CustomEnchantIds::DIVINEENIGHTENED);
+                $enchant = CustomEnchantManager::getEnchantment(CustomEnchantIds::CYBERNETICENIGHTENED);
                 break;
 
             case 10:
@@ -415,8 +432,6 @@ class Utils {
     # If Item Matches
     public static function itemMatchesItemType(Item $item, int $enchantType): bool {
         if ($item->getId() === ItemIds::BOOK || $item->getId() === ItemIds::ENCHANTED_BOOK) return true;
-
-        var_dump($enchantType);
 
         return match ($enchantType) {
             CustomEnchant::ITEM_TYPE_GLOBAL => true,

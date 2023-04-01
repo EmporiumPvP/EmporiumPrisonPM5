@@ -3,15 +3,13 @@
 namespace EmporiumCore\Commands\Staff;
 
 
+use EmporiumCore\EmporiumCore;
 use EmporiumCore\Listeners\WebhookEvent;
-use EmporiumCore\Managers\Data\DataManager;
-
 use EmporiumCore\Variables;
-use JsonException;
-
-use pocketmine\player\Player;
-
+use EmporiumData\DataManager;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
 class FreezeCommand extends Command {
@@ -21,36 +19,33 @@ class FreezeCommand extends Command {
         $this->setPermission("emporiumcore.command.freeze");
     }
 
-    /**
-     * @throws JsonException
-     */
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
 
         if(!$sender instanceof Player) {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.freeze");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(),  "emporiumcore.command.freeze");
+        if (!$permission) {
             $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
 
         if (isset($args[0])) {
-            $player = $sender->getServer()->getPlayerExact($args[0]);
+            $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
-                DataManager::setData($player, "Players", "Frozen", true);
-                $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have frozen " . TF::YELLOW . "{$player->getName()}.");
-                $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You are now frozen and cannot move.");
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.frozen", true);
+                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have frozen " . TF::YELLOW . "{$player->getName()}.");
+                $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You are now frozen and cannot move.");
                 // Send Logs
                 WebhookEvent::staffWebhook($sender, $player, "Freeze");
                 return true;
             } else {
-                $sender->sendMessage(Variables::ERROR_PREFIX . TF::RED . "That player cannot be found.");
+                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That player cannot be found.");
                 return false;
             }
         } else {
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /freeze <player>");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Usage: /freeze <player>");
             return false;
         }
     }

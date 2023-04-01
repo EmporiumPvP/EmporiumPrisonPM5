@@ -4,7 +4,6 @@ namespace EmporiumCore\CustomItems;
 
 use customiesdevs\customies\item\ItemComponents;
 use customiesdevs\customies\item\ItemComponentsTrait;
-
 use pocketmine\item\Item;
 use pocketmine\item\ItemIdentifier;
 

@@ -2,13 +2,11 @@
 
 namespace EmporiumCore\Commands\Default;
 
-use EmporiumCore\Managers\Data\DataManager;
-
+use EmporiumData\PermissionsManager;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\type\InvMenuTypeIds;
-
-use pocketmine\player\Player;
 use pocketmine\command\{Command, CommandSender};
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 
 class TrashCommand extends Command {
@@ -24,8 +22,8 @@ class TrashCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.trash");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.trash");
+        if (!$permission) {
             $sender->sendMessage(TextFormat::RED . "No permission");
             return false;
         }

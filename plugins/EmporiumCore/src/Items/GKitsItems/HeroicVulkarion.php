@@ -6,7 +6,6 @@ use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
-
 use Tetro\EmporiumEnchants\Utils\Utils;
 
 class HeroicVulkarion {

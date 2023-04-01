@@ -14,7 +14,7 @@ class PlayerPrestigeCommand extends Command {
     public function __construct() {
         parent::__construct("prestige", "Main command to prestige", "/prestige");
         $this->setPermission("emporiumprison.command.prestige");
-        $this->setPermissionMessage(Variables::ERROR_PREFIX . TF::RED . "No permission.");
+        $this->setPermissionMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args) {
@@ -40,6 +40,6 @@ class PlayerPrestigeCommand extends Command {
          * reset stats
          *
          */
-        $sender->sendMessage(TF::RED . "This feature is still under development");
+        $sender->sendMessage(TF::RED . "This feature is still under development, please visit the NPC at /spawn");
     }
 }

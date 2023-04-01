@@ -3,6 +3,7 @@
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
 
+use pocketmine\block\BlockLegacyIds;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Event;
 
@@ -22,7 +23,7 @@ class OreSurgeCE extends ReactiveEnchantment {
     # Register Enchantment
     public string $name = "Ore Surge";
     public string $description = "Chance to shoot a bolt of energy into the ore enriching it .";
-    public int $rarity = CustomEnchant::RARITY_PICKAXE;
+    public int $rarity = CustomEnchant::RARITY_LEGENDARY;
     public int $cooldownDuration = 0;
     public int $maxLevel = 10;
     public int $chance = 1;
@@ -45,6 +46,25 @@ class OreSurgeCE extends ReactiveEnchantment {
         ItemIds::GOLD_ORE, ItemIds::GOLD_BLOCK,
         ItemIds::DIAMOND_ORE, ItemIds::DIAMOND_BLOCK,
         ItemIds::EMERALD_ORE, ItemIds::EMERALD_BLOCK
+    ];
+
+    private array $ores = [
+        BlockLegacyIds::COAL_ORE,
+        BlockLegacyIds::COAL_BLOCK,
+        BlockLegacyIds::IRON_ORE,
+        BlockLegacyIds::IRON_BLOCK,
+        BlockLegacyIds::LAPIS_ORE,
+        BlockLegacyIds::LAPIS_BLOCK,
+        BlockLegacyIds::REDSTONE_ORE,
+        BlockLegacyIds::LIT_REDSTONE_ORE,
+        BlockLegacyIds::REDSTONE_BLOCK,
+        BlockLegacyIds::GOLD_ORE,
+        BlockLegacyIds::GOLD_BLOCK,
+        BlockLegacyIds::DIAMOND_ORE,
+        BlockLegacyIds::DIAMOND_BLOCK,
+        BlockLegacyIds::EMERALD_ORE,
+        BlockLegacyIds::EMERALD_BLOCK,
+        BlockLegacyIds::QUARTZ_ORE
     ];
 
     # Enchantment
@@ -96,4 +116,8 @@ class OreSurgeCE extends ReactiveEnchantment {
         }
     }
 
+    public function getPriority(): int
+    {
+        return 3;
+    }
 }

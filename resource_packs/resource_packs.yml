@@ -4,6 +4,7 @@
 #NOTE: This will do nothing if there are no resource packs in the stack below.
 force_resources: true
 resource_stack:
+ - 2DGlass.zip
  - ScoreboardModifier.zip
  - EmporiumResourcePack.zip
   #Resource packs here are applied from bottom to top. This means that resources in higher packs will override those in lower packs.

@@ -244,7 +244,7 @@ class BookManager {
         };
         # get rarity name
         $translatedRarity = match ($rarity) {
-            800 => TF::BLUE . "Elite",
+            800 => "Elite",
             801 => TF::YELLOW . "Ultimate",
             802 => TF::GOLD . "Legendary",
             803 => TF::LIGHT_PURPLE . "Godly",
@@ -259,11 +259,12 @@ class BookManager {
         # set item tags
         $item->getNamedTag()->setInt("CustomEnchantBook", 0);
         $item->getNamedTag()->setInt("level", $level);
-        $item->getNamedTag()->setInt("rarity", $rarity);
+        $item->getNamedTag()->setString("RarityName", $translatedRarity);
+        $item->getNamedTag()->setInt("Rarity", $rarity);
         $item->getNamedTag()->setInt("Energy", 0);
         $item->getNamedTag()->setInt("EnergyNeeded", $energyNeeded);
         $item->getNamedTag()->setInt("id", $id);
-        $item->getNamedTag()->setInt("success", $success);
+        $item->getNamedTag()->setInt("Success", $success);
         $energy = $item->getNamedTag()->getInt("Energy");
         # set the lore
         $lore = $this->createLore($item, $id, $level, $rarity, $success, $energyNeeded, $energy);
@@ -278,24 +279,10 @@ class BookManager {
         # get book tags
         $id = $item->getNamedTag()->getInt("id");
         $level = $item->getNamedTag()->getInt("level");
-        $rarity = $item->getNamedTag()->getInt("rarity");
-        $success = $item->getNamedTag()->getInt("success");
+        $rarityName = $item->getNamedTag()->getString("RarityName");
+        $rarity = $item->getNamedTag()->getInt("Rarity");
+        $success = $item->getNamedTag()->getInt("Success");
         $energy = $item->getNamedTag()->getInt("Energy");
-        $energyNeeded = $item->getNamedTag()->getInt("EnergyNeeded");
-        # create new lore
-        $lore = $this->createLore($item, $id, $level, $rarity, $success, $energyNeeded, $energy);
-        # set lore
-        $item->setLore($lore);
-        return $item;
-    }
-
-    public function updateBookSetInHand(Item $item): Item {
-        # get book tags
-        $energy = $item->getNamedTag()->getInt("Energy");
-        $id = $item->getNamedTag()->getInt("id");
-        $level = $item->getNamedTag()->getInt("level");
-        $rarity = $item->getNamedTag()->getInt("rarity");
-        $success = $item->getNamedTag()->getInt("success");
         $energyNeeded = $item->getNamedTag()->getInt("EnergyNeeded");
         # create new lore
         $lore = $this->createLore($item, $id, $level, $rarity, $success, $energyNeeded, $energy);

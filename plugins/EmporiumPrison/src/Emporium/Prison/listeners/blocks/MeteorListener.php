@@ -3,48 +3,31 @@
 namespace Emporium\Prison\listeners\blocks;
 
 use Emporium\Prison\EmporiumPrison;
-
-use Emporium\Prison\Managers\DataManager;
-use Emporium\Prison\Managers\EnergyManager;
-use Emporium\Prison\Managers\MiningManager;
-use Emporium\Prison\Managers\PickaxeManager;
-use Emporium\Prison\Managers\PlayerLevelManager;
-
-use Emporium\Prison\Managers\PrisonManager;
 use Emporium\Prison\tasks\Meteors\MeteorTask;
-
 use Emporium\Prison\Variables;
-use Items\Contraband;
-use JsonException;
-use pocketmine\block\BlockLegacyIds;
 
+use EmporiumData\ServerManager;
+use EmporiumData\DataManager;
+
+use JsonException;
+
+use pocketmine\block\BlockLegacyIds;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
-
 use pocketmine\item\StringToItemParser;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\FizzSound;
 
 class MeteorListener implements Listener {
 
-    private EnergyManager $energyManager;
-    private MiningManager $miningManager;
-    private PickaxeManager $pickaxeManager;
-    private PlayerLevelManager $playerLevelManager;
-
-    public function __construct() {
-        $this->energyManager = EmporiumPrison::getEnergyManager();
-        $this->miningManager = EmporiumPrison::getMiningManager();
-        $this->pickaxeManager = EmporiumPrison::getPickaxeManager();
-        $this->playerLevelManager = EmporiumPrison::getPlayerLevelManager();
-    }
-
+    # flares temporarily disabled
     /**
      * @throws JsonException
      */
     public function onMine(BlockBreakEvent $event) {
 
         $player = $event->getPlayer();
+        $world = $event->getPlayer()->getWorld();
 
         # block Data
         $block = $event->getBlock();
@@ -59,24 +42,22 @@ class MeteorListener implements Listener {
         $itemUsed = $event->getPlayer()->getInventory()->getItemInHand()->getId();
 
         # boosters
-        $energyBoosterTime = $this->energyManager->getTime($player);
-        $energyMultiplier = $this->energyManager->getMultiplier($player);
-        $miningBoosterTime = $this->miningManager->getTime($player);
-        $miningMultiplier = $this->miningManager->getMultiplier($player);
+        $energyBoosterTime = EmporiumPrison::getInstance()->getEnergyManager()->getTime($player);
+        $energyMultiplier = EmporiumPrison::getInstance()->getEnergyManager()->getMultiplier($player);
+        $miningBoosterTime = EmporiumPrison::getInstance()->getMiningManager()->getTime($player);
+        $miningMultiplier = EmporiumPrison::getInstance()->getMiningManager()->getMultiplier($player);
 
         # meteor Data
         $meteorName = $blockName;
 
         # check if block is a meteor
-        if (file_exists(EmporiumPrison::getInstance()->getDataFolder() . "Meteors/" . $meteorName . ".yml")) {
-            $meteorX = $blockX;
-            $meteorY = $blockY;
-            $meteorZ = $blockZ;
-            $breaksLeft = PrisonManager::getData("Meteors", $meteorName, "breaks-left");
-            $rarity = PrisonManager::getData("Meteors", $meteorName, "rarity");
-        } else {
-            return;
-        }
+        if(!ServerManager::getInstance()->getData("meteors." . $meteorName)) return;
+
+        $meteorX = $blockX;
+        $meteorY = $blockY;
+        $meteorZ = $blockZ;
+        (int) $breaksLeft = ServerManager::getInstance()->getData("meteors." . $meteorName . ".breaks-left");
+        $rarity = ServerManager::getInstance()->getData("meteors." . $meteorName . ".rarity");
 
         if ($blockId === BlockLegacyIds::NETHER_QUARTZ_ORE) {
 
@@ -86,16 +67,15 @@ class MeteorListener implements Listener {
             } else {
                 # add energy to pickaxe
                 $energy = mt_rand(50, 120);
-                if ($energyBoosterTime > 0) {
+                if ($energyBoosterTime >= 1) {
                     $multipliedEnergy = $energy * $energyMultiplier;
                     $oldData = $item->getNamedTag()->getInt("Energy");
                     $newData = $oldData + $multipliedEnergy;
-                    $item->getNamedTag()->setInt("Energy", $newData);
                 } else {
                     $oldData = $item->getNamedTag()->getInt("Energy");
                     $newData = $oldData + $energy;
-                    $item->getNamedTag()->setInt("Energy", $newData);
                 }
+                $item->getNamedTag()->setInt("Energy", $newData);
                 $xp = mt_rand(10, 30);
                 # add xp to player
                 if ($miningBoosterTime > 0) {
@@ -113,23 +93,19 @@ class MeteorListener implements Listener {
                 $newData = $oldData + 1;
                 $item->getNamedTag()->setInt("BlocksMined", $newData);
                 # update pickaxe check player level
-                $this->pickaxeManager->updatePickaxeSetInHand($player, $item);
-                $this->playerLevelManager->checkPlayerLevelUp($player);
+                EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxeSetInHand($player, $item);
+                EmporiumPrison::getInstance()->getPlayerLevelManager()->checkPlayerLevelUp($player);
             }
         }
         # check block breaks left
         if ($breaksLeft > 1) {
             # meteor has more breaks left respawn
-            EmporiumPrison::getInstance()->getScheduler()->scheduleTask(new MeteorTask($meteorX, $meteorY, $meteorZ));
+            EmporiumPrison::getInstance()->getScheduler()->scheduleTask(new MeteorTask($world, $meteorX, $meteorY, $meteorZ));
             # set new meteor Data
-            PrisonManager::takeData("Meteors", $meteorName, "breaks-left", 1);
-        } else {
-            # meteor is complete
-            if(file_exists(EmporiumPrison::getInstance()->getDataFolder() . "Meteors/" . $meteorName . ".yml")) {
-                unlink(EmporiumPrison::getInstance()->getDataFolder() . "Meteors/" . $meteorName . ".yml");
-                $player->broadcastSound(new FizzSound(mt_rand(1, 10)), [$player]);
-            }
+            ServerManager::getInstance()->setData("meteors." . $meteorName . ".breaks-left", (int) ServerManager::getInstance()->getData("meteors." . $meteorName . ".breaks-left") - 1);
         }
+        # meteor is complete
+        $player->broadcastSound(new FizzSound(5));
 
         # random drop rewards
         $rewards = mt_rand(1, 100);
@@ -143,13 +119,13 @@ class MeteorListener implements Listener {
                         break;
 
                     case 100: # elite contraband
-                        $player->sendMessage(Variables::SERVER_PREFIX . "You found an " . TF::BLUE . "Elite Contraband!");
-                        if($player->getInventory()->canAddItem($this->contraband->Elite(1))) {
-                            $player->getInventory()->addItem($this->contraband->Elite(1));
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You found an " . TF::BLUE . "Elite Contraband!");
+                        if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Elite(1))) {
+                            $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Elite(1));
                         } else {
-                            $player->getWorld()->dropItem($player->getLocation(), $this->contraband->Elite(1));
+                            $player->getWorld()->dropItem($player->getLocation(), EmporiumPrison::getInstance()->getContraband()->Elite(1));
                         }
-                        $player->sendMessage(Variables::SERVER_PREFIX . "You found an " . TF::BLUE . "Elite Contraband!");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You found an " . TF::BLUE . "Elite Contraband!");
                         break;
 
                 }
@@ -163,12 +139,12 @@ class MeteorListener implements Listener {
                         break;
 
                     case 100: # ultimate contraband
-                        if($player->getInventory()->canAddItem($this->contraband->Ultimate(1))) {
-                            $player->getInventory()->addItem($this->contraband->Ultimate(1));
+                        if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1))) {
+                            $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1));
                         } else {
-                            $player->getWorld()->dropItem($player->getLocation(), $this->contraband->Elite(1));
+                            $player->getWorld()->dropItem($player->getLocation(), EmporiumPrison::getInstance()->getContraband()->Elite(1));
                         }
-                        $player->sendMessage(Variables::SERVER_PREFIX . "You found an " . TF::YELLOW . "Ultimate Contraband!");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You found an " . TF::YELLOW . "Ultimate Contraband!");
                         break;
                 }
                 break;
@@ -182,12 +158,12 @@ class MeteorListener implements Listener {
                         break;
 
                     case 100:
-                        if($player->getInventory()->canAddItem($this->contraband->Legendary(1))) {
-                            $player->getInventory()->addItem($this->contraband->Legendary(1));
+                        if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1))) {
+                            $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1));
                         } else {
-                            $player->getWorld()->dropItem($player->getLocation(), $this->contraband->Legendary(1));
+                            $player->getWorld()->dropItem($player->getLocation(), EmporiumPrison::getInstance()->getContraband()->Legendary(1));
                         }
-                        $player->sendMessage(Variables::SERVER_PREFIX . "You found a " . TF::GOLD . "Legendary Contraband!");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You found a " . TF::GOLD . "Legendary Contraband!");
                         break;
                 }
                 break;
@@ -203,12 +179,12 @@ class MeteorListener implements Listener {
                         break;
 
                     case 100:
-                        if($player->getInventory()->canAddItem($this->contraband->Godly(1))) {
-                            $player->getInventory()->addItem($this->contraband->Godly(1));
+                        if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Godly(1))) {
+                            $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Godly(1));
                         } else {
-                            $player->getWorld()->dropItem($player->getLocation(), $this->contraband->Godly(1));
+                            $player->getWorld()->dropItem($player->getLocation(), EmporiumPrison::getInstance()->getContraband()->Godly(1));
                         }
-                        $player->sendMessage(Variables::SERVER_PREFIX . "You found a " . TF::LIGHT_PURPLE . "Godly Contraband!");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You found a " . TF::LIGHT_PURPLE . "Godly Contraband!");
                         break;
                 }
                 break;
@@ -224,12 +200,12 @@ class MeteorListener implements Listener {
                         break;
 
                     case 100:
-                        if($player->getInventory()->canAddItem($this->contraband->Heroic(1))) {
-                            $player->getInventory()->addItem($this->contraband->Heroic(1));
+                        if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1))) {
+                            $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1));
                         } else {
-                            $player->getWorld()->dropItem($player->getLocation(), $this->contraband->Heroic(1));
+                            $player->getWorld()->dropItem($player->getLocation(), EmporiumPrison::getInstance()->getContraband()->Heroic(1));
                         }
-                        $player->sendMessage(Variables::SERVER_PREFIX . "You found a " . TF::RED . "Heroic Contraband!");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You found a " . TF::RED . "Heroic Contraband!");
                         break;
 
                 }
@@ -239,5 +215,6 @@ class MeteorListener implements Listener {
         # set drops
         $event->setXpDropAmount(0);
         $event->setDrops([]);
+
     }
 }

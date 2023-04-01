@@ -2,8 +2,8 @@
 
 namespace EmporiumCore\Commands\Default;
 
-use EmporiumCore\Managers\Data\DataManager;
-use Menus\RulesForm;
+use EmporiumCore\EmporiumCore;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -25,13 +25,13 @@ class RulesCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.rules");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.rules");
+        if (!$permission) {
             $sender->sendMessage(TextFormat::RED . "No permission");
             return false;
         }
 
-        $rulesForm = new RulesForm();
+        $rulesForm = EmporiumCore::getInstance()->getRulesMenu();
         $rulesForm->Form($sender);
         $sender->broadcastSound(new EnderChestOpenSound());
         return true;

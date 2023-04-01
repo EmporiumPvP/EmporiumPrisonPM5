@@ -2,11 +2,9 @@
 
 namespace EmporiumCore\Commands\Default;
 
-use EmporiumCore\Managers\Data\DataManager;
-
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
@@ -23,8 +21,8 @@ class DiscordCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.discord");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.discord");
+        if (!$permission) {
             $sender->sendMessage(TF::RED . "No permission");
             return false;
         }

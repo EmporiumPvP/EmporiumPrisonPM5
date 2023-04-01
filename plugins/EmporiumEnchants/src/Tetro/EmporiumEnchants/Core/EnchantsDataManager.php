@@ -5,13 +5,13 @@ namespace Tetro\EmporiumEnchants\Core;
 use JsonException;
 
 use pocketmine\utils\Config;
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 
 class EnchantsDataManager {
 
     # Get Data
     public static function getData($folder, $file, $data) {
-        $sfile = new Config(Loader::getInstance()->getDataFolder() . $folder . "/" . $file . ".yml", Config::YAML);
+        $sfile = new Config(EmporiumEnchants::getInstance()->getDataFolder() . $folder . "/" . $file . ".yml", Config::YAML);
         return $sfile->get($data);
     }
 
@@ -22,7 +22,7 @@ class EnchantsDataManager {
      */
     public static function setNewData($folder, $file, $data, $entry): void
     {
-        $sfile = new Config(Loader::getInstance()->getDataFolder() . $folder . "/" . $file . ".yml", Config::YAML);
+        $sfile = new Config(EmporiumEnchants::getInstance()->getDataFolder() . $folder . "/" . $file . ".yml", Config::YAML);
         if ($sfile->get($data) == null) {
             $sfile->set($data, $entry);
             $sfile->save();
@@ -36,7 +36,7 @@ class EnchantsDataManager {
      */
     public static function setData($folder, $file, $data, $entry): void
     {
-        $sfile = new Config(Loader::getInstance()->getDataFolder() . $folder . "/" . $file . ".yml", Config::YAML);
+        $sfile = new Config(EmporiumEnchants::getInstance()->getDataFolder() . $folder . "/" . $file . ".yml", Config::YAML);
         $sfile->set($data, $entry);
         $sfile->save();
     }
@@ -48,7 +48,7 @@ class EnchantsDataManager {
      */
     public static function addData($folder, $file, $data, $entry): void
     {
-        $sfile = new Config(Loader::getInstance()->getDataFolder() . $folder . "/" . $file . ".yml", Config::YAML);
+        $sfile = new Config(EmporiumEnchants::getInstance()->getDataFolder() . $folder . "/" . $file . ".yml", Config::YAML);
         $amount = $sfile->get($data);
         $total = ($entry + $amount);
         $sfile->set($data, $total);
@@ -62,7 +62,7 @@ class EnchantsDataManager {
      */
     public static function takeData($folder, $file, $data, $entry): void
     {
-        $sfile = new Config(Loader::getInstance()->getDataFolder() . $folder . "/" . $file . ".yml", Config::YAML);
+        $sfile = new Config(EmporiumEnchants::getInstance()->getDataFolder() . $folder . "/" . $file . ".yml", Config::YAML);
         $amount = $sfile->get($data);
         $total = ($amount - $entry);
         $sfile->set($data, $total);

@@ -5,7 +5,6 @@ namespace Emporium\Prison\Managers;
 use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\Managers\misc\Translator;
 
-
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
@@ -26,19 +25,8 @@ class PickaxeManager {
 
     public function getEnergyNeeded($item): int {
         $level = $item->getNamedTag()->getInt("Level");
-        return EmporiumPrison::getInstance()->getPickaxeEnergyLevels()[$level] + 1;
-    }
-
-    public function getSuccessfulEnchants($item): int {
-        return $item->getNamedTag()->getInt("SuccessfulEnchants");
-    }
-
-    public function getFailedEnchants($item): int {
-        return $item->getNamedTag()->getInt("FailedEnchants");
-    }
-
-    public function getBlocksMined($item): int {
-        return $item->getNamedTag()->getInt("BlocksMined");
+        if($level === 100) return 0;
+        return EmporiumPrison::getInstance()->getPickaxeEnergyLevels()[$level + 1];
     }
 
     public function addSuccessfulEnchant(Player $player, $item): Item {
@@ -57,30 +45,32 @@ class PickaxeManager {
         return $item;
     }
 
-    public function removeLevelUpEnergy(Player $player, $item): Item {
+    public function removeLevelUpEnergy($item): Item {
         $energyNeeded = $this->getEnergyNeeded($item);
         $oldData = $item->getNamedTag()->getInt("Energy");
         $newData = $oldData - $energyNeeded;
         $item->getNamedTag()->setInt("Energy", $newData);
-        $this->updatePickaxeSetInHand($player, $item);
+        $this->updatePickaxe($item);
         return $item;
     }
 
-    public function levelUpPickaxe(Player $player, $item): Item {
+    public function levelUpPickaxe($item): Item {
         $oldData = $item->getNamedTag()->getInt("Level");
         $newData = $oldData + 1;
         $item->getNamedTag()->setInt("Level", $newData);
-        $this->updatePickaxeSetInHand($player, $item);
+        $this->updatePickaxe($item);
         return $item;
     }
 
     public function createEnergyBar($item): String {
 
-
         $pickaxeManager = EmporiumPrison::getInstance()->getPickaxeManager();
 
         $energy = $item->getNamedTag()->getInt("Energy");
         $energyNeeded = $pickaxeManager->getEnergyNeeded($item);
+        if($energyNeeded == 0) {
+            return TF::RED . "Pickaxe is Max Level";
+        }
         $progress = round(($energy / $energyNeeded) * 100, +1);
 
         $energyBar = "";
@@ -228,9 +218,9 @@ class PickaxeManager {
 
     public function createLore(Item $item): array {
 
-
         $level = $item->getNamedTag()->getInt("Level");
         $energy = $item->getNamedTag()->getInt("Energy");
+        $prestige = $item->getNamedTag()->getInt("Prestige");
         $successfulEnchants = $item->getNamedTag()->getInt("SuccessfulEnchants");
         $failedEnchants = $item->getNamedTag()->getInt("FailedEnchants");
         $blocksMined = $item->getNamedTag()->getInt("BlocksMined");
@@ -238,165 +228,364 @@ class PickaxeManager {
         $energyNeeded = $this->getEnergyNeeded($item);
         $translatedEnergyNeeded = Translator::shortNumber($energyNeeded);
         $whiteScrolled = $item->getNamedTag()->getString("whitescrolled");
+        $levelRequired = $item->getNamedTag()->getInt("LevelRequired");
+        # prestige buffs
+        $energyMastery = $item->getNamedTag()->getString("EnergyMastery");
+        $energyMasteryBuff = $item->getNamedTag()->getInt("ChargeOrbSlots");
+        $xpMastery = $item->getNamedTag()->getString("XpMastery");
+        $xpMasteryBuff = $item->getNamedTag()->getInt("XpMasteryBuff");
+        $hoarder = $item->getNamedTag()->getString("Hoarder");
+        $hoarderBuff = $item->getNamedTag()->getInt("HoarderBuff");
+        $meteoriteMastery = $item->getNamedTag()->getString("MeteoriteMastery");
+        $meteoriteMasteryBuff = $item->getNamedTag()->getInt("MeteoriteMasteryBuff");
 
-        if($whiteScrolled === "white") {
-            $whiteScrollMessage = TF::BOLD . TF::WHITE . "WHITE SCROLLED";
-        } elseif($whiteScrolled === "holy") {
-            $holyWhiteScrollMessage = TF::BOLD . TF::GOLD . "HOLY WHITE SCROLLED";
+        # prestige buff message
+        $prestigeMessage = null;
+        if($energyMastery == "unlocked") {
+            $prestigeMessage .= TF::RESET . TF::BOLD . TF::AQUA . "Energy Mastery: +" . TF::RESET . TF::WHITE . $energyMasteryBuff . " Charge Orb Slots" .TF::EOL;
+        }
+        if($xpMastery == "unlocked") {
+            $prestigeMessage .= TF::RESET . TF::BOLD . TF::AQUA . "Xp Mastery: +" . TF::RESET . TF::WHITE . $xpMasteryBuff . " more XP" . TF::EOL;
+        }
+        if($hoarder == "unlocked") {
+            $prestigeMessage .= TF::RESET . TF::BOLD . TF::AQUA . "Hoarder: +" . TF::RESET . TF::WHITE . $hoarderBuff . " more Ores Gained" . TF::EOL;
+        }
+        if($meteoriteMastery == "unlocked") {
+            $prestigeMessage .= TF::RESET . TF::BOLD . TF::AQUA . "Meteorite Mastery: +" . TF::RESET . TF::WHITE . $meteoriteMasteryBuff . " more Ores from Meteorites" . TF::EOL;
         }
 
-        $energyBar = $this->createEnergyBar($item);
-        # create lore
+        # white scroll message
         if($whiteScrolled === "white") {
-            if($energy >= $energyNeeded) {
-                $lore = [
-                    TF::RESET . " ",
-                    TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
-                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::WHITE . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::RESET . " ",
-                    TF::RESET . TF::BOLD . TF::AQUA . "Energy",
-                    TF::GREEN . "$energyBar",
-                    TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . " / $translatedEnergyNeeded)",
-                    TF::RESET . "§r",
-                    TF::RESET . $whiteScrollMessage,
-                    TF::RESET . "§r",
-                    TF::RESET . TF::AQUA . "This item is ready to level-up!",
-                    TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
-                    TF::RESET . " ",
-                    TF::RESET . TF::YELLOW . "Required Mining Level 1"
-                ];
-                # pickaxe is max level
-            } elseif($level === 100) {
-                $lore = [
-                    TF::RESET . " ",
-                    TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
-                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::WHITE . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::RESET . " ",
-                    TF::RESET . TF::BOLD . TF::RED . "Pickaxe is ready to Prestige",
-                    TF::RESET . "§r",
-                    TF::RESET . $whiteScrollMessage,
-                    TF::RESET . " ",
-                    TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
-                    TF::RESET . " ",
-                    TF::RESET . TF::YELLOW . "Required Mining Level " . TF::WHITE . "1                 "
-                ];
-            } else {
-                # create lore
-                $lore = [
-                    TF::RESET . " ",
-                    TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
-                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::WHITE . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::RESET . " ",
-                    TF::RESET . TF::BOLD . TF::AQUA . "Energy",
-                    TF::RESET . "$energyBar",
-                    TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . " / $translatedEnergyNeeded)",
-                    TF::RESET . "§r",
-                    TF::RESET . $whiteScrollMessage,
-                    TF::RESET . " ",
-                    TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
-                    TF::RESET . " ",
-                    TF::RESET . TF::YELLOW . "Required Mining Level " . TF::WHITE . "1                 "
-                ];
-            }
+            $whiteScrollMessage = TF::RESET . TF::BOLD . TF::WHITE . "WHITE SCROLLED";
         } elseif($whiteScrolled === "holy") {
-            if($energy >= $energyNeeded) {
-                $lore = [
-                    TF::RESET . " ",
-                    TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
-                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::WHITE . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::RESET . " ",
-                    TF::RESET . TF::BOLD . TF::AQUA . "Energy",
-                    TF::GREEN . "$energyBar",
-                    TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . " / $translatedEnergyNeeded)",
-                    TF::RESET . "§r",
-                    TF::RESET . $holyWhiteScrollMessage,
-                    TF::RESET . "§r",
-                    TF::RESET . TF::AQUA . "This item is ready to level-up!",
-                    TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
-                    TF::RESET . " ",
-                    TF::RESET . TF::YELLOW . "Required Mining Level 1"
-                ];
-                # pickaxe is max level
+            $holyWhiteScrollMessage = TF::RESET . TF::BOLD . TF::GOLD . "HOLY WHITE SCROLLED";
+        }
+
+        # energy bar
+        $energyBar = $this->createEnergyBar($item);
+
+        # lore
+        if($prestige >= 1) {
+            if($whiteScrolled === "white") {
+                if($level === 100) {
+                    $lore = [
+                        $prestigeMessage,
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::GREEN . "$energyBar",
+                        TF::RESET . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
+                        TF::EOL,
+                        TF::RESET . $whiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::AQUA . "This item is ready to prestige!",
+                        TF::RESET . TF::GRAY . "Visit the Prestige Master located at " . TF::AQUA . "/spawn",
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                } elseif($energy >= $energyNeeded) {
+                    $lore = [
+                        $prestigeMessage,
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                        TF::EOL,
+                        TF::RESET . $whiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::AQUA . "This item is ready to level-up!",
+                        TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                    # pickaxe is max level
+                } else {
+                    # create lore
+                    $lore = [
+                        $prestigeMessage,
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::RESET . "$energyBar",
+                        TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                        TF::EOL,
+                        TF::RESET . $whiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                }
+            } elseif($whiteScrolled === "holy") {
+                if($energy >= $energyNeeded) {
+                    $lore = [
+                        $prestigeMessage,
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                        TF::EOL,
+                        TF::RESET . $holyWhiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::AQUA . "This item is ready to level-up!",
+                        TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                    # pickaxe is max level
+                } elseif($level === 100) {
+                    $lore = [
+                        $prestigeMessage,
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::GREEN . "$energyBar",
+                        TF::RESET . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
+                        TF::EOL,
+                        TF::RESET . $holyWhiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                } else {
+                    # create lore
+                    $lore = [
+                        $prestigeMessage,
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::RESET . "$energyBar",
+                        TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                        TF::EOL,
+                        TF::RESET . $holyWhiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                }
             } elseif($level === 100) {
                 $lore = [
-                    TF::RESET . " ",
+                    $prestigeMessage,
                     TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
-                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::WHITE . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::RESET . " ",
-                    TF::RESET . TF::BOLD . TF::RED . "Pickaxe is ready to Prestige",
-                    TF::RESET . "§r",
-                    TF::RESET . $holyWhiteScrollMessage,
-                    TF::RESET . " ",
+                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                    TF::EOL,
+                    TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                    TF::GREEN . "$energyBar",
+                    TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::GRAY . ") " . TF::AQUA . " Energy",
+                    TF::EOL,
                     TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
-                    TF::RESET . " ",
-                    TF::RESET . TF::YELLOW . "Required Mining Level " . TF::WHITE . "1                 "
+                    TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                ];
+            } elseif($energy >= $energyNeeded) {
+                $lore = [
+                    $prestigeMessage,
+                    TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                    TF::EOL,
+                    TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                    TF::RESET . TF::WHITE . "(" . $translatedEnergy . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                    TF::EOL,
+                    TF::RESET . TF::AQUA . "This item is ready to level-up!",
+                    TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
+                    TF::EOL,
+                    TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                    TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                ];
+                # pickaxe is max level
+            } elseif($level == 100) {
+                $lore = [
+                    $prestigeMessage,
+                    TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                    TF::EOL,
+                    TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                    TF::GREEN . "$energyBar",
+                    TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::GRAY . ") " . TF::AQUA . " Energy",
+                    TF::EOL,
+                    TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                    TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                 ];
             } else {
                 # create lore
                 $lore = [
-                    TF::RESET . " ",
+                    $prestigeMessage,
                     TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
-                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::WHITE . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::RESET . " ",
+                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                    TF::EOL,
                     TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                     TF::RESET . "$energyBar",
-                    TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . " / $translatedEnergyNeeded)",
-                    TF::RESET . "§r",
-                    TF::RESET . $holyWhiteScrollMessage,
-                    TF::RESET . " ",
+                    TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                    TF::EOL,
                     TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
-                    TF::RESET . " ",
-                    TF::RESET . TF::YELLOW . "Required Mining Level " . TF::WHITE . "1                 "
+                    TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                 ];
             }
-        } elseif($energy >= $energyNeeded) {
-            $lore = [
-                TF::RESET . " ",
-                TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
-                TF::RESET . TF::RED . "=- " . TF::BOLD . TF::WHITE . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                TF::RESET . " ",
-                TF::RESET . TF::BOLD . TF::AQUA . "Energy",
-                TF::GREEN . "$energyBar",
-                TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . " / $translatedEnergyNeeded)",
-                TF::RESET . "§r",
-                TF::RESET . TF::AQUA . "This item is ready to level-up!",
-                TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
-                TF::RESET . " ",
-                TF::RESET . TF::YELLOW . "Required Mining Level 1"
-            ];
-            # pickaxe is max level
-        } elseif($level === 100) {
-            $lore = [
-                TF::RESET . " ",
-                TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
-                TF::RESET . TF::RED . "=- " . TF::BOLD . TF::WHITE . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                TF::RESET . " ",
-                TF::RESET . TF::BOLD . TF::RED . "Pickaxe is ready to Prestige",
-                TF::RESET . " ",
-                TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
-                TF::RESET . " ",
-                TF::RESET . TF::YELLOW . "Required Mining Level " . TF::WHITE . "1                 "
-            ];
         } else {
-            # create lore
-            $lore = [
-                TF::RESET . " ",
-                TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
-                TF::RESET . TF::RED . "=- " . TF::BOLD . TF::WHITE . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                TF::RESET . " ",
-                TF::RESET . TF::BOLD . TF::AQUA . "Energy",
-                TF::RESET . "$energyBar",
-                TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . " / $translatedEnergyNeeded)",
-                TF::RESET . " ",
-                TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
-                TF::RESET . " ",
-                TF::RESET . TF::YELLOW . "Required Mining Level " . TF::WHITE . "1                 "
-            ];
+            if($whiteScrolled === "white") {
+                if($level === 100) {
+                    $lore = [
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::GREEN . "$energyBar",
+                        TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
+                        TF::EOL,
+                        TF::RESET . $whiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::AQUA . "This item is ready to prestige!",
+                        TF::RESET . TF::GRAY . "Visit the Prestige Master located at " . TF::AQUA . "/spawn",
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                } elseif($energy >= $energyNeeded) {
+                    $lore = [
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                        TF::EOL,
+                        TF::RESET . $whiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::AQUA . "This item is ready to level-up!",
+                        TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                    # pickaxe is max level
+                } else {
+                    # create lore
+                    $lore = [
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::RESET . "$energyBar",
+                        TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                        TF::EOL,
+                        TF::RESET . $whiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                }
+            } elseif($whiteScrolled === "holy") {
+                if($energy >= $energyNeeded) {
+                    $lore = [
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                        TF::EOL,
+                        TF::RESET . $holyWhiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::AQUA . "This item is ready to level-up!",
+                        TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                    # pickaxe is max level
+                } elseif($level === 100) {
+                    $lore = [
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::GREEN . "$energyBar",
+                        TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
+                        TF::EOL,
+                        TF::RESET . $holyWhiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                } else {
+                    # create lore
+                    $lore = [
+                        TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                        TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                        TF::EOL,
+                        TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                        TF::RESET . "$energyBar",
+                        TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                        TF::EOL,
+                        TF::RESET . $holyWhiteScrollMessage,
+                        TF::EOL,
+                        TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                        TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                    ];
+                }
+            } elseif($level === 100) {
+                $lore = [
+                    TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                    TF::EOL,
+                    TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                    TF::GREEN . "$energyBar",
+                    TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
+                    TF::EOL,
+                    TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                    TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                ];
+            } elseif($energy >= $energyNeeded) {
+                $lore = [
+                    TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                    TF::EOL,
+                    TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                    TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                    TF::EOL,
+                    TF::RESET . TF::AQUA . "This item is ready to level-up!",
+                    TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
+                    TF::EOL,
+                    TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                    TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                ];
+                # pickaxe is max level
+            } elseif($level == 100) {
+                $lore = [
+                    TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                    TF::EOL,
+                    TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                    TF::GREEN . "$energyBar",
+                    TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
+                    TF::EOL,
+                    TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                    TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                ];
+            } else {
+                # create lore
+                $lore = [
+                    TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
+                    TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
+                    TF::EOL,
+                    TF::RESET . TF::BOLD . TF::AQUA . "Energy",
+                    TF::RESET . "$energyBar",
+                    TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
+                    TF::EOL,
+                    TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
+                    TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
+                ];
+            }
         }
         return $lore;
     }
 
-    public function updatePickaxe($item): Item {
+    public function updatePickaxe(Item $item): Item {
 
         $type = $this->getType($item);
 
@@ -405,14 +594,19 @@ class PickaxeManager {
             case "Trainee":
                 # get nbt Data
                 $level = $item->getNamedTag()->getInt("Level");
+                $prestige = $item->getNamedTag()->getInt("Prestige");
 
                 # set name
-                if($level == 0) {
-                    $item->setCustomName(TF::AQUA . "Trainee Pickaxe" . TF::RESET);
+                if($prestige >= 1) {
+                    if($level == 0) {
+                        $item->setCustomName(TF::AQUA . "Trainee Pickaxe " . TF::BOLD . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber($prestige) . TF::AQUA . ">");
+                    } else {
+                        $item->setCustomName(TF::AQUA . "Trainee Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber($prestige) . TF::AQUA . ">");
+                    }
                 } else {
                     $item->setCustomName(TF::AQUA . "Trainee Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
                 }
-                # check if pickaxe is ready to level up
+                # create lore
                 $lore = $this->createLore($item);
                 # set the lore
                 $item->setLore($lore);
@@ -421,15 +615,18 @@ class PickaxeManager {
             case "Stone":
                 # get nbt Data
                 $level = $item->getNamedTag()->getInt("Level");
+                $prestige = $item->getNamedTag()->getInt("Prestige");
 
                 # set name
-                if($level == 0) {
-                    $item->setCustomName(TF::AQUA . "Stone Pickaxe" . TF::RESET);
+                if($prestige >= 1) {
+                    if($level == 0) {
+                        $item->setCustomName(TF::AQUA . "Stone Pickaxe " . TF::BOLD . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber($prestige) . TF::AQUA . ">");
+                    } else {
+                        $item->setCustomName(TF::AQUA . "Stone Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber($prestige) . TF::AQUA . ">");
+                    }
                 } else {
                     $item->setCustomName(TF::AQUA . "Stone Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
                 }
-                # create energy progress bar
-                # check if pickaxe is ready to level up
                 # create lore
                 $lore = $this->createLore($item);
                 # set the lore
@@ -439,15 +636,18 @@ class PickaxeManager {
             case "Gold":
                 # get nbt Data
                 $level = $item->getNamedTag()->getInt("Level");
+                $prestige = $item->getNamedTag()->getInt("Prestige");
 
                 # set name
-                if($level == 0) {
-                    $item->setCustomName(TF::AQUA . "Gold Pickaxe" . TF::RESET);
+                if($prestige >= 1) {
+                    if($level == 0) {
+                        $item->setCustomName(TF::AQUA . "Gold Pickaxe " . TF::BOLD . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber($prestige) . TF::AQUA . ">");
+                    } else {
+                        $item->setCustomName(TF::AQUA . "Gold Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber($prestige) . TF::AQUA . ">");
+                    }
                 } else {
                     $item->setCustomName(TF::AQUA . "Gold Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
                 }
-                # create energy progress bar
-                # check if pickaxe is ready to level up
                 # create lore
                 $lore = $this->createLore($item);
                 # set the lore
@@ -457,15 +657,18 @@ class PickaxeManager {
             case "Iron":
                 # get nbt Data
                 $level = $item->getNamedTag()->getInt("Level");
+                $prestige = $item->getNamedTag()->getInt("Prestige");
 
                 # set name
-                if($level == 0) {
-                    $item->setCustomName(TF::AQUA . "Iron Pickaxe" . TF::RESET);
+                if($prestige >= 1) {
+                    if($level == 0) {
+                        $item->setCustomName(TF::AQUA . "Iron Pickaxe " . TF::BOLD . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber($prestige) . TF::AQUA . ">");
+                    } else {
+                        $item->setCustomName(TF::AQUA . "Iron Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber($prestige) . TF::AQUA . ">");
+                    }
                 } else {
                     $item->setCustomName(TF::AQUA . "Iron Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
                 }
-                # create energy progress bar
-                # check if pickaxe is ready to level up
                 # create lore
                 $lore = $this->createLore($item);
                 # set the lore
@@ -475,22 +678,24 @@ class PickaxeManager {
             case "Diamond":
                 # get nbt Data
                 $level = $item->getNamedTag()->getInt("Level");
+                $prestige = $item->getNamedTag()->getInt("Prestige");
 
                 # set name
-                if($level == 0) {
-                    $item->setCustomName(TF::AQUA . "Diamond Pickaxe" . TF::RESET);
+                if($prestige >= 1) {
+                    if($level == 0) {
+                        $item->setCustomName(TF::AQUA . "Diamond Pickaxe " . TF::BOLD . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber($prestige) . TF::AQUA . ">");
+                    } else {
+                        $item->setCustomName(TF::AQUA . "Diamond Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber($prestige) . TF::AQUA . ">");
+                    }
                 } else {
                     $item->setCustomName(TF::AQUA . "Diamond Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
                 }
-                # create energy progress bar
-                # check if pickaxe is ready to level up
                 # create lore
                 $lore = $this->createLore($item);
                 # set the lore
                 $item->setLore($lore);
                 break;
         }
-
         return $item;
     }
 
@@ -503,14 +708,19 @@ class PickaxeManager {
             case "Trainee":
                 # get nbt Data
                 $level = $item->getNamedTag()->getInt("Level");
+                $prestige = $item->getNamedTag()->getInt("Prestige");
 
                 # set name
-                if($level == 0) {
-                    $item->setCustomName(TF::AQUA . "Trainee Pickaxe" . TF::RESET);
+                if($prestige >= 1) {
+                    if($level == 0) {
+                        $item->setCustomName(TF::AQUA . "Trainee Pickaxe " . TF::BOLD . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber((int)$prestige) . TF::AQUA . ">");
+                    } else {
+                        $item->setCustomName(TF::AQUA . "Trainee Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber((int)$prestige) . TF::AQUA . ">");
+                    }
                 } else {
                     $item->setCustomName(TF::AQUA . "Trainee Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
                 }
-                # check if pickaxe is ready to level up
+                # create lore
                 $lore = $this->createLore($item);
                 # set the lore
                 $item->setLore($lore);
@@ -521,15 +731,18 @@ class PickaxeManager {
             case "Stone":
                 # get nbt Data
                 $level = $item->getNamedTag()->getInt("Level");
+                $prestige = $item->getNamedTag()->getInt("Prestige");
 
                 # set name
-                if($level == 0) {
-                    $item->setCustomName(TF::AQUA . "Stone Pickaxe" . TF::RESET);
+                if($prestige >= 1) {
+                    if($level == 0) {
+                        $item->setCustomName(TF::AQUA . "Stone Pickaxe " . TF::BOLD . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber((int)$prestige) . TF::AQUA . ">");
+                    } else {
+                        $item->setCustomName(TF::AQUA . "Stone Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber((int)$prestige) . TF::AQUA . ">");
+                    }
                 } else {
                     $item->setCustomName(TF::AQUA . "Stone Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
                 }
-                # create energy progress bar
-                # check if pickaxe is ready to level up
                 # create lore
                 $lore = $this->createLore($item);
                 # set the lore
@@ -541,15 +754,18 @@ class PickaxeManager {
             case "Gold":
                 # get nbt Data
                 $level = $item->getNamedTag()->getInt("Level");
+                $prestige = $item->getNamedTag()->getInt("Prestige");
 
                 # set name
-                if($level == 0) {
-                    $item->setCustomName(TF::AQUA . "Gold Pickaxe" . TF::RESET);
+                if($prestige >= 1) {
+                    if($level == 0) {
+                        $item->setCustomName(TF::AQUA . "Gold Pickaxe " . TF::BOLD . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber((int)$prestige) . TF::AQUA . ">");
+                    } else {
+                        $item->setCustomName(TF::AQUA . "Gold Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber((int)$prestige) . TF::AQUA . ">");
+                    }
                 } else {
                     $item->setCustomName(TF::AQUA . "Gold Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
                 }
-                # create energy progress bar
-                # check if pickaxe is ready to level up
                 # create lore
                 $lore = $this->createLore($item);
                 # set the lore
@@ -561,15 +777,18 @@ class PickaxeManager {
             case "Iron":
                 # get nbt Data
                 $level = $item->getNamedTag()->getInt("Level");
+                $prestige = $item->getNamedTag()->getInt("Prestige");
 
                 # set name
-                if($level == 0) {
-                    $item->setCustomName(TF::AQUA . "Iron Pickaxe" . TF::RESET);
+                if($prestige >= 1) {
+                    if($level == 0) {
+                        $item->setCustomName(TF::AQUA . "Iron Pickaxe " . TF::BOLD . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber((int)$prestige) . TF::AQUA . ">");
+                    } else {
+                        $item->setCustomName(TF::AQUA . "Iron Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber((int)$prestige) . TF::AQUA . ">");
+                    }
                 } else {
                     $item->setCustomName(TF::AQUA . "Iron Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
                 }
-                # create energy progress bar
-                # check if pickaxe is ready to level up
                 # create lore
                 $lore = $this->createLore($item);
                 # set the lore
@@ -581,15 +800,18 @@ class PickaxeManager {
             case "Diamond":
                 # get nbt Data
                 $level = $item->getNamedTag()->getInt("Level");
+                $prestige = $item->getNamedTag()->getInt("Prestige");
 
                 # set name
-                if($level == 0) {
-                    $item->setCustomName(TF::AQUA . "Diamond Pickaxe" . TF::RESET);
+                if($prestige >= 1) {
+                    if($level == 0) {
+                        $item->setCustomName(TF::AQUA . "Diamond Pickaxe " . TF::BOLD . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber((int)$prestige) . TF::AQUA . ">");
+                    } else {
+                        $item->setCustomName(TF::AQUA . "Diamond Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::AQUA . " <" . TF::LIGHT_PURPLE . Translator::romanNumber((int)$prestige) . TF::AQUA . ">");
+                    }
                 } else {
                     $item->setCustomName(TF::AQUA . "Diamond Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
                 }
-                # create energy progress bar
-                # check if pickaxe is ready to level up
                 # create lore
                 $lore = $this->createLore($item);
                 # set the lore

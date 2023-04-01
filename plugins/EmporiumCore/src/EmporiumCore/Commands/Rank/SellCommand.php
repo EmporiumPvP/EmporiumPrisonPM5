@@ -3,15 +3,12 @@
 namespace EmporiumCore\Commands\Rank;
 
 use Emporium\Prison\Managers\misc\Translator;
-use EmporiumCore\Managers\Data\DataManager;
 use EmporiumCore\Variables;
-
-use JsonException;
+use EmporiumData\DataManager;
+use EmporiumData\PermissionsManager;
+use pocketmine\command\{Command, CommandSender};
 use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
-
-use pocketmine\command\{Command, CommandSender};
-
 use pocketmine\utils\TextFormat as TF;
 
 class SellCommand extends Command {
@@ -31,9 +28,6 @@ class SellCommand extends Command {
         $this->setPermission("emporiumcore.command.sell");
     }
 
-    /**
-     * @throws JsonException
-     */
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
 
         if (!$sender instanceof Player) {
@@ -41,7 +35,7 @@ class SellCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.sell");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.sell");
         if (!$permission) {
             $sender->sendMessage("§cYou do not have permission to use this command.");
             return false;
@@ -185,7 +179,7 @@ class SellCommand extends Command {
                 }
                 // Nothing Sold
                 if ($sellprice === 0) {
-                    $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You cannot sell that item.");
+                    $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You cannot sell that item.");
                     return false;
                 } else {
                     $sender->getInventory()->remove($item);
@@ -334,7 +328,7 @@ class SellCommand extends Command {
                 }
                 // Nothing Sold
                 if ($sellprice === 0) {
-                    $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "You do not have any sellable items in your inventory.");
+                    $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You do not have any sellable items in your inventory.");
                     return false;
                 } else {
                     DataManager::addData($sender, "Players", "Money", $sellprice);
@@ -342,11 +336,11 @@ class SellCommand extends Command {
                     return true;
                 }
             } else {
-                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /sell <hand/inv>");
+                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Usage: /sell <hand/inv>");
                 return false;
             }
         } else {
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /sell <hand/inv>");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Usage: /sell <hand/inv>");
             return false;
         }
     }

@@ -5,9 +5,7 @@ namespace Emporium\Prison\tasks;
 use JonyGamesYT9\EntityAPI\entity\types\NPC;
 
 use pocketmine\scheduler\Task;
-
 use pocketmine\Server;
-
 use pocketmine\utils\TextFormat as TF;
 
 class NPCUpdateTask extends Task{
@@ -79,7 +77,7 @@ class NPCUpdateTask extends Task{
                             break;
 
                         case "tinkerer":
-                            $entities->setNameTag(TF::BOLD . TF::DARK_AQUA . "Tinkerer" . TF::GRAY . "\n(Click Me)");
+                            $entities->setNameTag(TF::BOLD . TF::DARK_AQUA . "Tinker" . TF::GRAY . "\n(Click Me)");
                             $entities->setScale($entities->getScaleCustom());
                             $entities->setNameTagAlwaysVisible();
                             break;

@@ -7,7 +7,7 @@ namespace Tetro\EmporiumEnchants\Commands\subcommands;
 use Tetro\EmporiumEnchants\Utils\Commando\BaseSubCommand;
 use Tetro\EmporiumEnchants\Core\CustomEnchantManager;
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 use Tetro\EmporiumEnchants\Utils\Utils;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -15,7 +15,7 @@ use pocketmine\Utils\TextFormat;
 
 class ListSubCommand extends BaseSubCommand
 {
-    /** @var Loader */
+    /** @var EmporiumEnchants */
     protected $plugin;
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void

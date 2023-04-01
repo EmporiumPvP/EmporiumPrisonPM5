@@ -2,14 +2,12 @@
 
 namespace EmporiumCore\Commands\Staff;
 
-use EmporiumCore\Managers\Data\DataManager;
 use EmporiumCore\Variables;
-
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use pocketmine\player\Player;
-
+use pocketmine\utils\TextFormat;
 use pocketmine\utils\TextFormat as TF;
 
 class BroadcastCommand extends Command {
@@ -21,21 +19,23 @@ class BroadcastCommand extends Command {
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
 
-        if($sender instanceof Player) {
-            $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.broadcast");
-            if ($permission === false) {
-                $sender->sendMessage("§cYou do not have permission to use this command.");
-                return false;
-            }
+        if(!$sender instanceof Player) {
+            return false;
         }
 
-        if (isset($args[0])) {
-            $message = implode(" ", $args[0]);
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.broadcast");
+        if (!$permission) {
+            $sender->sendMessage(TextFormat::RED . "No permission");
+            return false;
+        }
+
+        if (isset($args)) {
+            $message = implode(" ", $args);
             $sender->getServer()->broadcastMessage(TF::BOLD . TF::GOLD . "(!) Announcement");
             $sender->getServer()->broadcastMessage($message);
             return true;
         }
-        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /broadcast <message>");
+        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Usage: /broadcast <message>");
         return false;
     }
 }

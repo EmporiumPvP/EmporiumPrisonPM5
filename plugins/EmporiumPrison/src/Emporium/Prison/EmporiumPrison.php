@@ -2,32 +2,36 @@
 
 namespace Emporium\Prison;
 
-# commands
+# default commands
 use Emporium\Prison\commands\Default\BankCommand;
 use Emporium\Prison\commands\Default\ExtractCommand;
-use Emporium\Prison\commands\Default\HelpCommand;
 use Emporium\Prison\commands\Default\MinesCommand;
 use Emporium\Prison\commands\Default\PickaxePrestigeCommand;
 use Emporium\Prison\commands\Default\PlayerLevelCommand;
 use Emporium\Prison\commands\Default\PlayerPrestigeCommand;
 use Emporium\Prison\commands\Default\SpawnCommand;
+
+# staff commands
 use Emporium\Prison\commands\Staff\BoosterCommand;
 use Emporium\Prison\commands\Staff\EnergyCommand;
 use Emporium\Prison\commands\Staff\FlaresCommand;
 use Emporium\Prison\commands\Staff\NPCCommand;
 
-# listeners
+# items
 use Emporium\Prison\items\Boosters;
+use Emporium\Prison\items\Contraband;
 use Emporium\Prison\items\Flares;
 use Emporium\Prison\items\Orbs;
 use Emporium\Prison\items\Pickaxes;
 use Emporium\Prison\items\Scrolls;
+
+# listeners
 use Emporium\Prison\listeners\blocks\MeteorListener;
+use Emporium\Prison\listeners\Items\ArmourListener;
+use Emporium\Prison\listeners\Items\BoosterListener;
 use Emporium\Prison\listeners\Items\EnergyListener;
 use Emporium\Prison\listeners\Items\Flares\FlareListener;
-use Emporium\Prison\listeners\Items\BoosterListener;
 use Emporium\Prison\listeners\Items\WhiteScrollListener;
-use Emporium\Prison\listeners\LeaderboardsListener;
 use Emporium\Prison\listeners\mines\CoalMineListener;
 use Emporium\Prison\listeners\mines\DiamondMineListener;
 use Emporium\Prison\listeners\mines\EmeraldMineListener;
@@ -43,17 +47,27 @@ use Emporium\Prison\listeners\worlds\WorldListener;
 use Emporium\Prison\Managers\EnergyManager;
 use Emporium\Prison\Managers\LeaderboardManager;
 use Emporium\Prison\Managers\MiningManager;
-use Emporium\Prison\Managers\misc\ScoreboardManager;
+use Emporium\Prison\Managers\misc\GlowManager;
 use Emporium\Prison\Managers\PickaxeManager;
 use Emporium\Prison\Managers\PlayerLevelManager;
-use Emporium\Prison\Managers\misc\GlowManager;
+use Emporium\Prison\Managers\ScoreboardManager;
 
 # tasks
+use Emporium\Prison\Menus\Bank;
+use Emporium\Prison\Menus\Help;
+use Emporium\Prison\Menus\Mines;
+use Emporium\Prison\Menus\OreExchanger;
+use Emporium\Prison\Menus\PickaxePrestige;
+use Emporium\Prison\Menus\PlayerLevel;
+use Emporium\Prison\Menus\PlayerPrestige;
+use Emporium\Prison\Menus\TourGuide;
+use Emporium\Prison\Menus\Vaults;
 use Emporium\Prison\tasks\BoosterTask;
-use Emporium\Prison\tasks\Events\PrisonBreakBar;
 use Emporium\Prison\tasks\LeaderboardUpdateTask;
 use Emporium\Prison\tasks\NPCUpdateTask;
 use Emporium\Prison\tasks\ScoreboardTask;
+use Emporium\Prison\tasks\Server\spawnChunkLoaderTask;
+use Emporium\Prison\tasks\Server\tutorialMineChunkLoaderTask;
 
 # libraries
 use muqsit\invmenu\InvMenuHandler;
@@ -61,28 +75,45 @@ use muqsit\invmenu\type\util\InvMenuTypeBuilders;
 
 # pocketmine
 use pocketmine\block\BlockFactory;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
 use pocketmine\network\mcpe\protocol\types\inventory\WindowTypes;
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\utils\Config;
-use pocketmine\utils\TextFormat as TF;
+use pocketmine\Server;
 
 class EmporiumPrison extends PluginBase {
 
     const TYPE_DISPENSER = "dispenser menu";
 
-    private static EnergyManager $energyManager;
-    private static PickaxeManager $pickaxeManager;
-    private static MiningManager $miningManager;
-    private static PlayerLevelManager $playerLevelManager;
+    # managers
+    private GlowManager $glowManager;
+    private ScoreboardManager $scoreboardManager;
+    private EnergyManager $energyManager;
+    private PickaxeManager $pickaxeManager;
+    private MiningManager $miningManager;
+    private PlayerLevelManager $playerLevelManager;
 
     private static EmporiumPrison $instance;
-    private static Boosters $boosters;
-    private static Orbs $orbs;
-    private static Flares $flares;
-    private static Pickaxes $pickaxes;
-    private static Scrolls $scrolls;
-    private static GlowManager $glowManager;
-    private static ScoreboardManager $scoreboardManager;
+
+    # items
+    private Boosters $boosters;
+    private Orbs $orbs;
+    private Flares $flares;
+    private Pickaxes $pickaxes;
+    private Scrolls $scrolls;
+    private Contraband $contraband;
+
+    # menus
+    private PickaxePrestige $pickaxePrestigeMenu;
+    private OreExchanger $oreExchangerMenu;
+    private TourGuide $tourguideMenu;
+    private Mines $minesMenu;
+    private PlayerLevel $playerLevelMenu;
+    private Vaults $vaultsMenu;
+    private Bank $bankMenu;
+    private Help $helpMenu;
+    private PlayerPrestige $playerPrestigeMenu;
 
     public function getPickaxeEnergyLevels () : array
     {
@@ -98,43 +129,39 @@ class EmporiumPrison extends PluginBase {
         return $playerLevelXpData;
     }
 
-    public static function getInstance(): EmporiumPrison {
-        return self::$instance;
-    }
-
     protected function onLoad(): void {
-        # Assign instance
-        self::$instance = $this;
 
-        # assign managers
-        self::$energyManager = new EnergyManager();
-        self::$miningManager = new MiningManager();
-        self::$pickaxeManager = new PickaxeManager();
-        self::$playerLevelManager = new PlayerLevelManager();
-        self::$scoreboardManager = new ScoreboardManager($this);
-        self::$glowManager = new GlowManager();
-        # items
-        self::$boosters = new Boosters();
-        self::$flares = new Flares();
-        self::$orbs = new Orbs();
-        self::$pickaxes = new Pickaxes();
-        self::$scrolls = new Scrolls();
+        # initialise managers
+        $this->energyManager = new EnergyManager();
+        $this->miningManager = new MiningManager();
+        $this->pickaxeManager = new PickaxeManager();
+        $this->playerLevelManager = new PlayerLevelManager();
+        $this->scoreboardManager = new ScoreboardManager($this);
+        $this->glowManager = new GlowManager();
+
+        # initialise items
+        $this->boosters = new Boosters();
+        $this->flares = new Flares();
+        $this->orbs = new Orbs();
+        $this->pickaxes = new Pickaxes();
+        $this->scrolls = new Scrolls();
+        $this->contraband = new Contraband();
+
+        # initialise menus
+        $this->pickaxePrestigeMenu = new PickaxePrestige();
+        $this->oreExchangerMenu = new OreExchanger();
+        $this->tourguideMenu = new TourGuide();
+        $this->minesMenu = new Mines();
+        $this->playerLevelMenu = new PlayerLevel();
+        $this->vaultsMenu = new Vaults();
+        $this->bankMenu = new Bank();
+        $this->helpMenu = new Help();
+        $this->playerPrestigeMenu = new PlayerPrestige();
     }
 
     public function onEnable(): void {
-        # create directories
-        @mkdir($this->getDataFolder() . "Prison/");
-        @mkdir($this->getDataFolder() . "Boosters/");
-        @mkdir($this->getDataFolder() . "Players/");
-        @mkdir($this->getDataFolder() . "Meteors/");
-        @mkdir($this->getDataFolder() . "Leaderboards/");
 
-        # create files
-        if(!file_exists($this->getDataFolder() . "Prison/settings.yml")) new Config($this->getDataFolder() . "Prison/settings.yml", Config::YAML, ["plugin-version" => "EmporiumPrisonPre-alpha1.0.0"]);
-        if(!file_exists($this->getDataFolder() . "Leaderboards/kills.yml")) new Config($this->getDataFolder() . "Leaderboards/kills.yml", Config::YAML);
-        if(!file_exists($this->getDataFolder() . "Leaderboards/playerlevel.yml")) new Config($this->getDataFolder() . "Leaderboards/playerlevel.yml", Config::YAML);
-        if(!file_exists($this->getDataFolder() . "Leaderboards/blocksMined.yml")) new Config($this->getDataFolder() . "Leaderboards/blocksMined.yml", Config::YAML);
-        if(!file_exists($this->getDataFolder() . "Leaderboards/meteorHunter.yml")) new Config($this->getDataFolder() . "Leaderboards/meteorHunter.yml", Config::YAML);
+        self::$instance = $this;
 
         # invmenu listener
         if(!InvMenuHandler::isRegistered()){
@@ -160,21 +187,25 @@ class EmporiumPrison extends PluginBase {
         # tasks
         $this->registerEvents();
         $this->registerCommands();
+
+        # register help command
+        $map = Server::getInstance()->getCommandMap();
+        $command = new class("Help") extends Command {
+            public function execute(CommandSender $sender, string $commandLabel, array $args): bool{
+                if(!$sender instanceof Player) return false;
+                $helpMenu = EmporiumPrison::getInstance()->getHelpMenu();
+                $helpMenu->open($sender);
+                return true;
+            }
+        };
+        $help = $command;
+        $help->setAliases(["help"]);
+        $map->register("pqwefh1weo[fbq", $help);
         $this->registerTasks();
 
-        # world
-        if(($world = $this->getServer()->getWorldManager()->getWorldByName("world")) !== null) {
-            $world->setTime(1000);
-            $world->stopTime();
-        }
-
-        # tutorial mine
-        $this->getServer()->getWorldManager()->loadWorld("TutorialMine");
-        if(($world = $this->getServer()->getWorldManager()->getWorldByName("TutorialMine")) !== null) {
-            $world->setTime(1000);
-            $world->stopTime();
-        }
-
+        /*
+         * TODO: move this to async chunk load task
+         */
         # coal badlands
         $this->getServer()->getWorldManager()->loadWorld("CoalBadlands");
         if(($world = $this->getServer()->getWorldManager()->getWorldByName("CoalBadlands")) !== null) {
@@ -182,13 +213,12 @@ class EmporiumPrison extends PluginBase {
             $world->stopTime();
         }
 
-        # plugin loaded message
-        $this->getLogger()->info(TF::BOLD . TF::GREEN . Variables::PLUGIN_VERSION . " Enabled!");
     }
 
     public function registerCommands () : void
     {
         $this->getServer()->getCommandMap()->unregister($this->getServer()->getCommandMap()->getCommand("help"));
+
         # default
         $this->getServer()->getCommandMap()->register("bank", new BankCommand());
         $this->getServer()->getCommandMap()->register("extract", new ExtractCommand());
@@ -197,8 +227,7 @@ class EmporiumPrison extends PluginBase {
         $this->getServer()->getCommandMap()->register("level", new PlayerLevelCommand());
         $this->getServer()->getCommandMap()->register("prestige", new PlayerPrestigeCommand());
         $this->getServer()->getCommandMap()->register("spawn", new SpawnCommand());
-        $this->getServer()->getCommandMap()->register("help", new HelpCommand());
-        # ranked
+
         # staff
         $this->getServer()->getCommandMap()->register("booster", new BoosterCommand());
         $this->getServer()->getCommandMap()->register("energy", new EnergyCommand());
@@ -210,6 +239,7 @@ class EmporiumPrison extends PluginBase {
     {
         # world listeners
         $this->getServer()->getPluginManager()->registerEvents(new WorldListener(), $this);
+
         # mine listeners
         $this->getServer()->getPluginManager()->registerEvents(new CoalMineListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new IronMineListener(), $this);
@@ -218,15 +248,19 @@ class EmporiumPrison extends PluginBase {
         $this->getServer()->getPluginManager()->registerEvents(new GoldMineListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new DiamondMineListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new EmeraldMineListener(), $this);
+
         # other listeners
         $this->getServer()->getPluginManager()->registerEvents(new PlayerListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new MeteorListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new NPCListener(), $this);
+
         # item listeners
         $this->getServer()->getPluginManager()->registerEvents(new BoosterListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new EnergyListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new FlareListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new WhiteScrollListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new PlayerLevelManager(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new ArmourListener(), $this);
     }
 
     public function registerTasks () : void
@@ -234,60 +268,149 @@ class EmporiumPrison extends PluginBase {
         $this->getScheduler()->scheduleRepeatingTask(new LeaderboardUpdateTask(), 6000);
         $this->getScheduler()->scheduleRepeatingTask(new ScoreboardTask(), 20);
         $this->getScheduler()->scheduleRepeatingTask(new BoosterTask($this), 20);
-        $this->getScheduler()->scheduleRepeatingTask(new PrisonBreakBar(), 20);
         $this->getScheduler()->scheduleTask(new NPCUpdateTask());
-    }
 
-    # manager getters
-    public static function getEnergyManager(): EnergyManager {
-        return self::$energyManager;
-    }
+        # spawn preload chunk task
+        $this->getServer()->getAsyncPool()->submitTask(new spawnChunkLoaderTask());
 
-    public static function getPickaxeManager(): PickaxeManager {
-        return self::$pickaxeManager;
-    }
-
-    public static function getMiningManager(): MiningManager {
-        return self::$miningManager;
-    }
-
-    public static function getPlayerLevelManager(): PlayerLevelManager {
-        return self::$playerLevelManager;
-    }
-
-    public static function getBoosters(): Boosters {
-        return self::$boosters;
-    }
-
-    public static function getFlares(): Flares {
-        return self::$flares;
-    }
-
-    public static function getOrbs(): Orbs {
-        return self::$orbs;
-    }
-
-    public static function getPickaxes(): Pickaxes {
-        return self::$pickaxes;
-    }
-
-    public static function getScrolls(): Scrolls {
-        return self::$scrolls;
+        # tutorial mine preload chunk task
+        $this->getServer()->getAsyncPool()->submitTask(new tutorialMineChunkLoaderTask());
     }
 
     /**
-     * @return GlowManager
+     * @return EmporiumPrison
      */
-    public static function getGlowManager(): GlowManager
+    public static function getInstance(): EmporiumPrison
     {
-        return self::$glowManager;
+        return self::$instance;
+    }
+
+    public function getEnergyManager(): EnergyManager {
+        return $this->energyManager;
+    }
+
+    public function getPickaxeManager(): PickaxeManager {
+        return $this->pickaxeManager;
+    }
+
+    public function getMiningManager(): MiningManager {
+        return $this->miningManager;
+    }
+
+    public function getPlayerLevelManager(): PlayerLevelManager {
+        return $this->playerLevelManager;
+    }
+
+    public function getBoosters(): Boosters {
+        return $this->boosters;
+    }
+
+    public function getFlares(): Flares {
+        return $this->flares;
+    }
+
+    public function getOrbs(): Orbs {
+        return $this->orbs;
+    }
+
+    public function getPickaxes(): Pickaxes {
+        return $this->pickaxes;
+    }
+
+    public function getScrolls(): Scrolls {
+        return $this->scrolls;
+    }
+
+    public function getGlowManager(): GlowManager
+    {
+        return $this->glowManager;
     }
 
     /**
      * @return ScoreboardManager
      */
-    public static function getScoreboardManager(): ScoreboardManager
+    public function getScoreboardManager(): ScoreboardManager
     {
-        return self::$scoreboardManager;
+        return $this->scoreboardManager;
+    }
+
+    /**
+     * @return PickaxePrestige
+     */
+    public function getPickaxePrestige(): PickaxePrestige
+    {
+        return $this->pickaxePrestigeMenu;
+    }
+
+    /**
+     * @return OreExchanger
+     */
+    public function getOreExchanger(): OreExchanger
+    {
+        return $this->oreExchangerMenu;
+    }
+
+    /**
+     * @return TourGuide
+     */
+    public function getTourguide(): TourGuide
+    {
+        return $this->tourguideMenu;
+    }
+
+    /**
+     * @return Mines
+     */
+    public function getMines(): Mines
+    {
+        return $this->minesMenu;
+    }
+
+    /**
+     * @return PlayerLevel
+     */
+    public function getPlayerLevelMenu(): PlayerLevel
+    {
+        return $this->playerLevelMenu;
+    }
+
+    /**
+     * @return Vaults
+     */
+    public function getVaultsMenu(): Vaults
+    {
+        return $this->vaultsMenu;
+    }
+
+    /**
+     * @return Bank
+     */
+    public function getBankMenu(): Bank
+    {
+        return $this->bankMenu;
+    }
+
+    /**
+     * @return Help
+     */
+    public function getHelpMenu(): Help
+    {
+        return $this->helpMenu;
+    }
+
+    /**
+     * @return Contraband
+     */
+    public function getContraband(): Contraband
+    {
+        return $this->contraband;
+    }
+
+    /**
+     * @return PlayerPrestige
+     */
+    public function getPlayerPrestigeMenu(): PlayerPrestige
+    {
+        return $this->playerPrestigeMenu;
     }
 }

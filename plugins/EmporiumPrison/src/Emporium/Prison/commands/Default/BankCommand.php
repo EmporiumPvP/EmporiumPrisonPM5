@@ -2,13 +2,12 @@
 
 namespace Emporium\Prison\commands\Default;
 
-use Emporium\Prison\Managers\DataManager;
+use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\Menus\Bank;
-use Emporium\Prison\Variables;
+
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\BarrelOpenSound;
 
 class BankCommand extends Command {
@@ -24,7 +23,7 @@ class BankCommand extends Command {
         }
 
         $sender->broadcastSound(new BarrelOpenSound(), [$sender]);
-        $bank = new Bank();
+        $bank = EmporiumPrison::getInstance()->getBankMenu();
         $bank->Form($sender);
     }
 }

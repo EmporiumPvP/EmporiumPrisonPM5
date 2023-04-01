@@ -4,11 +4,10 @@ namespace EmporiumCore\Tasks\Utils;
 
 use Emporium\Prison\items\Orbs;
 use Emporium\Prison\Managers\misc\Translator;
-use EmporiumCore\managers\data\DataManager;
+use EmporiumData\DataManager;
 use Items\Crystals;
 use Items\GKits;
 use Items\RankKits;
-use JsonException;
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
 use pocketmine\utils\TextFormat as TF;
@@ -28,9 +27,6 @@ class EliteContrabandGiveRewardDelay extends Task {
         $this->reward = $reward;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function onRun(): void {
         switch($this->reward) {
 
@@ -84,7 +80,7 @@ class EliteContrabandGiveRewardDelay extends Task {
                 $amount = mt_rand(250000, 500000);
 
                 $this->player->sendMessage(TF::GRAY . "You got " . TF::GREEN . "$" . TF::WHITE . Translator::shortNumber($amount));
-                DataManager::addData($this->player, "Players", "Money", $amount);
+                DataManager::getInstance()->setPlayerData($this->player->getXuid(), "profile.money", DataManager::getInstance()->getPlayerData($this->player->getXuid(), "profile.money") + $amount);
                 break;
 
             # mystery elite enchants

@@ -3,10 +3,10 @@
 namespace Emporium\Prison\Managers;
 
 use Emporium\Prison\Managers\misc\Translator;
+
 use EmporiumCore\EmporiumCore;
 
-use EmporiumCore\Managers\Data\DataManager;
-use Emporium\Prison\Managers\DataManager as PDataManager;
+use EmporiumData\DataManager;
 
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\Position;
@@ -73,7 +73,7 @@ class LeaderboardManager {
         for ($i = 1; $i <= 10; $i++)
         {
             /* If there is data for that field, set it to message, otherwise set blank line */
-            if (isset($playerMoney[$i - 1]) && $playerMoney[$i - 1] > 1) $message .= TF::GRAY . "[" . TF::WHITE . "$i" . TF::GRAY . "] " . TF::AQUA . $playerMoney[$i - 1][0] . TF::GRAY . " - " . TF::GREEN . "$" . TF::WHITE . Translator::shortNumber($playerMoney[$i - 1][1]) . "#";
+            if (isset($playerMoney[$i - 1]) && $playerMoney[$i - 1] > 1) $message .= TF::GRAY . "[" . TF::WHITE . "$i" . TF::GRAY . "] " . TF::AQUA . $playerMoney[$i - 1][0] . TF::GRAY . " - " . TF::GREEN . "$" . TF::WHITE . Translator::shortNumber((float)$playerMoney[$i - 1][1]) . "#";
             else $message .= TF::GRAY . "[" . TF::WHITE . $i . TF::GRAY . "] --- #";
         }
 
@@ -122,7 +122,7 @@ class LeaderboardManager {
         for ($i = 1; $i <= 10; $i++)
         {
             if (isset($playerLevelData[$i - 1]))
-                $message .= TF::GRAY . "[" . TF::WHITE . "$i" . TF::GRAY . "] " . TF::AQUA . $playerLevelData[$i - 1][0] . TF::GRAY . " - " . TF::WHITE . Translator::shortNumber($playerLevelData[$i - 1][1]) . "#";
+                $message .= TF::GRAY . "[" . TF::WHITE . "$i" . TF::GRAY . "] " . TF::AQUA . $playerLevelData[$i - 1][0] . TF::GRAY . " - " . TF::WHITE . Translator::shortNumber((int)$playerLevelData[$i - 1][1]) . "#";
             else $message .= TF::GRAY . "[" . TF::WHITE . $i . TF::GRAY . "] --- #";
         }
 
@@ -159,9 +159,8 @@ class LeaderboardManager {
         $playerMoney = [];
 
         # get all player money data
-        foreach(self::getPlayers() as $player) {
-            $balance = DataManager::getOfflinePlayerData($player, "Players", "Money");
-
+        foreach(DataManager::getInstance()->getPlayerNames() as $player) {
+            $balance = DataManager::getInstance()->getPlayerData($player, "profile.money");
             $playerMoney[$player] = $balance;
         }
 
@@ -176,10 +175,10 @@ class LeaderboardManager {
         $playerMoney = [];
 
         # get all player money data
-        foreach(self::getPlayers() as $player) {
-            $balance = PDataManager::getOfflinePlayerData($player, "Players", "level");
+        foreach(DataManager::getInstance()->getPlayerNames() as $player) {
+            $level = DataManager::getInstance()->getPlayerData($player, "profile.level");
 
-            $playerMoney[$player] = $balance;
+            $playerMoney[$player] = $level;
         }
 
         return $playerMoney;
@@ -192,22 +191,6 @@ class LeaderboardManager {
     private static function getPrisonData(): array
     {
         return [];
-    }
-
-    /**
-     * Returns an array of player names
-     *
-     * @return array
-     */
-    private static function getPlayers(): array {
-        $files = scandir(EmporiumCore::getInstance()->getDataFolder() . "PlayerData/Players");
-        $players = [];
-        foreach($files as $file) {
-            if (in_array($file, ["..", "."])) continue;
-            if (str_contains(".tmp", $file)) continue;
-            $players[] = str_replace(".yml", "", $file);
-        }
-        return $players;
     }
 
 }

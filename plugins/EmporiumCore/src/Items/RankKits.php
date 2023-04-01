@@ -135,12 +135,12 @@ class RankKits {
 
         $lore = [
             "",
-            TF::RED . "This GKit Contains: " . TF::GRAY . "(" . TF::WHITE . "5 Blackscroll" . TF::GRAY . ")",
-            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::AQUA . "Helmet",
-            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::AQUA . "Chestplate",
-            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::AQUA . "Leggings",
-            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::AQUA . "Boots",
-            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::AQUA . "Sword",
+            TF::RED . "This GKit Contains: " . TF::GRAY . "(" . TF::WHITE . "5 Random Items" . TF::GRAY . ")",
+            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::RED . "President " . TF::RESET . TF::RED . "Helmet",
+            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::RED . "President " . TF::RESET . TF::RED . "Chestplate",
+            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::RED . "President " . TF::RESET . TF::RED . "Leggings",
+            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::RED . "President " . TF::RESET . TF::RED . "Boots",
+            TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::BOLD . TF::RED . "President " . TF::RESET . TF::RED . "Sword",
             TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::GRAY . "1x " . TF::GOLD . "Godly Dust",
             TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::AQUA . "Mystery Energy Orb",
             TF::BOLD . TF::GRAY . " * " . TF::RESET . TF::RED . "Mystery GKit Lootbox",

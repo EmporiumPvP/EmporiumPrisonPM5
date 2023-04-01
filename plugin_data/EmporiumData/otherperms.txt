@@ -1,0 +1,26 @@
+gkits:
+  - emporiumcore.gkit.heroic_vulkarion
+  - emporiumcore.gkit.heroic_zenith
+  - emporiumcore.gkit.heroic_colossus
+  - emporiumcore.gkit.heroic_warlock
+  - emporiumcore.gkit.slaughter
+  - emporiumcore.gkit.enchanter
+  - emporiumcore.gkit.atheos
+  - emporiumcore.gkit.iapetus
+  - emporiumcore.gkit.broteas
+  - emporiumcore.gkit.ares
+  - emporiumcore.gkit.grim_reaper
+  - emporiumcore.gkit.executioner
+  - emporiumcore.gkit.blacksmith
+  - emporiumcore.gkit.hero
+  - emporiumcore.gkit.cyborg
+  - emporiumcore.gkit.crucible
+  - emporiumcore.gkit.hunter
+
+prestige-kits:
+  prestige1: emporiumcore.prestigekit.prestige1
+  prestige2: emporiumcore.prestigekit.prestige2
+  prestige3: emporiumcore.prestigekit.prestige3
+  prestige4: emporiumcore.prestigekit.prestige4
+  prestige5: emporiumcore.prestigekit.prestige5
+  prestige6: emporiumcore.prestigekit.prestige6

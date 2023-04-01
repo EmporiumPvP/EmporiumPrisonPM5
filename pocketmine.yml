@@ -86,7 +86,7 @@ network:
   #Compression level used when sending batched packets. Higher = more CPU, less bandwidth usage
   compression-level: 6
   #Use AsyncTasks for compression. Adds half/one tick delay, less CPU load on main thread
-  async-compression: false
+  async-compression: true
   #Experimental. Use UPnP to automatically port forward
   upnp-forwarding: false
   #Maximum size in bytes of packets sent over the network (default 1492 bytes). Packets larger than this will be
@@ -141,11 +141,11 @@ ticks-per:
 
 auto-report:
   #Send crash reports for processing
-  enabled: true
-  send-code: true
-  send-settings: true
+  enabled: false
+  send-code: false
+  send-settings: false
   send-phpinfo: false
-  use-https: true
+  use-https: false
   host: crash.pmmp.io
 
 anonymous-statistics:
@@ -154,7 +154,7 @@ anonymous-statistics:
   host: stats.pocketmine.net
 
 auto-updater:
-  enabled: true
+  enabled: false
   on-update:
     warn-console: true
   #Can be development, alpha, beta or stable.

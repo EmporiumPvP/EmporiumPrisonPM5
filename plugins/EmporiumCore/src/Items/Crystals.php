@@ -4,7 +4,6 @@ namespace Items;
 
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
-
 use pocketmine\utils\TextFormat as TF;
 
 class Crystals {

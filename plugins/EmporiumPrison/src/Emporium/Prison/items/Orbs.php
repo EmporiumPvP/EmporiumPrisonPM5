@@ -67,7 +67,6 @@ class Orbs {
         $item->getNamedTag()->setString("EnergyOrb", "EnergyOrb");
         $item->getNamedTag()->setInt("Energy", $stringAmount);
         $item->addEnchantment(GlowManager::$enchInst);
-
         return $item;
     }
 

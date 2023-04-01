@@ -3,10 +3,8 @@
 namespace Items;
 
 use Emporium\Prison\Managers\misc\GlowManager;
-
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
-
 use pocketmine\utils\TextFormat as TF;
 
 class Lootboxes {

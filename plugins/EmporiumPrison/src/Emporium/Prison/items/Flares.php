@@ -5,6 +5,9 @@ namespace Emporium\Prison\items;
 use Emporium\Prison\Managers\misc\GlowManager;
 
 use pocketmine\block\VanillaBlocks;
+use pocketmine\data\bedrock\EnchantmentIdMap;
+use pocketmine\item\enchantment\Enchantment;
+use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\Item;
 
 use pocketmine\utils\TextFormat as TF;
@@ -22,8 +25,7 @@ class Flares {
             TF::GRAY . "filled with mass amounts of legendary loot!",
             TF::WHITE . "/help meteors",
             "",
-            TF::GRAY . "Right-click to activate the Flare to call in a",
-            TF::GRAY . "meteor!",
+            TF::GRAY . "Place on floor to call in the meteor!",
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -42,8 +44,7 @@ class Flares {
             TF::GRAY . "filled with mass amounts of legendary loot!",
             TF::WHITE . "/help meteors",
             "",
-            TF::GRAY . "Right-click to activate the Flare to call in a",
-            TF::GRAY . "meteor!",
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -62,8 +63,7 @@ class Flares {
             TF::GRAY . "filled with mass amounts of legendary loot!",
             TF::WHITE . "/help meteors",
             "",
-            TF::GRAY . "Right-click to activate the Flare to call in a",
-            TF::GRAY . "meteor!",
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -82,8 +82,7 @@ class Flares {
             TF::GRAY . "filled with mass amounts of legendary loot!",
             TF::WHITE . "/help meteors",
             "",
-            TF::GRAY . "Right-click to activate the Flare to call in a",
-            TF::GRAY . "meteor!",
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -102,8 +101,7 @@ class Flares {
             TF::GRAY . "filled with mass amounts of legendary loot!",
             TF::WHITE . "/help meteors",
             "",
-            TF::GRAY . "Right-click to activate the Flare to call in a",
-            TF::GRAY . "meteor!",
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -123,7 +121,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -143,7 +141,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -163,7 +161,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -183,7 +181,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -203,7 +201,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -223,7 +221,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -243,7 +241,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -263,7 +261,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -283,7 +281,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -303,7 +301,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -323,7 +321,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -343,7 +341,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -363,7 +361,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -383,7 +381,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -403,7 +401,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -423,7 +421,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -443,7 +441,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);
@@ -463,7 +461,7 @@ class Flares {
             TF::BOLD . TF::RED . "Major chance to drop full",
             TF::BOLD . TF::RED . "access to a G-Kit",
             "",
-            TF::GRAY . "Right-click to activate the Flare"
+            TF::GRAY . "Place on floor to call in the meteor!"
         ];
         $item->setLore($lore);
         $item->addEnchantment(GlowManager::$enchInst);

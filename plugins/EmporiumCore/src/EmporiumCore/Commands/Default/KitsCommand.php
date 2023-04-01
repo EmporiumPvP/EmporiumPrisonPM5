@@ -2,23 +2,19 @@
 
 namespace EmporiumCore\Commands\Default;
 
-use EmporiumCore\Managers\Data\DataManager;
-
-use Menus\KitsMenu;
-
+use EmporiumCore\EmporiumCore;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\network\mcpe\protocol\types\DeviceOS;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
-use pocketmine\world\sound\EnderChestOpenSound;
 
 # POCKETMINE
 
 class KitsCommand extends Command {
 
     public function __construct() {
-        parent::__construct("kits", "Opens the RankKits Menu", "/kits", ["kit"]);
+        parent::__construct("kits", "Opens the Kits Menu", "/kits", ["kit"]);
         $this->setPermission("emporiumcore.command.kits");
     }
 
@@ -28,32 +24,16 @@ class KitsCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.kits");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.kits");
+        if (!$permission) {
             $sender->sendMessage(TextFormat::RED . "No permission");
             return false;
         }
 
+        $menu = EmporiumCore::getInstance()->getKitsMenu();
         $extraData = $sender->getPlayerInfo()->getExtraData();
-        switch($extraData["DeviceOS"]) {
-
-            case DeviceOS::IOS:
-            case DeviceOS::ANDROID:
-            case DeviceOS::PLAYSTATION:
-            case DeviceOS::XBOX:
-            case DeviceOS::NINTENDO:
-                $form = new KitsMenu();
-                $form->Form($sender);
-                $sender->broadcastSound(new EnderChestOpenSound());
-                break;
-
-            case DeviceOS::WINDOWS_10:
-            case DeviceOS::OSX:
-                $menu = new KitsMenu();
-                $menu->Inventory($sender);
-                $sender->broadcastSound(new EnderChestOpenSound());
-                break;
-        }
+        if($extraData)
+        $menu->open($sender);
         return true;
     }
 }

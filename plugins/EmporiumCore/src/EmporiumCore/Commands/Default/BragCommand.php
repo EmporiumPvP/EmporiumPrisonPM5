@@ -3,12 +3,11 @@
 namespace EmporiumCore\Commands\Default;
 
 use EmporiumCore\EmporiumCore;
-
-use EmporiumCore\Managers\Data\DataManager;
 use EmporiumCore\Variables;
-
-use pocketmine\player\Player;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
+use pocketmine\player\Player;
+use pocketmine\Server;
 use pocketmine\utils\TextFormat as TF;
 
 class BragCommand extends Command {
@@ -27,8 +26,8 @@ class BragCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.brag");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.brag");
+        if (!$permission) {
             $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
@@ -42,9 +41,9 @@ class BragCommand extends Command {
             }
         }
         if(count($enchants) > 0) {
-            $this->plugin->getServer()->broadcastMessage(Variables::SERVER_PREFIX . $sender->getName() . " is bragging " . TF::DARK_GRAY . "[" . TF::WHITE . $item->getCount() . "x " . $item->getName() . TF::RESET . TF::DARK_GRAY . "]" . TF::EOL . $enchantsList);
+            $this->plugin->getServer()->broadcastMessage(TF::BOLD . TF::DARK_GRAY . "[" . TF::AQUA . "BRAG" . TF::DARK_GRAY . "]" . TF::RESET . $sender->getName() . " is bragging " . TF::DARK_GRAY . "[" . TF::WHITE . $item->getCount() . "x " . $item->getName() . TF::RESET . TF::DARK_GRAY . "]" . TF::EOL . $enchantsList);
         } else {
-            $this->plugin->getServer()->broadcastMessage(Variables::SERVER_PREFIX . $sender->getName() . " is bragging " . TF::DARK_GRAY . "[" . TF::WHITE . $item->getCount() . "x " . $item->getName() . TF::RESET . TF::DARK_GRAY . "]");
+            $this->plugin->getServer()->broadcastMessage(TF::BOLD . TF::DARK_GRAY . "[" . TF::AQUA . "BRAG" . TF::DARK_GRAY . "]" . TF::RESET . $sender->getName() . " is bragging " . TF::DARK_GRAY . "[" . TF::WHITE . $item->getCount() . "x " . $item->getName() . TF::RESET . TF::DARK_GRAY . "]");
         }
         return true;
     }

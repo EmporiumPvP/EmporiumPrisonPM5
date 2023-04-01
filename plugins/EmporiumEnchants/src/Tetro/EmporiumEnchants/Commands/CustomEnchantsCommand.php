@@ -10,11 +10,11 @@ use Tetro\EmporiumEnchants\Commands\subcommands\EnchantSubCommand;
 use Tetro\EmporiumEnchants\Commands\subcommands\InfoSubCommand;
 use Tetro\EmporiumEnchants\Commands\subcommands\ListSubCommand;
 use Tetro\EmporiumEnchants\Commands\subcommands\RemoveSubCommand;
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 
 class CustomEnchantsCommand extends BaseCommand
 {
-    /** @var Loader */
+    /** @var EmporiumEnchants */
     protected $plugin;
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void

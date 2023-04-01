@@ -3,46 +3,42 @@
 namespace Emporium\Prison\Managers;
 
 use Emporium\Prison\EmporiumPrison;
-use Emporium\Prison\items\Boosters;
-use Emporium\Prison\items\Flares;
-use Emporium\Wormhole\Utils\FireworksParticle;
-use Items\Contraband;
-
-use JsonException;
-
+use Emporium\Prison\items\Contraband;
 use EmporiumData\DataManager;
-
+use JsonException;
 use pocketmine\entity\Location;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\sound\XpLevelUpSound;
-
-use Tetro\EPTutorial\Managers\TutorialManager;
+use Tetro\EmporiumTutorial\Managers\TutorialManager;
+use Tetro\EmporiumWormhole\Utils\FireworksParticle;
 
 class PlayerLevelManager implements Listener {
-    private ?ItemEntity $playerPickaxe;
+    /** @var ItemEntity[] */
+    public array $playerPickaxe = [];
 
     public function getPlayerLevel(Player $player): int {
-        return DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
+        return (int) DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
     }
 
     public function getPlayerXp(Player $player): int {
-        return DataManager::getInstance()->getPlayerData($player->getXuid(), "xp");
+        return (int) DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.xp");
     }
 
     public function getTotalPlayerXp(Player $player): int {
-        return DataManager::getInstance()->getPlayerData($player->getXuid(), "total-xp");
+        return (int) DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.total-xp");
     }
 
     public function getNextPlayerLevelXp(Player $player): int {
         $playerLevel = $this->getPlayerLevel($player);
 
-        return EmporiumPrison::getInstance()->getPlayerLevelXpData()[$playerLevel] + 1;
+        return EmporiumPrison::getInstance()->getPlayerLevelXpData()[$playerLevel + 1];
     }
 
 
@@ -53,12 +49,18 @@ class PlayerLevelManager implements Listener {
         $itemEntity = new ItemEntity(Location::fromObject($position, $player->getLocation()->getWorld(), lcg_value() * 360, 0), VanillaItems::DIAMOND_PICKAXE());
         $itemEntity->setHasGravity(false);
         $itemEntity->setPickupDelay(-1);
-        $itemEntity->setDespawnDelay(80);
         $itemEntity->setNameTag(TextFormat::BOLD . TextFormat::RED . "PICKAXE LEVEL UP");
         $itemEntity->setNameTagAlwaysVisible();
 
-        $playerPickaxe = $itemEntity;
-        $playerPickaxe->spawnTo($player);
+        $this->playerPickaxe[$player->getXuid()] = $itemEntity;
+        $this->playerPickaxe[$player->getXuid()]->spawnTo($player);
+    }
+
+    public function updatePickaxePosition (Player $for) : void
+    {
+        if (isset($this->playerPickaxe[$for->getXuid()])) {
+            $this->playerPickaxe[$for->getXuid()]->teleport($this->calculateRelativePosition($for));
+        }
     }
 
     /**
@@ -74,10 +76,17 @@ class PlayerLevelManager implements Listener {
         return $position;
     }
 
-    public function removeItemEntity()
+    public function onPlayerMoveEvent (PlayerMoveEvent $event)
     {
-        $this->playerPickaxe->close();
-        $this->playerPickaxe = null;
+        $this->updatePickaxePosition($event->getPlayer());
+    }
+
+    public function removeItemEntity(Player $for)
+    {
+        if (isset($this->playerPickaxe[$for->getXuid()])) {
+            $this->playerPickaxe[$for->getXuid()]->close();
+            $this->playerPickaxe[$for->getXuid()] = null;
+        }
     }
 
 
@@ -95,17 +104,14 @@ class PlayerLevelManager implements Listener {
         }
     }
 
-    /**
-     * @throws JsonException
-     */
     public function playerLevelUp(Player $player): void {
         # 100
         if($this->getPlayerLevel($player) === 100) {
             return;
         } else {
             # update player Data
-            DataManager::getInstance()->setPlayerData($player->getXuid(), "level", DataManager::getInstance()->getPlayerData($player->getXuid(), "level") + 1);
-            DataManager::getInstance()->setPlayerData($player->getXuid(), "xp", 0);
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.level", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.level") + 1);
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", 0);
             # send title
             $newPlayerLevel = $this->getPlayerLevel($player);
             $player->broadcastSound(new XpLevelUpSound(30));
@@ -113,7 +119,7 @@ class PlayerLevelManager implements Listener {
             FireworksParticle::Fireworks3($player);
             # give rewards
             switch($newPlayerLevel) {
-                    # energy booster
+                # energy booster
                 case 12:
                 case 17:
                 case 22:
@@ -132,13 +138,13 @@ class PlayerLevelManager implements Listener {
                 case 87:
                 case 92:
                 case 97:
-                    if($player->getInventory()->canAddItem((new Boosters())->MysteryEnergyBooster())) {
-                        $player->getInventory()->addItem((new Boosters())->MysteryEnergyBooster());
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MysteryEnergyBooster())) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MysteryEnergyBooster());
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Boosters())->MysteryEnergyBooster());
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getBoosters()->MysteryEnergyBooster());
                     }
                     break;
-                    # mining booster
+                # mining booster
                 case 18:
                 case 23:
                 case 28:
@@ -156,64 +162,64 @@ class PlayerLevelManager implements Listener {
                 case 88:
                 case 93:
                 case 98:
-                    if($player->getInventory()->canAddItem((new Boosters())->MysteryMiningXpBooster())) {
-                        $player->getInventory()->addItem((new Boosters())->MysteryMiningXpBooster());
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MysteryMiningXpBooster())) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MysteryMiningXpBooster());
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Boosters())->MysteryMiningXpBooster());
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getBoosters()->MysteryMiningXpBooster());
                     }
                     break;
-                    # contraband
+                # contraband
                 case 15:
                 case 20:
                 case 25:
-                    if($player->getInventory()->canAddItem((new Contraband())->Elite(1))) {
-                        $player->getInventory()->addItem((new Contraband())->Elite(1));
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Elite(1))) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Elite(1));
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Contraband())->Elite(1));
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Elite(1));
                     }
                     break;
                 case 30:
-                    if($player->getInventory()->canAddItem((new Contraband())->Ultimate(1))) {
-                        $player->getInventory()->addItem((new Contraband())->Ultimate(1));
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1))) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1));
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Contraband())->Ultimate(1));
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Ultimate(1));
                     }
-                    if($player->getInventory()->canAddItem((new Flares())->MysteryGKit())) {
-                        $player->getInventory()->addItem((new Flares())->MysteryGKit());
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getFlares()->MysteryGKit())) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getFlares()->MysteryGKit());
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Flares())->MysteryGKit());
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getFlares()->MysteryGKit());
                     }
                     break;
                 case 35:
                 case 40:
                 case 45:
-                    if($player->getInventory()->canAddItem((new Contraband())->Ultimate(1))) {
-                        $player->getInventory()->addItem((new Contraband())->Ultimate(1));
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1))) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1));
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Contraband())->Ultimate(1));
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Ultimate(1));
                     }
                     break;
 
                 case 60:
-                    if($player->getInventory()->canAddItem((new Contraband())->Legendary(1))) {
-                        $player->getInventory()->addItem((new Contraband())->Legendary(1));
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1))) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1));
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Contraband())->Legendary(1));
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Legendary(1));
                     }
-                    if($player->getInventory()->canAddItem((new Flares())->MysteryGKit())) {
-                        $player->getInventory()->addItem((new Flares())->MysteryGKit());
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getFlares()->MysteryGKit())) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getFlares()->MysteryGKit());
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Contraband())->Legendary(1));
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Legendary(1));
                     }
                     break;
 
                 case 50:
                 case 55:
                 case 65:
-                    if($player->getInventory()->canAddItem((new Contraband())->Legendary(1))) {
-                        $player->getInventory()->addItem((new Contraband())->Legendary(1));
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1))) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1));
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Contraband())->Legendary(1));
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Legendary(1));
                     }
                     break;
 
@@ -221,32 +227,32 @@ class PlayerLevelManager implements Listener {
                 case 75:
                 case 80:
                 case 85:
-                    if($player->getInventory()->canAddItem((new Contraband())->Godly(1))) {
-                        $player->getInventory()->addItem((new Contraband())->Godly(1));
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Godly(1))) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Godly(1));
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Contraband())->Godly(1));
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Godly(1));
                     }
                     break;
 
                 case 90:
-                    if($player->getInventory()->canAddItem((new Flares())->MysteryGKit())) {
-                        $player->getInventory()->addItem((new Flares())->MysteryGKit());
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getFlares()->MysteryGKit())) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getFlares()->MysteryGKit());
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Flares())->MysteryGKit());
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getFlares()->MysteryGKit());
                     }
-                    if($player->getInventory()->canAddItem((new Contraband())->Heroic(1))) {
-                        $player->getInventory()->addItem((new Contraband())->Heroic(1));
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1))) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1));
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Contraband())->Heroic(1));
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Heroic(1));
                     }
                     break;
 
                 case 95:
                 case 100:
-                    if($player->getInventory()->canAddItem((new Contraband())->Heroic(1))) {
-                        $player->getInventory()->addItem((new Contraband())->Heroic(1));
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1))) {
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1));
                     } else {
-                        $player->getWorld()->dropItem($player->getPosition(), (new Contraband())->Heroic(1));
+                        $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Heroic(1));
                     }
                     break;
             }
@@ -254,16 +260,16 @@ class PlayerLevelManager implements Listener {
         // Can you create a new task in the tasks folder called LevelUpTask
 
         $this->createItemEntity($player);
-        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () {
-            $this->removeItemEntity();
+        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player) {
+            $this->removeItemEntity($player);
         }), 100);
 
         # if player level >= 10 and tutorial is not complete set to complete
-        $tutorialProgress = DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-progress");
-        $tutorialComplete = DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-complete");
+        $tutorialProgress = DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.tutorial-progress");
+        $tutorialComplete = DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.tutorial-complete");
         if ($this->getPlayerLevel($player) === 10 && $tutorialProgress === 4 && $tutorialComplete === false) {
-            DataManager::getInstance()->setPlayerData($player->getXuid(),"tutorial-progress", DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-progress") + 1);
-            DataManager::getInstance()->setPlayerData($player->getXuid(),"tutorial-complete", true);
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.tutorial-progress", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.tutorial-progress") + 1);
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.tutorial-complete", true);
             $tutorialManager = new TutorialManager();
             $tutorialManager->startTutorial($player);
         }

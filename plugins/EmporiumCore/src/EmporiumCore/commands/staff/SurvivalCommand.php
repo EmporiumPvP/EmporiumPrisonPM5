@@ -2,15 +2,12 @@
 
 namespace EmporiumCore\Commands\Staff;
 
-use EmporiumCore\Managers\Data\DataManager;
 use EmporiumCore\Variables;
-
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
-
 use pocketmine\utils\TextFormat as TF;
 
 class SurvivalCommand extends Command {
@@ -26,14 +23,14 @@ class SurvivalCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.survival");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.survival");
+        if (!$permission) {
             $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
 
         if($sender->getGamemode() === GameMode::SURVIVAL()) {
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "You are already in Survival!");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You are already in Survival!");
             return false;
         } else {
             $sender->setGamemode(GameMode::SURVIVAL());

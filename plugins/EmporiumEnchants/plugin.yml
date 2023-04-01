@@ -1,7 +1,7 @@
 # About
 name: EmporiumEnchants
-description: "Emporium Custom Enchants"
-main: Tetro\EmporiumEnchants\Loader
+description: "Tetro Custom Enchants"
+main: Tetro\EmporiumEnchants\EmporiumEnchants
 author: Tetro
 
 # Versions

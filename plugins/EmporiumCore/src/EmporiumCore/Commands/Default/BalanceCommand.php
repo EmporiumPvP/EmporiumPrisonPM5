@@ -3,15 +3,12 @@
 namespace EmporiumCore\Commands\Default;
 
 use Emporium\Prison\Managers\Misc\Translator;
-
 use EmporiumCore\EmporiumCore;
-
-use EmporiumCore\managers\data\DataManager;
 use EmporiumCore\Variables;
-
-use pocketmine\player\Player;
+use EmporiumData\DataManager;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
-
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
 class BalanceCommand extends Command {
@@ -31,9 +28,9 @@ class BalanceCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.balance");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.balance");
         # check permission
-        if ($permission === false) {
+        if (!$permission) {
             $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
@@ -41,14 +38,15 @@ class BalanceCommand extends Command {
         if (isset($args[0])) {
             $player = $this->plugin->getServer()->getPlayerExact($args[0]);
             if ($player instanceof Player) {
-                $balance = DataManager::getData($player, "Players", "Money");
+                $balance = DataManager::getInstance()->getPlayerData($sender->getXuid(), "profile.money");
                 $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "{$player->getName()}'s balance: " . TF::GREEN . "$" . TF::WHITE . Translator::shortNumber($balance));
                 return true;
             }
             $sender->sendMessage(Variables::SERVER_PREFIX . "§r§7That player cannot be found.");
             return false;
         }
-        $balance = DataManager::getData($sender, "Players", "Money");
+
+        $balance = DataManager::getInstance()->getPlayerData($sender->getXuid(), "profile.money");
         $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "Your balance: " . TF::GREEN . "$" . TF::WHITE . Translator::shortNumber($balance));
         return true;
     }

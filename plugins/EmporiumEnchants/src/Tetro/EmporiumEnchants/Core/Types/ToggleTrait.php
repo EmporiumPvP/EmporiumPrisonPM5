@@ -10,11 +10,11 @@ use pocketmine\item\Item;
 use Tetro\EmporiumEnchants\Core\Types\ToggleableEnchantment;
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\Utils\Utils;
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 
 trait ToggleTrait
 {
-    protected Loader $plugin;
+    protected EmporiumEnchants $plugin;
 
     /** @var int[] */
     public array $stack = [];

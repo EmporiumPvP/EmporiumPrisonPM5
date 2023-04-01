@@ -6,11 +6,8 @@ use Emporium\Prison\Managers\misc\Translator;
 use EmporiumCore\EmporiumCore;
 use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Variables;
-use JsonException;
-
-
-use EmporiumCore\Managers\Data\DataManager;
-
+use EmporiumData\DataManager;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -32,8 +29,8 @@ class BanCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.ban");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.ban");
+        if (!$permission) {
             $sender->sendMessage("§cYou do not have permission to use this command.");
             return false;
         }
@@ -53,34 +50,34 @@ class BanCommand extends Command {
                                 DataManager::setData($player, "Players", "Banned", true);
                                 DataManager::setData($player, "Cooldowns", "Ban", $args[1]);
                                 $player->kick(Variables::BAN_HEADER . TF::AQUA . "\n§bDuration: " . TF::WHITE . "$time\n" . TF::AQUA . "Reason: " . TF::WHITE . "$reason");
-                                $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have banned " . TF::YELLOW . "{$player->getName()}.");
-                                $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "Ban Duration: " . TF::YELLOW . "$time.");
-                                $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "Ban Reason: " . TF::YELLOW . "$reason.");
+                                $sender->sendMessage(TF::GRAY . "You have banned " . TF::YELLOW . "{$player->getName()}.");
+                                $sender->sendMessage(TF::GRAY . "Ban Duration: " . TF::YELLOW . "$time.");
+                                $sender->sendMessage(TF::GRAY . "Ban Reason: " . TF::YELLOW . "$reason.");
                                 // Send Logs
                                 WebhookEvent::staffWebhook($sender, $player, "Ban");
                                 return true;
                             } else {
-                                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Command Usage: /ban <player> <time> <reason>");
+                                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Command Usage: /ban <player> <time> <reason>");
                                 return false;
                             }
                         } else {
-                            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Please enter a valid duration.");
+                            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Please enter a valid duration.");
                             return false;
                         }
                     } else {
-                        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Please enter the duration in seconds.");
+                        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Please enter the duration in seconds.");
                         return false;
                     }
                 } else {
-                    $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Command Usage: /ban <player> <time> <reason>");
+                    $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Command Usage: /ban <player> <time> <reason>");
                     return false;
                 }
             } else {
-                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "That player cannot be found.");
                 return false;
             }
         } else {
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Command Usage: /ban <player> <time> <reason>");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Command Usage: /ban <player> <time> <reason>");
             return false;
         }
     }

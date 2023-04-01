@@ -2,17 +2,11 @@
 
 namespace EmporiumCore\Tasks;
 
-use EmporiumCore\Listeners\WebhookEvent;
-
 use EmporiumCore\EmporiumCore;
-
-use EmporiumCore\Managers\Data\DataManager;
-use EmporiumCore\Managers\Data\ServerManager;
-
-use JsonException;
-
+use EmporiumCore\Listeners\WebhookEvent;
+use EmporiumData\DataManager;
+use EmporiumData\ServerManager;
 use pocketmine\scheduler\Task;
-
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
 
@@ -24,18 +18,16 @@ class TimerTask extends Task {
         $this->plugin = $plugin;
     }
 
-    /**
-     * @throws JsonException
-     */
     public function onRun(): void {
         
         //////////////////////////////// PLAYER ONLINE TIME ////////////////////////////////
         foreach($this->plugin->getServer()->getOnlinePlayers() as $players) {
-            DataManager::addData($players, "Players", "OnlineTime", 1);
+            if (DataManager::getInstance()->getPlayerXuid($players->getName()) == "00") return;
+            DataManager::getInstance()->setPlayerData($players->getXuid(), "profile.online_time", (int)DataManager::getInstance()->getPlayerData($players->getXuid(), "profile.online_time") + 1);
         }
 
         # variables
-        $timer = ServerManager::getData("Events", "EventsTimer");
+        $timer = ServerManager::getInstance()->getData("events.events_timer");
         $minute = $timer / 60;
 
         //////////////////////////////// EVENT MESSAGES ////////////////////////////////
@@ -66,8 +58,8 @@ class TimerTask extends Task {
                 $this->plugin->getServer()->broadcastMessage("");
                 $this->plugin->getServer()->broadcastTitle(TF::BOLD . TF::RED . "Prison Break", TF::GREEN . "Mine in any Tier Mine to obtain Loot!");
                 # create event file
-                ServerManager::setData("Events", "PrisonBreak", true);
-                new Config(EmporiumCore::getInstance()->getDataFolder() . "Server/PrisonBreak.yml", Config::YAML);
+                ServerManager::getInstance()->setData("events.prison_break", true);
+                new Config(EmporiumCore::getInstance()->getDataFolder() . "events\PrisonBreak.json", Config::YAML);
                 $players = null;
                 # send webhook
                 WebhookEvent::EventsWebhook($players, "PrisonBreak");
@@ -81,9 +73,9 @@ class TimerTask extends Task {
             case 915:
             case 1095:
             case 1275:
-                $prisonBreak = New Config(EmporiumCore::getInstance()->getDataFolder() . "Server/PrisonBreak.yml");
+                $prisonBreak = New Config(EmporiumCore::getInstance()->getDataFolder() . "events/PrisonBreak.yml");
                 # end event
-                ServerManager::setData("Events", "PrisonBreak", false);
+                ServerManager::getInstance()->setData("events.prison_break", false);
                 # create results message
                 $message = TF::BOLD . TF::GOLD . "(!) The " . TF::RED . "Prison break Event " . TF::GOLD . "has ended!" . TF::EOL;
                 $message .= TF::BOLD . TF::DARK_AQUA . "The Top 5 Prisoners are:" . TF::EOL;
@@ -101,11 +93,11 @@ class TimerTask extends Task {
                 # broadcast message
                 EmporiumCore::getInstance()->getServer()->broadcastMessage($message);
                 # delete events file
-                unlink($this->plugin->getDataFolder() . "Server/PrisonBreak.yml");
+                unlink($this->plugin->getDataFolder() . "events/PrisonBreak.yml");
                 break;
         }
 
-        # ADD EVENT TIME
-        ServerManager::addData("Events", "EventsTimer", 1);
+        # add event time
+        ServerManager::getInstance()->setData("events.prison_break", (int)ServerManager::getInstance()->getData("events.prison_break") + 1);
     }
 }

@@ -33,7 +33,7 @@ class Translator {
     }
 
     # Short Number Converter
-    public static function shortNumber($n, $precision = 2): string
+    public static function shortNumber(float $n, $precision = 2): string
     {
         if ($n < 900) {
             $n_format = number_format($n, $precision);
@@ -58,7 +58,7 @@ class Translator {
         } else {
             $n_format = number_format($n, $precision);
         }
-        if ( $precision > 0 ) {
+        if ($precision > 0) {
             $dotzero = '.' . str_repeat( '0', $precision );
             $n_format = str_replace( $dotzero, '', $n_format );
         }

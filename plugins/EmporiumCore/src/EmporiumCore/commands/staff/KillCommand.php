@@ -4,14 +4,12 @@ namespace EmporiumCore\Commands\Staff;
 
 use EmporiumCore\EmporiumCore;
 use EmporiumCore\Listeners\WebhookEvent;
-use EmporiumCore\Managers\Data\DataManager;
-
 use EmporiumCore\Variables;
-use pocketmine\player\Player;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
-
-
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
+
 
 class KillCommand extends Command {
 
@@ -26,9 +24,9 @@ class KillCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.kill");
-        if ($permission === false) {
-            $sender->sendMessage(TF::RED . "No permission");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.kill");
+        if (!$permission) {
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
             return false;
         }
 
@@ -41,11 +39,11 @@ class KillCommand extends Command {
                 WebhookEvent::staffWebhook($sender, $player, "Kill");
                 return true;
             } else {
-                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That player cannot be found.");
                 return false;
             }
         } else {
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Command Usage: /kill <player>");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Command Usage: /kill <player>");
             return false;
         }
     }

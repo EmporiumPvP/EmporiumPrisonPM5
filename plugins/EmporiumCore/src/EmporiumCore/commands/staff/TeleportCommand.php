@@ -3,14 +3,11 @@
 namespace EmporiumCore\Commands\Staff;
 
 use EmporiumCore\EmporiumCore;
-use EmporiumCore\Managers\Data\DataManager;
-
 use EmporiumCore\Variables;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use pocketmine\player\Player;
-
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\Position;
 
@@ -28,8 +25,8 @@ class TeleportCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.teleport");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(),  "emporiumcore.command.teleport");
+        if (!$permission) {
             $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
@@ -54,7 +51,7 @@ class TeleportCommand extends Command {
                                     break;
                             }
                         } else {
-                            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+                            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That player cannot be found.");
                             return false;
                         }
                     } elseif ($option === "coordinates" || $option === "coords") {
@@ -78,24 +75,24 @@ class TeleportCommand extends Command {
                                     $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have teleported to $x, $y, $z.");
                                     return true;
                                 } else {
-                                    $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport coordinates <x> <y> <z>");
+                                    $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Usage: /teleport coordinates <x> <y> <z>");
                                     return false;
                                 }
                             } else {
-                                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport coordinates <x> <y> <z>");
+                                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Usage: /teleport coordinates <x> <y> <z>");
                                 return false;
                             }
                         } else {
-                            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport coordinates <x> <y> <z>");
+                            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Usage: /teleport coordinates <x> <y> <z>");
                             return false;
                         }
                     }
                 } else {
-                    $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport <option> <player>");
+                    $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Usage: /teleport <option> <player>");
                     return false;
                 }
             } else {
-                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That is an invalid option.");
+                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That is an invalid option.");
                 $sender->sendMessage(TF::GRAY . "Please use one of the following options:");
                 $sender->sendMessage(TF::GRAY . "- /teleport to <player>");
                 $sender->sendMessage(TF::GRAY . "- /teleport here <player>");
@@ -103,7 +100,7 @@ class TeleportCommand extends Command {
                 return false;
             }
         }
-        $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /teleport <option> <player>");
+        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Usage: /teleport <option> <player>");
         return false;
     }
 

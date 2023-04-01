@@ -2,14 +2,10 @@
 
 namespace EmporiumCore\Commands\Default;
 
-
-use Emporium\Prison\library\formapi\CustomForm;
-use Emporium\Prison\library\formapi\SimpleForm;
-use EmporiumCore\Managers\Data\DataManager;
-use Menus\CustomEnchantMenu;
-use pocketmine\item\ItemFactory;
-use pocketmine\player\Player;
+use EmporiumCore\EmporiumCore;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
+use pocketmine\player\Player;
 
 class CustomEnchantShopCommand extends Command {
 
@@ -21,19 +17,23 @@ class CustomEnchantShopCommand extends Command {
 
     # Command Code
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
-        // Check for Permissions
-        if (!$this->testPermissionSilent($sender)) {
-            $sender->sendMessage("§cYou do not have permission to use this command.");
-            return false;
-        }
+
         // Check Player
         if (!$sender instanceof Player) {
             $sender->sendMessage("§cYou may only run this command in-game!");
             return false;
         }
+
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.ceshop");
+        // Check for Permissions
+        if (!$permission) {
+            $sender->sendMessage("§cYou do not have permission to use this command.");
+            return false;
+        }
+
         // Execute Command
-        $menu = new CustomEnchantMenu();
-        $menu->Form($sender);
+        $menu = EmporiumCore::getInstance()->getCustomEnchantMenu();
+        $menu->open($sender);
         return true;
     }
 }

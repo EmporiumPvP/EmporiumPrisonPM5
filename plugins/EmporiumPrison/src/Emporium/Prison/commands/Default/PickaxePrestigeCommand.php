@@ -4,7 +4,6 @@ namespace Emporium\Prison\commands\Default;
 
 use Emporium\Prison\Variables;
 
-use EmporiumCore\Managers\Data\DataManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 
@@ -16,7 +15,7 @@ class PickaxePrestigeCommand extends Command {
     public function __construct() {
         parent::__construct("pickaxeprestige", "Main command to prestige pickaxe", "/pickaxeprestige", ["pprestige", "pp"]);
         $this->setPermission("emporiumprison.command.pickaxeprestige");
-        $this->setPermissionMessage(Variables::ERROR_PREFIX . TF::RED . "No permission.");
+        $this->setPermissionMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args) {
@@ -43,6 +42,6 @@ class PickaxePrestigeCommand extends Command {
          * remove enchants
          *
          */
-        $sender->sendMessage(TF::RED . "This feature is still under development");
+        $sender->sendMessage(TF::RED . "This feature is still under development, please visit the NPC at /spawn");
     }
 }

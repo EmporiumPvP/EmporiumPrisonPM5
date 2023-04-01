@@ -2,30 +2,29 @@
 
 namespace Emporium\Prison\commands\Staff;
 
-use Emporium\Prison\items\Boosters;
 use Emporium\Prison\EmporiumPrison;
-use Emporium\Prison\Managers\EnergyManager;
-use Emporium\Prison\Managers\MiningManager;
 use Emporium\Prison\Variables;
 
-use EmporiumCore\EmporiumCore;
-use EmporiumCore\managers\data\DataManager;
+use EmporiumData\PermissionsManager;
+
 use JsonException;
+
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-
 use pocketmine\utils\TextFormat as TF;
 
 class BoosterCommand extends Command {
 
-    private Boosters $boosters;
-
+    private array $multipliers = [
+        1.25, 1.5, 1.75,
+        2.0, 2.25, 2.5, 2.75,
+        3.0, 3.25, 3.5
+    ];
     public function __construct() {
-        parent::__construct("booster", "Main boosters command", "/booster <stop> <type> | <give> <type> <player> <multiplier>");
+        parent::__construct("booster", "Main boosters command", TF::GRAY . "/booster <stop> | <give> <type> <player> <multiplier>");
         $this->setPermission("emporiumprison.command.booster");
-        $this->setPermissionMessage(Variables::ERROR_PREFIX . TF::RED . "No permission!");
-        $this->boosters = EmporiumPrison::getBoosters();
+        $this->setPermissionMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
     }
 
     /**
@@ -37,215 +36,157 @@ class BoosterCommand extends Command {
             return;
         }
 
-
-        $permission = DataManager::getData($sender, "Permissions", "emporiumprison.command.booster");
+        # permission check
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumprison.command.booster");
         if(!$permission) {
             $sender->sendMessage($this->getPermissionMessage());
         }
 
-        if(isset($args[0])) {
-            $parameter = $args[0];
-            if($parameter === "give") {
-                if(isset($args[1])) {
-                    $type = $args[1];
-                    if(isset($args[2])) {
-                        $target = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[2]);
-                        if($target instanceof Player) {
-                            switch($type) {
+        # parameter
+        if(!isset($args[0])) {
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "invalid usage");
+            $sender->sendMessage($this->getUsage());
+            return;
+        }
+        $parameter = strtolower($args[0]);
 
-                                case "mysteryenergy": # /booster give mysteryenergy <player>
-                                    if($target->getInventory()->canAddItem($this->boosters->MysteryEnergyBooster())) {
-                                        $target->getInventory()->addItem($this->boosters->MysteryEnergyBooster());
-                                        $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a ". TF::AQUA . "Mystery Energy Booster" . TF::GREEN . "!");
-                                        $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You gave $target a ". TF::AQUA . "Mystery Energy Booster" . TF::GREEN . "!");
-                                    } else {
-                                        $sender->sendMessage(TF::RED ."Players inventory is full");
-                                    }
-                                    break;
+        # booster type
+        if(!isset($args[1])) {
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "invalid usage");
+            $sender->sendMessage(TF::RED . "Please specify a type!");
+            return;
+        }
+        $type = strtolower($args[1]);
 
-                                case "mysterymining": # /booster give mysterymining <player>
-                                    if($target->getInventory()->canAddItem($this->boosters->MysteryMiningXpBooster())) {
-                                        $target->getInventory()->addItem($this->boosters->MysteryMiningXpBooster());
-                                        $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a ". TF::AQUA . "Mystery Mining Booster" . TF::GREEN . "!");
-                                        $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You gave $target a ". TF::AQUA . "Mystery Mining Booster" . TF::GREEN . "!");
-                                    } else {
-                                        $sender->sendMessage(TF::RED ."Players inventory is full");
-                                    }
-                                    break;
+        # player to give booster
+        if(!isset($args[2])) {
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "invalid usage");
+            $sender->sendMessage(TF::RED . "Please specify a player");
+            return;
+        }
 
-                                case "energy":
-                                    if(isset($args[3])) {
-                                        $multiplier = $args[3];
-                                        switch($multiplier) {
-                                            case 1.25:
-                                                $target->getInventory()->addItem((new Boosters())->EnergyBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "1.25x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
-                                                break;
+        $target = EmporiumPrison::getInstance()->getServer()->getPlayerExact($args[2]);
+        if(!$target instanceof Player) {
+            $sender->sendMessage(TF::RED . "That player is not online");
+            return;
+        }
 
-                                            case 1.5:
-                                                $target->getInventory()->addItem((new Boosters())->EnergyBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "1.5x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
-                                                break;
+        # parameter check
+        if(!$parameter == "give" || !$parameter == "stop") {
+            $sender->sendMessage("test");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "invalid usage");
+            $sender->sendMessage($this->getUsage());
+            return;
+        }
 
-                                            case 1.75:
-                                                $target->getInventory()->addItem((new Boosters())->EnergyBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "1.75x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
-                                                break;
+        # give player a booster
+        if($parameter === "give") {
+            switch($type) {
 
-                                            case 2.0:
-                                                $target->getInventory()->addItem((new Boosters())->EnergyBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "2x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 2.25:
-                                                $target->getInventory()->addItem((new Boosters())->EnergyBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "2.25x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 2.5:
-                                                $target->getInventory()->addItem((new Boosters())->EnergyBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "2.5x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 2.75:
-                                                $target->getInventory()->addItem((new Boosters())->EnergyBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "2.75x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 3.0:
-                                                $target->getInventory()->addItem((new Boosters())->EnergyBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "3x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 3.25:
-                                                $target->getInventory()->addItem((new Boosters())->EnergyBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "3.25x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 3.5:
-                                                $target->getInventory()->addItem((new Boosters())->EnergyBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "3.5x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
-                                                break;
-                                        }
-                                    } else {
-                                        $sender->sendMessage(Variables::ERROR_PREFIX . "Please specify a multiplier!");
-                                    }
-
-                                    break;
-
-                                case "mining":
-                                    if(isset($args[3])) {
-                                        $multiplier = $args[3];
-                                        switch($multiplier) {
-                                            case 1.25:
-                                                $target->getInventory()->addItem((new Boosters())->MiningXpBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "1.25x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 1.5:
-                                                $target->getInventory()->addItem((new Boosters())->MiningXpBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "1.5x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 1.75:
-                                                $target->getInventory()->addItem((new Boosters())->MiningXpBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "1.75x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 2.0:
-                                                $target->getInventory()->addItem((new Boosters())->MiningXpBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "2x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 2.25:
-                                                $target->getInventory()->addItem((new Boosters())->MiningXpBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "2.25x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 2.5:
-                                                $target->getInventory()->addItem((new Boosters())->MiningXpBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "2.5x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 2.75:
-                                                $target->getInventory()->addItem((new Boosters())->MiningXpBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "2.75x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 3.0:
-                                                $target->getInventory()->addItem((new Boosters())->MiningXpBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "3x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 3.25:
-                                                $target->getInventory()->addItem((new Boosters())->MiningXpBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "3.25x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
-                                                break;
-
-                                            case 3.5:
-                                                $target->getInventory()->addItem((new Boosters())->MiningXpBooster($multiplier));
-                                                $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . "3.5x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
-                                                break;
-                                        }
-                                    } else {
-                                        $sender->sendMessage(Variables::ERROR_PREFIX . "Please specify a multiplier!");
-                                    }
-
-                                    break;
-
-                                default:
-                                    $sender->sendMessage(Variables::ERROR_PREFIX . "Unknown type!");
-                                    $sender->sendMessage("");
-                                    $sender->sendMessage(TF::GRAY . "Available:");
-                                    $sender->sendMessage(TF::GRAY . " - mysteryenergy");
-                                    $sender->sendMessage(TF::GRAY . " - energy");
-                                    $sender->sendMessage(TF::GRAY . " - mysterymining");
-                                    $sender->sendMessage(TF::GRAY . " - mining");
-                                    break;
-                            }
-                        } else {
-                            $sender->sendMessage(TF::RED . "That player is not online");
-                        }
+                case "mysteryenergy":
+                    if($target->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MysteryEnergyBooster())) {
+                        $target->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MysteryEnergyBooster());
+                        $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a ". TF::AQUA . "Mystery Energy Booster" . TF::GREEN . "!");
+                        $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You gave " . $target->getName() . "  a ". TF::AQUA . "Mystery Energy Booster" . TF::GREEN . "!");
                     } else {
-                        $sender->sendMessage(TF::RED . "Please specify a player");
+                        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Players inventory is full");
                     }
-                } else {
-                    $sender->sendMessage(TF::RED . "Please specify a type!");
-                }
-            } elseif($parameter === "stop") {
-                if(isset($args[1])) {
-                    $type = $args[1];
-                    switch($type) {
+                    break;
 
-                        case "mining":
-                            if(isset($args[2])) {
-                                $target = EmporiumPrison::getInstance()->getServer()->getPlayerExact($args[2]);
-                                if($target instanceof Player) {
-                                    $miningManager = new MiningManager($target);
-                                    $miningManager->stop();
-                                }
-                            }
-                            break;
-
-                        case "energy":
-                            if(isset($args[2])) {
-                                $target = EmporiumPrison::getInstance()->getServer()->getPlayerExact($args[2]);
-                                if($target instanceof Player) {
-                                    $energyManager = new EnergyManager($target);
-                                    $energyManager->stop();
-                                }
-                            }
-                            break;
+                case "mysterymining":
+                    if($target->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MysteryMiningXpBooster())) {
+                        $target->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MysteryMiningXpBooster());
+                        $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a ". TF::AQUA . "Mystery Mining Booster" . TF::GREEN . "!");
+                        $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You gave " . $target->getName() . " a ". TF::AQUA . "Mystery Mining Booster" . TF::GREEN . "!");
+                    } else {
+                        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Players inventory is full");
                     }
-                } else {
-                    $sender->sendMessage(TF::RED . "Please select a Booster");
-                }
-            } else {
-                $sender->sendMessage(Variables::ERROR_PREFIX . TF::RED . "Usage: " . TF::GRAY . "/booster <give> <type> <player> <multiplier>");
+                    break;
+
+                case "energy":
+                    if(!isset($args[3])) {
+                        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Please specify a multiplier!");
+                        return;
+                    }
+
+                    if(!is_numeric($args[3])) {
+                        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Multiplier needs to be numerical");
+                        return;
+                    }
+
+                    if(!in_array($args[3], $this->multipliers)) {
+                        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That is not a valid multiplier");
+                        return;
+                    }
+                    $multiplier = floatval($args[3]);
+
+                    if($target->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster($multiplier))) {
+                        $target->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->EnergyBooster($multiplier));
+                    } else {
+                        $target->getWorld()->dropItem($target->getPosition(), EmporiumPrison::getInstance()->getBoosters()->EnergyBooster($multiplier));
+                    }
+                    $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . $multiplier . "x " . TF::AQUA . "Energy Booster" . TF::GREEN . "!");
+                    break;
+
+                case "mining":
+                    if(!isset($args[3])) {
+                        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Please specify a multiplier!");
+                        return;
+                    }
+
+                    if(!is_numeric($args[3])) {
+                        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Multiplier needs to be numerical");
+                        return;
+                    }
+
+                    if(!in_array($args[3], $this->multipliers)) {
+                        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That is not a valid multiplier");
+                        return;
+                    }
+                    $multiplier = floatval($args[3]);
+
+                    if($target->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster($multiplier))) {
+                        $target->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster($multiplier));
+                    } else {
+                        $target->getWorld()->dropItem($target->getPosition(), EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster($multiplier));
+                    }
+                    $target->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "You have received a " . TF::WHITE . $multiplier . "x " . TF::AQUA . "Mining Booster" . TF::GREEN . "!");
+                    break;
+
+                default:
+                    $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Unknown type");
+                    $sender->sendMessage("");
+                    $sender->sendMessage(TF::GRAY . "Available:");
+                    $sender->sendMessage(TF::GRAY . " - mysteryenergy");
+                    $sender->sendMessage(TF::GRAY . " - energy");
+                    $sender->sendMessage(TF::GRAY . " - mysterymining");
+                    $sender->sendMessage(TF::GRAY . " - mining");
+                    break;
             }
+        }
 
-        } else {
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::RED . "Usage: " . TF::GRAY . "/booster <give> <type> <player> <multiplier>");
+        # stop players booster
+        if($parameter === "stop") {
+            switch($type) {
+
+                case "mining":
+                    $miningManager = EmporiumPrison::getInstance()->getMiningManager();$miningManager->stop($sender);
+                    break;
+
+                case "energy":
+                    $energyManager = EmporiumPrison::getInstance()->getEnergyManager();
+                    $energyManager->stop($sender);
+                    break;
+
+                default:
+                    $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Unknown type");
+                    $sender->sendMessage("");
+                    $sender->sendMessage(TF::GRAY . "Available:");
+                    $sender->sendMessage(TF::GRAY . " - mining");
+                    $sender->sendMessage(TF::GRAY . " - energy");
+                    break;
+
+            }
         }
     }
 }

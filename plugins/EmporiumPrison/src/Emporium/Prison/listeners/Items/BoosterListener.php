@@ -3,8 +3,6 @@
 namespace Emporium\Prison\listeners\Items;
 
 use Emporium\Prison\EmporiumPrison;
-use Emporium\Prison\items\Boosters;
-use Emporium\Prison\Managers\MiningManager;
 use Emporium\Prison\Variables;
 
 use JsonException;
@@ -16,15 +14,6 @@ use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\BlazeShootSound;
 
 class BoosterListener implements Listener {
-
-
-    private MiningManager $miningManager;
-    private Boosters $boosters;
-
-    public function __construct() {
-        $this->miningManager = EmporiumPrison::getMiningManager();
-        $this->boosters = EmporiumPrison::getBoosters();
-    }
 
     /**
      * @throws JsonException
@@ -40,9 +29,9 @@ class BoosterListener implements Listener {
             switch($booster) {
 
                 case 2:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(1.25))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.25))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(1.25));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.25));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.25x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -51,14 +40,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 3:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(1.5))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.5))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(1.5));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.5));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.5x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -67,14 +56,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 4:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(1.75))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.75))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(1.75));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.75));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.75x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -83,14 +72,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 5:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(2.0))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.0))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(2.0));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.0));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -99,14 +88,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 6:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(2.25))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.25))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(2.25));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.25));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.25x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -115,14 +104,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 7:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(2.5))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.5))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(2.5));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.5));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.5x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -131,14 +120,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 8:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(2.75))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.75))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(2.75));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.75));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.75x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -147,14 +136,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 9:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(3.0))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.0))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(3.0));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.0));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -163,14 +152,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 10:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(3.25))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.25))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(3.25));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.25));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3.25x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -179,14 +168,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 11:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(3.5))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.5))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(3.5));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.5));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3.5x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -195,7 +184,7 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
             }
@@ -203,16 +192,16 @@ class BoosterListener implements Listener {
 
         if($hand->getNamedTag()->getTag("MiningXpBooster")) {
             $multiplier = $hand->getNamedTag()->getFloat("MiningXpBooster");
-            $activeMultiplier = $this->miningManager->getMultiplier($player);
+            $activeMultiplier = EmporiumPrison::getInstance()->getMiningManager()->getMultiplier($player);
 
             if($activeMultiplier > 1) {
                 if($multiplier !== $activeMultiplier) {
-                    $player->sendMessage(Variables::SERVER_PREFIX . "You already have an active Mining XP Booster.");
+                    $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You already have an active Mining XP Booster.");
                 } else {
                     $player->broadcastSound(new BlazeShootSound(), [$player]);
                     $hand->setCount($count - 1);
                     $player->getInventory()->setItemInHand($hand);
-                    $this->miningManager->addTime($player);
+                    EmporiumPrison::getInstance()->getMiningManager()->addTime($player);
                 }
             } else {
                 switch($multiplier) {
@@ -233,7 +222,7 @@ class BoosterListener implements Listener {
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
 
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have applied a " . TF::WHITE . $multiplier . "x" . TF::AQUA . " Mining XP Booster");
-                        $this->miningManager->start($player, $multiplier);
+                        EmporiumPrison::getInstance()->getMiningManager()->start($player, $multiplier);
                         break;
 
                 }
@@ -255,9 +244,9 @@ class BoosterListener implements Listener {
             switch($booster) {
 
                 case 2:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(1.25))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.25))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(1.25));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.25));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.25x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -266,14 +255,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 3:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(1.5))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.5))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(1.5));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.5));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.5x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -282,14 +271,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 4:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(1.75))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.75))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(1.75));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(1.75));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "1.75x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -298,14 +287,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 5:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(2.0))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.0))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(2.0));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.0));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -314,14 +303,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 6:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(2.25))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.25))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(2.25));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.25));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.25x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -330,14 +319,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 7:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(2.5))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.5))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(2.5));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.5));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.5x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -346,14 +335,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 8:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(2.75))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.75))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(2.75));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(2.75));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "2.75x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -362,14 +351,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 9:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(3.0))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.0))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(3.0));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.0));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -378,14 +367,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 10:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(3.25))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.25))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(3.25));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.25));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3.25x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -394,14 +383,14 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
 
                 case 11:
-                    if($player->getInventory()->canAddItem($this->boosters->MiningXpBooster(3.5))) {
+                    if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.5))) {
                         # give player item
-                        $player->getInventory()->addItem($this->boosters->MiningXpBooster(3.5));
+                        $player->getInventory()->addItem(EmporiumPrison::getInstance()->getBoosters()->MiningXpBooster(3.5));
                         # send confirmation
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have received a " . TF::WHITE . "3.5x " . TF::GREEN . "Mining XP Booster.");
                         # remove item from stack
@@ -410,7 +399,7 @@ class BoosterListener implements Listener {
                         # send sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(Variables::SERVER_PREFIX . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
                     }
                     break;
             }
@@ -418,7 +407,7 @@ class BoosterListener implements Listener {
 
         if($hand->getNamedTag()->getTag("MiningXpBooster")) {
             $multiplier = $hand->getNamedTag()->getFloat("MiningXpBooster");
-            $activeMultiplier = $this->miningManager->getMultiplier($player);
+            $activeMultiplier = EmporiumPrison::getInstance()->getMiningManager()->getMultiplier($player);
 
             if($activeMultiplier > 1) {
                 if($multiplier !== $activeMultiplier) {
@@ -427,7 +416,7 @@ class BoosterListener implements Listener {
                     $player->broadcastSound(new BlazeShootSound(), [$player]);
                     $hand->setCount($count - 1);
                     $player->getInventory()->setItemInHand($hand);
-                    $this->miningManager->addTime($player);
+                    EmporiumPrison::getInstance()->getMiningManager()->addTime($player);
                 }
             } else {
                 switch($multiplier) {
@@ -448,7 +437,7 @@ class BoosterListener implements Listener {
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
 
                         $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have applied a " . TF::WHITE . $multiplier . "x" . TF::AQUA . " Mining XP Booster");
-                        $this->miningManager->start($player, $multiplier);
+                        EmporiumPrison::getInstance()->getMiningManager()->start($player, $multiplier);
                         break;
 
                 }

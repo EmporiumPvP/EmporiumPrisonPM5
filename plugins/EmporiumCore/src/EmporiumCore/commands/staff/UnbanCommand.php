@@ -5,13 +5,10 @@ namespace EmporiumCore\Commands\Staff;
 use EmporiumCore\EmporiumCore;
 use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Variables;
-
-use JsonException;
-
+use EmporiumData\DataManager;
+use EmporiumData\Loader;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
-
-use EmporiumCore\Managers\Data\DataManager;
-
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
@@ -22,35 +19,33 @@ class UnbanCommand extends Command {
         $this->setPermission("emporiumcore.command.unban");
     }
 
-    /**
-     * @throws JsonException
-     */
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
 
         if(!$sender instanceof Player) {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.unban");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.unban");
+        if (!$permission) {
             $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
 
         if (isset($args[0])) {
-            if (file_exists(EmporiumCore::getInstance()->getDataFolder() . "Players/$args[0].yml")) {
-                DataManager::setOfflinePlayerData($args[0], "Players", "Banned", false);
-                DataManager::setOfflinePlayerData($args[0], "Cooldowns", "Ban", 0);
+            $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[0]);
+            if (file_exists(Loader::PLAYER_FOLDER . $player->getXuid() . ".json")) {
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.banned", false);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.ban", 0);
                 $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have unbanned " . TF::YELLOW . "$args[0].");
                 // Send Logs
                 WebhookEvent::staffWebhook($sender, $args[0], "Unban");
                 return true;
             } else {
-                $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "That player cannot be found.");
+                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "That player cannot be found.");
                 return false;
             }
         } else {
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::GRAY . "Usage: /unban <player>");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Usage: /unban <player>");
             return false;
         }
     }

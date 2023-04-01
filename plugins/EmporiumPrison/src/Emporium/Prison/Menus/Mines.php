@@ -4,22 +4,21 @@ namespace Emporium\Prison\Menus;
 
 use Emporium\Prison\library\formapi\SimpleForm;
 use Emporium\Prison\EmporiumPrison;
-use EmporiumData\DataManager;
 use Emporium\Prison\Variables;
+
+use EmporiumData\DataManager;
 
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
 
+use pocketmine\block\VanillaBlocks;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
-
 use pocketmine\player\Player;
-
 use pocketmine\utils\TextFormat as TF;
-
 use pocketmine\world\Position;
 use pocketmine\world\sound\EndermanTeleportSound;
 use pocketmine\world\sound\ItemFrameAddItemSound;
@@ -32,7 +31,7 @@ class Mines extends Menu {
         $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) {
             $player = $transaction->getPlayer();
             $itemClicked = $transaction->getItemClicked();
-            $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
+            $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
             # coal mine
             if($itemClicked->getId() === ItemIds::COAL_ORE) {
                 $player->teleport(new Position(-1444.5, 246, -39.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
@@ -150,7 +149,7 @@ class Mines extends Menu {
     # mines
     public function coalWarp(): Item {
 
-        $item = StringToItemParser::getInstance()->parse("coal_ore");
+        $item = VanillaBlocks::COAL_ORE()->asItem();
         $item->setCustomName(TF::BOLD . TF::DARK_GRAY . "Coal Mine");
         $lore = [
             TF::BOLD . TF::GREEN . "UNLOCKED",
@@ -165,11 +164,11 @@ class Mines extends Menu {
     }
     public function ironWarp(Player $player): Item {
 
-        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
+        $item = VanillaBlocks::IRON_ORE()->asItem();
+        $item->setCustomName(TF::BOLD . TF::GRAY . "Iron Mine");
         if($playerLevel >= 10) {
             # mine unlocked
-            $item = StringToItemParser::getInstance()->parse("iron_ore");
-            $item->setCustomName(TF::BOLD . TF::GRAY . "Iron Mine");
             $lore = [
                 TF::BOLD . TF::GREEN . "UNLOCKED",
                 "§r",
@@ -178,11 +177,8 @@ class Mines extends Menu {
                 "§r",
                 TF::GRAY . "(Click to teleport)"
             ];
-            $item->setLore($lore);
         } else {
             # mine locked
-            $item = StringToItemParser::getInstance()->parse("iron_ore");
-            $item->setCustomName(TF::BOLD . TF::GRAY . "Iron Mine");
             $lore = [
                 TF::BOLD . TF::RED . "LOCKED",
                 "§r",
@@ -192,17 +188,17 @@ class Mines extends Menu {
                 TF::RED . "Reach the required level or",
                 TF::RED . "to access this mine."
             ];
-            $item->setLore($lore);
         }
+        $item->setLore($lore);
         return $item;
     }
     public function lapisWarp(Player $player): Item {
 
-        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
+        $item = VanillaBlocks::LAPIS_LAZULI_ORE()->asItem();
+        $item->setCustomName(TF::BOLD . TF::BLUE . "Lapis Mine");
         if($playerLevel >= 30) {
             # mine unlocked
-            $item = StringToItemParser::getInstance()->parse("lapis_ore");
-            $item->setCustomName(TF::BOLD . TF::BLUE . "Lapis Mine");
             $lore = [
                 TF::BOLD . TF::GREEN . "UNLOCKED",
                 "§r",
@@ -211,11 +207,8 @@ class Mines extends Menu {
                 "§r",
                 TF::GRAY . "(Click to teleport)"
             ];
-            $item->setLore($lore);
         } else {
             # mine locked
-            $item = StringToItemParser::getInstance()->parse("lapis_ore");
-            $item->setCustomName(TF::BOLD . TF::BLUE . "Lapis Mine");
             $lore = [
                 TF::BOLD . TF::RED . "LOCKED",
                 "§r",
@@ -225,17 +218,17 @@ class Mines extends Menu {
                 TF::RED . "Reach the required level or",
                 TF::RED . "to access this mine."
             ];
-            $item->setLore($lore);
         }
+        $item->setLore($lore);
         return $item;
     }
     public function redstoneWarp(Player $player): Item {
 
-        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
+        $item = VanillaBlocks::REDSTONE_ORE()->asItem();
+        $item->setCustomName(TF::BOLD . TF::DARK_RED . "Redstone Mine");
         if($playerLevel >= 50) {
             # mine unlocked
-            $item = StringToItemParser::getInstance()->parse("redstone_ore");
-            $item->setCustomName(TF::BOLD . TF::DARK_RED . "Redstone Mine");
             $lore = [
                 TF::BOLD . TF::GREEN . "UNLOCKED",
                 "§r",
@@ -244,11 +237,8 @@ class Mines extends Menu {
                 "§r",
                 TF::GRAY . "(Click to teleport)"
             ];
-            $item->setLore($lore);
         } else {
             # mine locked
-            $item = StringToItemParser::getInstance()->parse("redstone_ore");
-            $item->setCustomName(TF::BOLD . TF::DARK_RED . "Redstone Mine");
             $lore = [
                 TF::BOLD . TF::RED . "LOCKED",
                 "§r",
@@ -258,17 +248,17 @@ class Mines extends Menu {
                 TF::RED . "Reach the required level or",
                 TF::RED . "to access this mine."
             ];
-            $item->setLore($lore);
         }
+        $item->setLore($lore);
         return $item;
     }
     public function goldMine(Player $player): Item {
 
-        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
+        $item = VanillaBlocks::GOLD_ORE()->asItem();
+        $item->setCustomName(TF::BOLD . TF::YELLOW . "Gold Mine");
         if($playerLevel >= 70) {
             # mine unlocked
-            $item = StringToItemParser::getInstance()->parse("gold_ore");
-            $item->setCustomName(TF::BOLD . TF::YELLOW . "Gold Mine");
             $lore = [
                 TF::BOLD . TF::GREEN . "UNLOCKED",
                 "§r",
@@ -277,11 +267,8 @@ class Mines extends Menu {
                 "§r",
                 TF::GRAY . "(Click to teleport)"
             ];
-            $item->setLore($lore);
         } else {
             # mine locked
-            $item = StringToItemParser::getInstance()->parse("gold_ore");
-            $item->setCustomName(TF::BOLD . TF::YELLOW . "Gold Mine");
             $lore = [
                 TF::BOLD . TF::RED . "LOCKED",
                 "§r",
@@ -291,17 +278,17 @@ class Mines extends Menu {
                 TF::RED . "Reach the required level or",
                 TF::RED . "to access this mine."
             ];
-            $item->setLore($lore);
         }
+        $item->setLore($lore);
         return $item;
     }
     public function diamondMine(Player $player): Item {
 
-        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
+        $item = VanillaBlocks::DIAMOND_ORE()->asItem();
+        $item->setCustomName(TF::BOLD . TF::AQUA . "Diamond Mine");
         if($playerLevel >= 90) {
             # mine unlocked
-            $item = StringToItemParser::getInstance()->parse("diamond_ore");
-            $item->setCustomName(TF::BOLD . TF::AQUA . "Diamond Mine");
             $lore = [
                 TF::BOLD . TF::GREEN . "UNLOCKED",
                 "§r",
@@ -310,11 +297,8 @@ class Mines extends Menu {
                 "§r",
                 TF::GRAY . "(Click to teleport)"
             ];
-            $item->setLore($lore);
         } else {
             # mine locked
-            $item = StringToItemParser::getInstance()->parse("diamond_ore");
-            $item->setCustomName(TF::BOLD . TF::AQUA . "Diamond Mine");
             $lore = [
                 TF::BOLD . TF::RED . "LOCKED",
                 "§r",
@@ -324,17 +308,17 @@ class Mines extends Menu {
                 TF::RED . "Reach the required level or",
                 TF::RED . "to access this mine."
             ];
-            $item->setLore($lore);
         }
+        $item->setLore($lore);
         return $item;
     }
     public function emeraldMine(Player $player): Item {
 
-        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "level");
+        $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
+        $item = VanillaBlocks::EMERALD_ORE()->asItem();
+        $item->setCustomName(TF::BOLD . TF::GREEN . "Emerald Mine");
         if($playerLevel >= 100) {
             # mine unlocked
-            $item = StringToItemParser::getInstance()->parse("emerald_ore");
-            $item->setCustomName(TF::BOLD . TF::GREEN . "Emerald Mine");
             $lore = [
                 TF::BOLD . TF::GREEN . "UNLOCKED",
                 "§r",
@@ -343,11 +327,8 @@ class Mines extends Menu {
                 "§r",
                 TF::GRAY . "(Click to teleport)"
             ];
-            $item->setLore($lore);
         } else {
             # mine locked
-            $item = StringToItemParser::getInstance()->parse("emerald_ore");
-            $item->setCustomName(TF::BOLD . TF::GREEN . "Emerald Mine");
             $lore = [
                 TF::BOLD . TF::RED . "LOCKED",
                 "§r",
@@ -357,8 +338,8 @@ class Mines extends Menu {
                 TF::RED . "Reach the required level or",
                 TF::RED . "to access this mine."
             ];
-            $item->setLore($lore);
         }
+        $item->setLore($lore);
         return $item;
     }
     # badlands
@@ -441,7 +422,7 @@ class Mines extends Menu {
             $ironPickaxe = VanillaItems::IRON_PICKAXE();
             $diamondPickaxe = VanillaItems::DIAMOND_PICKAXE();
 
-            $playerLevel = EmporiumPrison::getPlayerLevelManager()->getPlayerLevel($player);
+            $playerLevel = EmporiumPrison::getInstance()->getPlayerLevelManager()->getPlayerLevel($player);
 
             if($data === null) {
                 return;
@@ -554,7 +535,7 @@ class Mines extends Menu {
                     break;
             }
         });
-        $playerLevel = EmporiumPrison::getPlayerLevelManager()->getPlayerLevel($player);
+        $playerLevel = EmporiumPrison::getInstance()->getPlayerLevelManager()->getPlayerLevel($player);
 
         $form->setTitle(TF::DARK_AQUA);
         $form->setContent(TF::GRAY . "Select a mine to teleport to it");
@@ -648,7 +629,7 @@ class Mines extends Menu {
     }
     public function coalMineInfo($player): SimpleForm {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->MinesInfoForm($player);
         });
         $form->setTitle("Coal Mine - Information");
@@ -659,7 +640,7 @@ class Mines extends Menu {
     }
     public function ironMineInfo($player): SimpleForm {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->MinesInfoForm($player);
         });
         $form->setTitle("Iron Mine - Information");
@@ -670,7 +651,7 @@ class Mines extends Menu {
     }
     public function lapisMineInfo($player): SimpleForm {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->MinesInfoForm($player);
         });
         $form->setTitle("Lapis Mine - Information");
@@ -681,7 +662,7 @@ class Mines extends Menu {
     }
     public function redstoneMineInfo($player): SimpleForm {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->MinesInfoForm($player);
         });
         $form->setTitle("Redstone Mine - Information");
@@ -692,7 +673,7 @@ class Mines extends Menu {
     }
     public function goldMineInfo($player): SimpleForm {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->MinesInfoForm($player);
         });
         $form->setTitle("Gold Mine - Information");
@@ -703,7 +684,7 @@ class Mines extends Menu {
     }
     public function diamondMineInfo($player): SimpleForm {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->MinesInfoForm($player);
         });
         $form->setTitle("Diamond Mine - Information");
@@ -714,7 +695,7 @@ class Mines extends Menu {
     }
     public function emeraldMineInfo($player): SimpleForm {
 
-        $form = new SimpleForm(function($player, $data) {
+        $form = new SimpleForm(function($player) {
             $this->MinesInfoForm($player);
         });
         $form->setTitle("Emerald Mine - Information");

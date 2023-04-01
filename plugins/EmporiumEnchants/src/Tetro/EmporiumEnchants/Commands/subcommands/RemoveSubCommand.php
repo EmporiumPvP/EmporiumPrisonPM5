@@ -8,7 +8,7 @@ use Tetro\EmporiumEnchants\Utils\Commando\args\RawStringArgument;
 use Tetro\EmporiumEnchants\Utils\Commando\BaseSubCommand;
 use Tetro\EmporiumEnchants\Utils\Commando\exception\ArgumentOrderException;
 use Tetro\EmporiumEnchants\Core\CustomEnchantManager;
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 use Tetro\EmporiumEnchants\Utils\Utils;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -16,7 +16,7 @@ use pocketmine\Utils\TextFormat;
 
 class RemoveSubCommand extends BaseSubCommand
 {
-    /** @var Loader */
+    /** @var EmporiumEnchants */
     protected $plugin;
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void

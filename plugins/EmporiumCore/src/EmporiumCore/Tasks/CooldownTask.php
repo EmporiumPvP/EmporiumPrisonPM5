@@ -2,12 +2,10 @@
 
 namespace EmporiumCore\Tasks;
 
-use EmporiumCore\Variables;
-use JsonException;
-use pocketmine\scheduler\Task;
-
 use EmporiumCore\EmporiumCore;
-use EmporiumCore\Managers\Data\{DataManager, ServerManager};
+use EmporiumCore\Variables;
+use EmporiumData\DataManager;
+use pocketmine\scheduler\Task;
 
 class CooldownTask extends Task {
 
@@ -21,21 +19,10 @@ class CooldownTask extends Task {
     # Get all Players
 	function getPlayers(): array
     {
-		$files = scandir(EmporiumCore::getInstance()->getDataFolder() . "PlayerData/Cooldowns");
-		$players = [];
-		foreach($files as $file) {
-            if (in_array($file, ["..", "."])) continue;
-            if (str_contains(".tmp", $file)) continue;
-			$players[] = str_replace(".yml", "", $file);
-		}
-		return $players;
+		return DataManager::getInstance()->getPlayerNames();
 	}
 
     # Task Execution
-
-    /**
-     * @throws JsonException
-     */
     public function onRun(): void {
 
         // For all Files
@@ -43,196 +30,166 @@ class CooldownTask extends Task {
 
             # Variables
             // Combat
-            $apples = DataManager::getOfflinePlayerData($player, "Cooldowns", "Apples");
-            $pearls = DataManager::getOfflinePlayerData($player, "Cooldowns", "Pearls");
-            $combat = DataManager::getOfflinePlayerData($player, "Cooldowns", "Combat");
+            $apples = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.apples");
+            $pearls = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.pearls");
+            $combat = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.combat");
             // Punishment
-            $antispam = DataManager::getOfflinePlayerData($player, "Cooldowns", "AntiSpam");
-            $ban = DataManager::getOfflinePlayerData($player, "Cooldowns", "Ban");
-            $freeze = DataManager::getOfflinePlayerData($player, "Cooldowns", "Freeze");
-            $mute = DataManager::getOfflinePlayerData($player, "Cooldowns", "Mute");
+            $antispam = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.anti_spam");
+            $ban = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.ban");
+            $freeze = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.freeze");
+            $mute = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.mute");
             # RankKits
-            $kitNoble = DataManager::getOfflinePlayerData($player, "Cooldowns", "KitNoble");
-            $kitImperial = DataManager::getOfflinePlayerData($player, "Cooldowns", "KitImperial");
-            $kitSupreme = DataManager::getOfflinePlayerData($player, "Cooldowns", "KitSupreme");
-            $kitMajesty = DataManager::getOfflinePlayerData($player, "Cooldowns", "KitMajesty");
-            $kitEmperor = DataManager::getOfflinePlayerData($player, "Cooldowns", "KitEmperor");
-            $kitPresident = DataManager::getOfflinePlayerData($player, "Cooldowns", "KitPresident");
+            $kitNoble = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.rank_kit_noble");
+            $kitImperial = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.rank_kit_imperial");
+            $kitSupreme = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.rank_kit_supreme");
+            $kitMajesty = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.rank_kit_majesty");
+            $kitEmperor = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.rank_kit_emperor");
+            $kitPresident = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.rank_kit_president");
             # GKits
-            $gkitHeroicVulkarion = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicVulkarion");
-            $gkitHeroicZenith = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicZenith");
-            $gkitHeroicColossus = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicColossus");
-            $gkitHeroicWarlock = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicWarlock");
-            $gkitHeroicSlaughter = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicSlaughter");
-            $gkitHeroicEnchanter = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicEnchanter");
-            $gkitHeroicAtheos = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicAtheos");
-            $gkitHeroicIapetus = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicIapetus");
-            $gkitHeroicBroteas = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicBroteas");
-            $gkitHeroicAres = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicAres");
-            $gkitHeroicGrimReaper = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicGrimReaper");
-            $gkitHeroicExecutioner = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHeroicExecutioner");
-            $gkitBlacksmith = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitBlacksmith");
-            $gkitHero = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHero");
-            $gkitCyborg = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitCyborg");
-            $gkitCrucible = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitCrucible");
-            $gkitHunter = DataManager::getOfflinePlayerData($player, "Cooldowns", "GKitHunter");
+            $gkitHeroicVulkarion = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_vulkarion");
+            $gkitHeroicZenith = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_zenith");
+            $gkitHeroicColossus = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_colossus");
+            $gkitHeroicWarlock = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_warlock");
+            $gkitHeroicSlaughter = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_slaughter");
+            $gkitHeroicEnchanter = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_enchanter");
+            $gkitHeroicAtheos = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_atheos");
+            $gkitHeroicIapetus = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_iapetus");
+            $gkitHeroicBroteas = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_broteas");
+            $gkitHeroicAres = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_ares");
+            $gkitHeroicGrimReaper = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_grim_reaper");
+            $gkitHeroicExecutioner = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_executioner");
+            $gkitBlacksmith = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_blacksmith");
+            $gkitHero = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_hero");
+            $gkitCyborg = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_cyborg");
+            $gkitCrucible = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_crucible");
+            $gkitHunter = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_hunter");
             # prestige kits
-            $prestigekit1 = DataManager::getOfflinePlayerData($player, "Cooldowns", "PrestigeKit1");
-            $prestigekit2 = DataManager::getOfflinePlayerData($player, "Cooldowns", "PrestigeKit2");
-            $prestigekit3 = DataManager::getOfflinePlayerData($player, "Cooldowns", "PrestigeKit3");
-            $prestigekit4 = DataManager::getOfflinePlayerData($player, "Cooldowns", "PrestigeKit4");
-            $prestigekit5 = DataManager::getOfflinePlayerData($player, "Cooldowns", "PrestigeKit5");
-            # Boosters
-            $moneyBoost = DataManager::getOfflinePlayerData($player, "Cooldowns", "MoneyBooster");
-            $relicBoost = DataManager::getOfflinePlayerData($player, "Cooldowns", "RelicBooster");
-            $keyBoost = DataManager::getOfflinePlayerData($player, "Cooldowns", "KeyBooster");
+            $prestigekit1 = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit1");
+            $prestigekit2 = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit2");
+            $prestigekit3 = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit3");
+            $prestigekit4 = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit4");
+            $prestigekit5 = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit5");
             # Set Punishments
-            DataManager::setOfflinePlayerData($player, "Players", "AntiAuto", 0);
+            DataManager::getInstance()->setPlayerData($player, "anti_auto", 0);
 
             // Check for Punishment
             if ($ban === 0) {
-                DataManager::setOfflinePlayerData($player, "Players", "Banned", false);
+                DataManager::getInstance()->setPlayerData($player, "profile.banned", false);
             }
             if ($mute === 0) {
-                DataManager::setOfflinePlayerData($player, "Players", "Muted", false);
+                DataManager::getInstance()->setPlayerData($player, "profile.muted", false);
             }
 
             // Combat
             if ($apples > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "Apples", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.apples", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.apples") - 1);
             }
             if ($pearls > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "Pearls", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.pearls", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.pearls") - 1);
             }
             if ($combat > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "Combat", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.combat", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.combat") - 1);
             }
             // Punishment
             if ($antispam > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "AntiSpam", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.anti_spam", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.anti_spam") - 1);
             }
             if ($ban > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "Ban", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.ban", (int) DataManager::getInstance()->getPlayerData($player, "ban") - 1);
             }
             if ($freeze > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "Freeze", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.freeze", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.freeze") - 1);
             }
             if ($mute > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "Mute", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.mute", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.mute") - 1);
             }
             # RankKits
             if ($kitNoble > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitNoble", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.kit_noble", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.kit_noble") - 1);
             }
             if ($kitImperial > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitImperial", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.kit_imperial", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.kit_imperial") - 1);
             }
             if ($kitSupreme > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitSupreme", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.kit_supreme", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.kit_supreme") - 1);
             }
             if ($kitMajesty > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitMajesty", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.kit_majesty", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.kit_majesty") - 1);
             }
             if ($kitEmperor > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitEmperor", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.kit_emperor", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.kit_emperor") - 1);
             }
             if ($kitPresident > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitPresident", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.kit_president", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.kit_president") - 1);
             }
             # gkits
             if ($gkitHeroicVulkarion > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicVulkarion", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_vulkarion", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_vulkarion") - 1);
             }
             if ($gkitHeroicZenith > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicZenith", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_zenith", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_zenith") - 1);
             }
             if ($gkitHeroicColossus > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicColossus", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_colossus", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_colossus") - 1);
             }
             if ($gkitHeroicWarlock > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicWarlock", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_warlock", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_warlock") - 1);
             }
             if ($gkitHeroicSlaughter > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicSlaughter", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_slaughter", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_slaughter") - 1);
             }
             if ($gkitHeroicEnchanter > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicEnchanter", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_enchanter", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_enchanter") - 1);
             }
             if ($gkitHeroicAtheos > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicAtheos", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_atheos", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_atheos") - 1);
             }
             if ($gkitHeroicIapetus > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicIapetus", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_iapetus", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_iapetus") - 1);
             }
             if ($gkitHeroicBroteas > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicBroteas", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_broteas", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_broteas") - 1);
             }
             if ($gkitHeroicAres > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicAres", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_ares", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_ares") - 1);
             }
             if ($gkitHeroicGrimReaper > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicGrimReaper", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_grim_reaper", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_grim_reaper") - 1);
             }
             if ($gkitHeroicExecutioner > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHeroicExecutioner", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_heroic_executioner", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_heroic_executioner") - 1);
             }
             if ($gkitBlacksmith > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitBlacksmith", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_blacksmith", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_blacksmith") - 1);
             }
             if ($gkitHero > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHero", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_hero", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_hero") - 1);
             }
             if ($gkitCyborg > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitCyborg", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_cyborg", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_cyborg") - 1);
             }
             if ($gkitCrucible > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitCrucible", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_crucible", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_crucible") - 1);
             }
             if ($gkitHunter > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "GKitHunter", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.gkit_hunter", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.gkit_hunter") - 1);
             }
             # prestige kits
             if ($prestigekit1 > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitPrestige1", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.prestige_kit1", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit1") - 1);
             }
             if ($prestigekit2 > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitPrestige2", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.prestige_kit2", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit2") - 1);
             }
             if ($prestigekit3 > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitPrestige3", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.prestige_kit3", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit3") - 1);
             }
             if ($prestigekit4 > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitPrestige4", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.prestige_kit4", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit4") - 1);
             }
             if ($prestigekit5 > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KitPrestige5", 1);
+                DataManager::getInstance()->setPlayerData($player,  "cooldown.prestige_kit5", (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit5") - 1);
             }
-            # boosters
-            if ($moneyBoost > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "MoneyBooster", 1);
-            }
-            if ($relicBoost > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "RelicBooster", 1);
-            }
-            if ($keyBoost > 0) {
-                DataManager::takeOfflinePlayerData($player, "Cooldowns", "KeyBooster", 1);
-            }
-        }
-
-        # global boosters
-        $globalMoneyBoost = ServerManager::getData("Boosters", "Money");
-        $globalRelicBoost = ServerManager::getData("Boosters", "Relic");
-        $globalKeyBoost = ServerManager::getData("Boosters", "Key");
-
-        # boosters
-        if ($globalMoneyBoost > 0) {
-            ServerManager::takeData("Boosters", "Money", 1);
-        }
-        if ($globalRelicBoost > 0) {
-            ServerManager::takeData("Boosters", "Relic", 1);
-        }
-        if ($globalKeyBoost > 0) {
-            ServerManager::takeData("Boosters", "Key", 1);
         }
 
         // For all Online Players
@@ -240,52 +197,26 @@ class CooldownTask extends Task {
 
             # Variables
             // Combat
-            $apples = DataManager::getData($player, "Cooldowns", "Apples");
-            $pearls = DataManager::getData($player, "Cooldowns", "Pearls");
-            $combat = DataManager::getData($player, "Cooldowns", "Combat");
+            $apples = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.apples");
+            $pearls = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.pearls");
+            $combat = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.combat");
             // Punishment
-            $mute = DataManager::getData($player, "Cooldowns", "Mute");
-            // Boosters
-            $globalMoneyBoost = ServerManager::getData("Boosters", "Money");
-            $globalRelicBoost = ServerManager::getData("Boosters", "Relic");
-            $globalKeyBoost = ServerManager::getData("Boosters", "Key");
-            $moneyBoost = DataManager::getData($player, "Cooldowns", "MoneyBooster");
-            $relicBoost = DataManager::getData($player, "Cooldowns", "RelicBooster");
-            $keyBoost = DataManager::getData($player, "Cooldowns", "KeyBooster");
+            $mute = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.mute");
 
             # Send Alerts
             // Combat
             if ($apples === 1) {
-                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7Your apple cooldown has ended.");
+                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7Your apple cooldown has ended");
             }
             if ($pearls === 1) {
-                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7Your enderpearl cooldown has ended.");
+                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7Your enderpearl cooldown has ended");
             }
             if ($combat === 1) {
-                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7You are no longer in combat.");
+                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7You are no longer in combat");
             }
             // Punishment
             if ($mute === 1) {
-                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7You are no longer muted.");
-            }
-            // Boosters
-            if ($globalMoneyBoost === 1) {
-                $player->getServer()->broadcastMessage(Variables::SERVER_PREFIX . "§r§7The Global Money Booster has worn off.");
-            }
-            if ($globalRelicBoost === 1) {
-                $player->getServer()->broadcastMessage(Variables::SERVER_PREFIX . "§r§7The Global Relic Booster has worn off.");
-            }
-            if ($globalKeyBoost === 1) {
-                $player->getServer()->broadcastMessage(Variables::SERVER_PREFIX . "§r§7The Global Key Booster has worn off.");
-            }
-            if ($moneyBoost === 1) {
-                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7Your Personal Money Booster has worn off.");
-            }
-            if ($relicBoost === 1) {
-                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7Your Personal Relic Booster has worn off.");
-            }
-            if ($keyBoost === 1) {
-                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7Your Personal Key Booster has worn off.");
+                $player->sendMessage(Variables::SERVER_PREFIX . "§r§7You are no longer muted");
             }
         }
     }

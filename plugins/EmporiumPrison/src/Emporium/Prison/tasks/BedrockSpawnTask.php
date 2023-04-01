@@ -4,9 +4,7 @@ namespace Emporium\Prison\tasks;
 
 use pocketmine\block\Block;
 use pocketmine\block\VanillaBlocks;
-
 use pocketmine\scheduler\Task;
-
 use pocketmine\world\Position;
 
 class BedrockSpawnTask extends Task {
@@ -20,6 +18,6 @@ class BedrockSpawnTask extends Task {
     }
 
     public function onRun(): void {
-        $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, VanillaBlocks::BEDROCK());
+        $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, VanillaBlocks::STONE());
     }
 }

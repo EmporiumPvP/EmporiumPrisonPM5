@@ -2,15 +2,14 @@
 
 namespace EmporiumCore\Commands\Default;
 
-use pocketmine\command\Command;
-use pocketmine\command\CommandSender;
-use pocketmine\inventory\Inventory;
-use pocketmine\player\Player;
-use pocketmine\Server;
-
+use EmporiumData\PermissionsManager;
 use muqsit\playervaults\PlayerVaults;
 use muqsit\playervaults\vault\Vault;
 use muqsit\playervaults\vault\VaultAccess;
+use pocketmine\command\Command;
+use pocketmine\command\CommandSender;
+use pocketmine\player\Player;
+use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 
 class ItemsCommand extends Command {
@@ -25,11 +24,10 @@ class ItemsCommand extends Command {
             return;
         }
 
-        /*
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.items");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.items");
         if(!$permission) {
             return;
-        }*/
+        }
 
         # send player pv 10
         /** @var PlayerVaults $vaults */
@@ -38,7 +36,7 @@ class ItemsCommand extends Command {
         $vaults->loadVault($sender->getName(), 10, function(Vault $vault, VaultAccess $access) use ($vaults, $sender): void {
             $inventory = $vault->getInventory();
             if(count($inventory->getContents()) === 0) {
-                $sender->sendMessage(TextFormat::RED . "You have no Blackscroll in your collection chest");
+                $sender->sendMessage(TextFormat::RED . "You have no Items in your collection chest");
             } else {
                 $vaults->openVault($sender, $sender->getName(), 10);
             }

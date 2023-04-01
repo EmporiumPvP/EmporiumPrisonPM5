@@ -2,7 +2,9 @@
 
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
+use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\Managers\PickaxeManager;
+use pocketmine\block\BlockLegacyIds;
 use pocketmine\item\Item;
 use pocketmine\event\Event;
 use pocketmine\item\ItemIds;
@@ -17,7 +19,7 @@ class EnergyCollectorCE extends ReactiveEnchantment {
 
     public string $name = "Energy Collector";
     public string $description = "Gain additional energy when mining.";
-    public int $rarity = CustomEnchant::RARITY_PICKAXE;
+    public int $rarity = CustomEnchant::RARITY_ULTIMATE;
     public int $cooldownDuration = 0;
     public int $maxLevel = 5;
     public int $chance = 1;
@@ -28,6 +30,25 @@ class EnergyCollectorCE extends ReactiveEnchantment {
     public function getReagent(): array {
         return [BlockBreakEvent::class];
     }
+
+    private array $ores = [
+        BlockLegacyIds::COAL_ORE,
+        BlockLegacyIds::COAL_BLOCK,
+        BlockLegacyIds::IRON_ORE,
+        BlockLegacyIds::IRON_BLOCK,
+        BlockLegacyIds::LAPIS_ORE,
+        BlockLegacyIds::LAPIS_BLOCK,
+        BlockLegacyIds::REDSTONE_ORE,
+        BlockLegacyIds::LIT_REDSTONE_ORE,
+        BlockLegacyIds::REDSTONE_BLOCK,
+        BlockLegacyIds::GOLD_ORE,
+        BlockLegacyIds::GOLD_BLOCK,
+        BlockLegacyIds::DIAMOND_ORE,
+        BlockLegacyIds::DIAMOND_BLOCK,
+        BlockLegacyIds::EMERALD_ORE,
+        BlockLegacyIds::EMERALD_BLOCK,
+        BlockLegacyIds::QUARTZ_ORE
+    ];
 
     private array $blocks = [
         ItemIds::COAL_ORE, ItemIds::COAL_BLOCK,
@@ -43,6 +64,16 @@ class EnergyCollectorCE extends ReactiveEnchantment {
     public function react(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void {
 
         if($event instanceof BlockBreakEvent) {
+
+            if($event->isCancelled()) return;
+
+            $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+
+            if(!in_array($blockId, $this->ores)) {
+                $event->cancel();
+                return;
+            }
+
             $item = $event->getPlayer()->getInventory()->getItemInHand();
             if($item->getNamedTag()->getString("PickaxeType") === null) {
                 return;
@@ -53,7 +84,7 @@ class EnergyCollectorCE extends ReactiveEnchantment {
                 $pickaxeEnergy = $item->getNamedTag()->getInt("Energy");
             }
 
-            $pickaxeManager = new PickaxeManager($player);
+            $pickaxeManager = EmporiumPrison::getInstance()->getPickaxeManager();
 
             $block = $event->getBlock();
             $blockId = $block->getIdInfo()->getBlockId();
@@ -155,6 +186,11 @@ class EnergyCollectorCE extends ReactiveEnchantment {
             }
             $this->setCooldown($player, 1);
         }
+    }
+
+    public function getPriority(): int
+    {
+        return 2;
     }
 
 }

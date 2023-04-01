@@ -2,13 +2,12 @@
 
 namespace EmporiumCore\Commands\Default;
 
-use EmporiumCore\Variables;
-use JsonException;
-use pocketmine\player\Player;
-use pocketmine\command\{Command, CommandSender};
+use EmporiumData\DataManager;
+use EmporiumData\PermissionsManager;
 
-use EmporiumCore\Managers\Data\DataManager;
-use pocketmine\utils\TextFormat;
+use pocketmine\command\{Command, CommandSender};
+use pocketmine\player\Player;
+use pocketmine\utils\TextFormat as TF;
 
 class GambleCommand extends Command {
 
@@ -19,9 +18,6 @@ class GambleCommand extends Command {
 
     # Command Code
 
-    /**
-     * @throws JsonException
-     */
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
 
         if (!$sender instanceof Player) {
@@ -29,41 +25,46 @@ class GambleCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.gamble");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.gamble");
         if ($permission === false) {
-            $sender->sendMessage(TextFormat::RED . "No permission");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
             return false;
         }
 
         if (isset($args[0])) {
-            $balance = DataManager::getData($sender, "Players", "Money");
-            if (is_numeric($args[0])) {
-                if ($args[0] <= 500000000) {
-                    if ($args[0] > 0) {
-                        if ($balance >= $args[0]) {
+            $money = $args[0];
+            $balance = DataManager::getInstance()->getPlayerData($sender->getXuid(), "profile.money");
+            if (is_numeric($money)) {
+                if ($money <= 500000000) {
+                    if ($money > 0) {
+                        if ($balance >= $money) {
                             $chance = mt_rand(1, 5);
                             if ($chance === 1) {
-                                $sender->sendMessage(Variables::SERVER_PREFIX . "§r§a+" . $args[0]);
-                                DataManager::addData($sender, "Players", "Money", $args[0]);
-                                return true;
+                                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "§r§a+" . $args[0]);
+                            } else {
+                                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "§r§c-" . $money);
                             }
-                            $sender->sendMessage(Variables::SERVER_PREFIX . "§r§c-" . $args[0]);
-                            DataManager::takeData($sender, "Players", "Money", $args[0]);
+                            DataManager::getInstance()->setPlayerData($sender->getXuid(), "profile.money", DataManager::getInstance()->getPlayerData($sender->getXuid(), "profile.money") + $money);
                             return true;
+                        } else {
+                            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "§r§7You do not have enough money to gamble $" . $args[0] . ".");
+                            return false;
                         }
-                        $sender->sendMessage(Variables::SERVER_PREFIX . "§r§7You do not have enough money to gamble $" . $args[0] . ".");
+                    } else {
+                        $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "§r§7Please provide a valid amount to pay.");
                         return false;
                     }
-                    $sender->sendMessage(Variables::SERVER_PREFIX . "§r§7Please provide a valid amount to pay.");
+                } else {
+                    $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "§r§7The max amount of money you can gamble is $500,000,000.");
                     return false;
                 }
-                $sender->sendMessage(Variables::SERVER_PREFIX . "§r§7The max amount of money you can gamble is $500,000,000.");
+            } else {
+                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "§r§7Please enter only numbers for the amount you're gambling.");
                 return false;
             }
-            $sender->sendMessage(Variables::SERVER_PREFIX . "§r§7Please enter only numbers for the amount you're gambling.");
+        } else {
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "§r§7Command Usage: /gamble <amount>");
             return false;
         }
-        $sender->sendMessage(Variables::SERVER_PREFIX . "§r§7Command Usage: /gamble <amount>");
-        return false;
     }
 }

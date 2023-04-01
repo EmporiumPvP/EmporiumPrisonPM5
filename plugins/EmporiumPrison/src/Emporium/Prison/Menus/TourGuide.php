@@ -2,15 +2,15 @@
 
 namespace Emporium\Prison\Menus;
 
-use Emporium\Prison\items\Pickaxes;
+use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\library\formapi\SimpleForm;
+
 use EmporiumData\DataManager;
 
 use pocketmine\player\Player;
-
 use pocketmine\utils\TextFormat as TF;
 
-use Tetro\EPTutorial\Managers\TutorialManager;
+use Tetro\EmporiumTutorial\EmporiumTutorial;
 
 class TourGuide extends Menu {
 
@@ -22,7 +22,7 @@ class TourGuide extends Menu {
     public function MainForm(Player $player): void {
         $form = new SimpleForm(function($player, $data) {
 
-            $tutorialManager = new TutorialManager();
+            $tutorialManager = EmporiumTutorial::getInstance()->getTutorialManager();
             if($data === null) {
                 return;
             }
@@ -38,7 +38,7 @@ class TourGuide extends Menu {
                     $tutorialManager->startTutorial($player);
                 }
                 # give starter pickaxe
-                $player->getInventory()->addItem((new Pickaxes($player))->Trainee());
+                $player->getInventory()->addItem(EmporiumPrison::getInstance()->getPickaxes()->Trainee());
             }
         });
         $form->setTitle("Tour Guide");

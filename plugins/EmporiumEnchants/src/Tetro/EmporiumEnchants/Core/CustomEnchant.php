@@ -10,7 +10,7 @@ use pocketmine\item\enchantment\ItemFlags;
 use pocketmine\player\Player;
 
 # Used Files
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 use Tetro\EmporiumEnchants\Utils\Utils;
 
 # Custom Enchant
@@ -38,7 +38,6 @@ class CustomEnchant extends Enchantment {
     public const RARITY_GODLY = 803;
     public const RARITY_HEROIC = 804;
     public const RARITY_EXECUTIVE = 805;
-    public const RARITY_PICKAXE = 806;
 
     # Type Conversion
     const TYPE_HAND = 0;
@@ -69,7 +68,7 @@ class CustomEnchant extends Enchantment {
     /**
      * @throws JsonException
      */
-    public function __construct(protected Loader $plugin, public int $id) {
+    public function __construct(protected EmporiumEnchants $plugin, public int $id) {
         $this->rarity = array_flip(Utils::RARITY_NAMES)[ucfirst(strtolower($plugin->getEnchantmentData($this->name, "rarities", Utils::RARITY_NAMES[$this->rarity])))];
         $this->maxLevel = (int)$plugin->getEnchantmentData($this->name, "max_levels", $this->maxLevel);
         $this->displayName = (string)$plugin->getEnchantmentData($this->name, "display_names", $this->displayName ?? $this->name);

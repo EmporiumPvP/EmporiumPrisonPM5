@@ -2,13 +2,10 @@
 
 namespace EmporiumCore\Commands\Rank;
 
-use EmporiumCore\Managers\Data\DataManager;
-
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use pocketmine\player\Player;
-
 use pocketmine\world\sound\PotionFinishBrewingSound;
 
 class MilkCommand extends Command {
@@ -24,8 +21,8 @@ class MilkCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.milk");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.milk");
+        if (!$permission) {
             $sender->sendMessage("§cYou do not have permission to use this command.");
             return false;
         }

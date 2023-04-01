@@ -2,10 +2,9 @@
 
 namespace Items\RankKitItems;
 
-use Emporium\Prison\items\Boosters;
+use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\items\Orbs;
 use Emporium\Prison\items\Scrolls;
-use Items\Contraband;
 use Items\Crystals;
 use pocketmine\item\Item;
 
@@ -35,204 +34,155 @@ class President {
         return $energy->EnergyOrb($amount);
     }
 
-    public function booster(): Boosters {
+    public function booster(): Item {
 
         $randomBooster = mt_rand(1, 10);
-        $item = new Boosters();
-        switch($randomBooster) {
-
-            case 1: # energy x2
-                $item->EnergyBooster(2);
-                break;
-
-            case 2: # energy x2.5
-                $item->EnergyBooster(2.5);
-                break;
-
-            case 3: # energy x3
-                $item->EnergyBooster(3);
-                break;
-
-            case 4: # energy x3.5
-                $item->EnergyBooster(3.5);
-                break;
-
-            case 5: # xp x2
-                $item->MiningXpBooster(2);
-                break;
-
-            case 6: # xp x2.5
-                $item->MiningXpBooster(2.5);
-                break;
-
-            case 7: # xp x3
-                $item->MiningXpBooster(3);
-                break;
-
-            case 8: # xp x3.5
-                $item->MiningXpBooster(3.5);
-                break;
-
-            case 9: # mystery energy
-                $item->MysteryEnergyBooster();
-                break;
-
-            case 10: # mystery xp
-                $item->MysteryMiningXpBooster();
-                break;
+        $item = EmporiumPrison::getInstance()->getBoosters();
+        if($randomBooster == 1) {
+            return $item->EnergyBooster(2);
         }
-        return $item;
+        if($randomBooster == 2) {
+            return $item->EnergyBooster(2.5);
+        }
+        if($randomBooster == 3) {
+            return $item->EnergyBooster(3);
+        }
+        if($randomBooster == 4) {
+            return $item->EnergyBooster(3.5);
+        }
+        if($randomBooster == 5) {
+            return $item->MiningXpBooster(2);
+        }
+        if($randomBooster == 6) {
+            return $item->MiningXpBooster(2.5);
+        }
+        if($randomBooster == 7) {
+            return $item->MiningXpBooster(3);
+        }
+        if($randomBooster == 8) {
+            return $item->MiningXpBooster(3.5);
+        }
+        if($randomBooster == 9) {
+            return $item->MysteryEnergyBooster();
+        }
+        if($randomBooster == 10) {
+            return $item->MysteryMiningXpBooster();
+        }
+        return $item->EnergyBooster(2);
     }
 
-    public function contraband1(): Contraband {
+    public function contraband1(): Item {
 
         $randomContraband = mt_rand(1, 5);
-        $item = new Contraband();
-        switch($randomContraband) {
-
-            case 1: # elite
-                $item->Elite(1);
-                break;
-
-            case 2: # ultimate
-                $item->Elite(1);
-                break;
-
-            case 3: # legendary
-                $item->Legendary(1);
-                break;
-
-            case 4: # godly
-                $item->Godly(1);
-                break;
-
-            case 5: # heroic
-                $item->Heroic(1);
-                break;
-
+        $item = EmporiumPrison::getInstance()->getContraband();
+        if($randomContraband == 1) {
+            return $item->Elite(1);
         }
-        return $item;
+        if($randomContraband == 2) {
+            return $item->Ultimate(1);
+        }
+        if($randomContraband == 3) {
+            return $item->Legendary(1);
+        }
+        if($randomContraband == 4) {
+            return $item->Godly(1);
+        }
+        if($randomContraband == 5) {
+            return $item->Heroic(1);
+        }
+        return $item->Elite(1);
     }
 
-    public function contraband2(): Contraband {
+    public function contraband2(): Item {
 
         $randomContraband = mt_rand(1, 5);
-        $item = new Contraband();
-        switch($randomContraband) {
-
-            case 1: # elite
-                $item->Elite(1);
-                break;
-
-            case 2: # ultimate
-                $item->Elite(1);
-                break;
-
-            case 3: # legendary
-                $item->Legendary(1);
-                break;
-
-            case 4: # godly
-                $item->Godly(1);
-                break;
-
-            case 5: # heroic
-                $item->Heroic(1);
-                break;
-
+        $item = EmporiumPrison::getInstance()->getContraband();
+        if($randomContraband == 1) {
+            return $item->Elite(1);
         }
-        return $item;
+        if($randomContraband == 2) {
+            return $item->Ultimate(1);
+        }
+        if($randomContraband == 3) {
+            return $item->Legendary(1);
+        }
+        if($randomContraband == 4) {
+            return $item->Godly(1);
+        }
+        if($randomContraband == 5) {
+            return $item->Heroic(1);
+        }
+        return $item->Elite(1);
     }
 
-    public function contraband3(): Contraband {
+    public function contraband3(): Item
+    {
 
         $randomContraband = mt_rand(1, 5);
-        $item = new Contraband();
-        switch($randomContraband) {
-
-            case 1: # elite
-                $item->Elite(1);
-                break;
-
-            case 2: # ultimate
-                $item->Elite(1);
-                break;
-
-            case 3: # legendary
-                $item->Legendary(1);
-                break;
-
-            case 4: # godly
-                $item->Godly(1);
-                break;
-
-            case 5: # heroic
-                $item->Heroic(1);
-                break;
-
+        $item = EmporiumPrison::getInstance()->getContraband();
+        if($randomContraband == 1) {
+            return $item->Elite(1);
         }
-        return $item;
+        if($randomContraband == 2) {
+            return $item->Ultimate(1);
+        }
+        if($randomContraband == 3) {
+            return $item->Legendary(1);
+        }
+        if($randomContraband == 4) {
+            return $item->Godly(1);
+        }
+        if($randomContraband == 5) {
+            return $item->Heroic(1);
+        }
+        return $item->Elite(1);
     }
     /*
     public function mysteryEnergy(): Item {
 
     }*/
 
-    public function randomCrystal(): Crystals {
+    public function randomCrystal(): Item {
 
         $item = new Crystals();
         $reward = mt_rand(1, 12);
 
-        switch($reward) {
-
-            case 1: # noble
-                $item->noble();
-                break;
-
-            case 2: # noble superior
-                $item->nobleSuperior();
-                break;
-
-            case 3: # imperial
-                $item->imperial();
-                break;
-
-            case 4: # imperial superior
-                $item->imperialSuperior();
-                break;
-
-            case 5: # supreme
-                $item->supreme();
-                break;
-
-            case 6: # supreme superior
-                $item->supremeSuperior();
-                break;
-
-            case 7: # majesty
-                $item->majesty();
-                break;
-
-            case 8: # majesty superior
-                $item->majestySuperior();
-                break;
-
-            case 9: # emperor
-                $item->emperor();
-                break;
-
-            case 10: # emperor superior
-                $item->emperorSuperior();
-                break;
-
-            case 11: # president
-                $item->president();
-                break;
-
-            case 12: # president superior
-                $item->presidentSuperior();
-                break;
+        if($reward == 1) {
+            return $item->noble();
         }
-        return $item;
+        if($reward == 2) {
+            return $item->nobleSuperior();
+        }
+        if($reward == 3) {
+            return $item->imperial();
+        }
+        if($reward == 4) {
+            return $item->imperialSuperior();
+        }
+        if($reward == 5) {
+            return $item->supreme();
+        }
+        if($reward == 6) {
+            return $item->supremeSuperior();
+        }
+        if($reward == 7) {
+            return $item->majesty();
+        }
+        if($reward == 8) {
+            return $item->majestySuperior();
+        }
+        if($reward == 9) {
+            return $item->emperor();
+        }
+        if($reward == 10) {
+            return $item->emperorSuperior();
+        }
+        if($reward == 11) {
+            return $item->president();
+        }
+        if($reward == 12) {
+            return $item->presidentSuperior();
+        }
+        return $item->noble();
     }
 }

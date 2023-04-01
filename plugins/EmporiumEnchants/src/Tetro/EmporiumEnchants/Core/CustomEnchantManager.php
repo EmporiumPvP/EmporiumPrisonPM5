@@ -21,11 +21,11 @@ use Tetro\EmporiumEnchants\Enchants\Tools\ShardDiscovererCE;
 use Tetro\EmporiumEnchants\Enchants\Tools\ShatterCE;
 use Tetro\EmporiumEnchants\Enchants\Tools\SuperBreakerCE;
 use Tetro\EmporiumEnchants\Enchants\Tools\TransfuseCE;
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 // Armour
 use Tetro\EmporiumEnchants\Enchants\Armour\Boots\{GearsCE, SpringsCE};
 use Tetro\EmporiumEnchants\Enchants\Armour\Chestplate\{BandAidCE};
-use Tetro\EmporiumEnchants\Enchants\Armour\Global\{AngelicCE, ArmoredCE, CurseCE, BerserkerCE, DeathbringerCE, DiminishCE, ShockwaveCE, DeflectCE, DivineArmoredCE, DivineEnlightenedCE, DrunkCE, EndershiftCE, EnderwalkerCE, EnlightedCE, EnlightenedCE, EtherealDodgeCE, FrozenCE, GodlyOverloadCE, HeatWaveCE, HeavyCE, MoltenCE, NourishCE, NurtureCE, ObscureCE, ObsidianShieldCE, OverloadCE, PainkillerCE, ReviveCE, TankCE, TitanTrapCE, ValorCE, VoodooCE, MetaphysicalCE};
+use Tetro\EmporiumEnchants\Enchants\Armour\Global\{AngelicCE, ArmoredCE, CurseCE, BerserkerCE, DeathbringerCE, DiminishCE, ShockwaveCE, DeflectCE, CyberneticArmoredCE, CyberneticEnlightenedCE, DrunkCE, EndershiftCE, EnderwalkerCE, EnlightedCE, EnlightenedCE, EtherealDodgeCE, FrozenCE, GodlyOverloadCE, HeatWaveCE, HeavyCE, MoltenCE, NourishCE, NurtureCE, ObscureCE, ObsidianShieldCE, OverloadCE, PainkillerCE, ReviveCE, TankCE, TitanTrapCE, ValorCE, VoodooCE, MetaphysicalCE};
 use Tetro\EmporiumEnchants\Enchants\Armour\Helmet\{AntitoxinCE, ClarityCE, FocusedCE, GlowingCE, ImplantsCE, DarknessCE};
 // Weapons
 use Tetro\EmporiumEnchants\Enchants\Weapons\Axe\{InsanityCE, OvergrowthCE};
@@ -72,13 +72,13 @@ use Tetro\EmporiumEnchants\Enchants\Global\{AutoRepairCE};
 
 class CustomEnchantManager {
 
-    private static Loader $plugin;
+    private static EmporiumEnchants $plugin;
     public static array $enchants = [];
 
     /**
      * @throws JsonException
      */
-    public static function init(Loader $plugin): void {
+    public static function init(EmporiumEnchants $plugin): void {
         self::$plugin = $plugin;
 
         # Register Enchants
@@ -100,8 +100,8 @@ class CustomEnchantManager {
         self::registerEnchantment(new DeathbringerCE($plugin, CustomEnchantIds::DEATHBRINGER));
         self::registerEnchantment(new DeflectCE($plugin, CustomEnchantIds::DEFLECT));
         self::registerEnchantment(new DiminishCE($plugin, CustomEnchantIds::DIMINISH));
-        self::registerEnchantment(new DivineArmoredCE($plugin, CustomEnchantIds::DIVINEARMORED));
-        self::registerEnchantment(new DivineEnlightenedCE($plugin, CustomEnchantIds::DIVINEENIGHTENED));
+        self::registerEnchantment(new CyberneticArmoredCE($plugin, CustomEnchantIds::CYBERNETICARMORED));
+        self::registerEnchantment(new CyberneticEnlightenedCE($plugin, CustomEnchantIds::CYBERNETICENIGHTENED));
         self::registerEnchantment(new DrunkCE($plugin, CustomEnchantIds::DRUNK));
         self::registerEnchantment(new EndershiftCE($plugin, CustomEnchantIds::ENDERSHIFT));
         self::registerEnchantment(new EnderwalkerCE($plugin, CustomEnchantIds::ENDERWALKER));
@@ -189,7 +189,7 @@ class CustomEnchantManager {
     }
 
     # Get Plugin
-    public static function getPlugin(): Loader {
+    public static function getPlugin(): EmporiumEnchants {
         return self::$plugin;
     }
 

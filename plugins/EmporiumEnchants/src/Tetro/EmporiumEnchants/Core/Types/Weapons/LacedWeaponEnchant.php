@@ -15,13 +15,13 @@ use pocketmine\item\Item;
 # Used Files
 use Tetro\EmporiumEnchants\Core\Types\ReactiveEnchantment;
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
-use Tetro\EmporiumEnchants\Loader;
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 
 # Type Enchant
 class LacedWeaponEnchant extends ReactiveEnchantment {
     
     # Constructor
-    public function __construct(Loader $plugin, int $id, string $name, int $rarity = CustomEnchant::RARITY_ELITE, private ?array $effects = null, private array $durationMultiplier = [60], private array $amplifierMultiplier = [1], private array $baseDuration = [0], private array $baseAmplifier = [0]) {
+    public function __construct(EmporiumEnchants $plugin, int $id, string $name, int $rarity = CustomEnchant::RARITY_ELITE, private ?array $effects = null, private array $durationMultiplier = [60], private array $amplifierMultiplier = [1], private array $baseDuration = [0], private array $baseAmplifier = [0]) {
         $this->name = $name;
         $this->rarity = $rarity;
         $this->effects = $effects ?? [VanillaEffects::POISON()];

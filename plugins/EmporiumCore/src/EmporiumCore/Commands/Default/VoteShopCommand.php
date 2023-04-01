@@ -3,13 +3,9 @@
 namespace EmporiumCore\Commands\Default;
 
 use Emporium\Prison\library\formapi\SimpleForm;
-
-use pocketmine\player\Player;
-
+use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
-
-use EmporiumCore\Managers\Data\DataManager;
-
+use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
 class VoteShopCommand extends Command {
@@ -25,8 +21,8 @@ class VoteShopCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.voteshop");
-        if ($permission === false) {
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.voteshop");
+        if (!$permission) {
             $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
@@ -38,9 +34,7 @@ class VoteShopCommand extends Command {
     # Vote Shop Menu
     public function VoteShopMenu($player) {
         $form = new SimpleForm(function($player, $data) {
-            if ($data === null) {
-                return;
-            }
+            if ($data === null) return;
         });
         $form->setTitle("§l§9Vote Shop Menu");
         $form->setContent("§7Select the item that you would like to purchase");

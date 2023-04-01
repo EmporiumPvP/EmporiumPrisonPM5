@@ -4,16 +4,12 @@
 namespace EmporiumCore\Listeners\Player;
 
 use EmporiumCore\EmporiumCore;
-use EmporiumCore\Managers\Data\DataManager;
-
-use JsonException;
-
-use pocketmine\event\Listener;
+use EmporiumData\DataManager;
 use pocketmine\event\block\BlockBreakEvent;
+use pocketmine\event\Listener;
 use pocketmine\event\server\DataPacketReceiveEvent;
-
-use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\network\mcpe\protocol\{LevelSoundEventPacket};
+use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\player\Player;
 
 # Plugin
@@ -27,9 +23,6 @@ class AntiCheatEvent implements Listener {
     }
 
     # Anti-Nuke Listener
-    /**
-     * @throws JsonException
-     */
     public function onBreak(BlockBreakEvent $event) {
 
         // Anti-Nuke
@@ -38,16 +31,13 @@ class AntiCheatEvent implements Listener {
         $tps = $this->plugin->getServer()->getTicksPerSecond();
         if ($tps >= 18) {
             if ($ping < 500) {
-                DataManager::addData($player, "Players", "AntiNuke", 1);
+                DataManager::getInstance()->setPlayerData($player->getXuid(), "anticheat.anti_nuke", (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "anticheat.anti_nuke") + 1);
             }
         }
 
     }
 
     # Anti-Autoclick Listener
-    /**
-     * @throws JsonException
-     */
     public function onPacket(DataPacketReceiveEvent $event) {
 
         // Anti-Autoclick
@@ -61,8 +51,8 @@ class AntiCheatEvent implements Listener {
                 if ($packet->sound === LevelSoundEvent::ATTACK_NODAMAGE || $packet->sound === LevelSoundEvent::ATTACK_STRONG || $packet->sound === LevelSoundEvent::HIT) {
                     if ($tps >= 18) {
                         if ($ping < 500) {
-                            if(file_exists(EmporiumCore::getInstance()->getDataFolder() . "/PlayerData/Players/" . $playerName . ".yml")) {
-                                DataManager::addData($player, "Players", "AntiAuto", 1);
+                            if(file_exists(EmporiumCore::getInstance()->getDataFolder() . "players/" . $player->getXuid() . ".json")) {
+                                DataManager::getInstance()->setPlayerData($player->getXuid(), "anticheat.anti_auto", (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "anticheat.anti_auto") + 1);
                             }
                         }
                     }

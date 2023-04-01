@@ -2,15 +2,12 @@
 
 namespace EmporiumCore\Commands\Staff;
 
-use EmporiumCore\Managers\Data\DataManager;
-
 use EmporiumCore\Variables;
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use pocketmine\player\GameMode;
 use pocketmine\player\Player;
-
 use pocketmine\utils\TextFormat as TF;
 
 class CreativeCommand extends Command {
@@ -26,14 +23,14 @@ class CreativeCommand extends Command {
             return false;
         }
 
-        $permission = DataManager::getData($sender, "Permissions", "emporiumcore.command.creative");
-        if ($permission === false) {
-                $sender->sendMessage(TF::RED . "No permission.");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.creative");
+        if (!$permission) {
+                $sender->sendMessage(TF::RED . "No permission");
             return false;
         }
 
         if($sender->getGamemode() === GameMode::CREATIVE()) {
-            $sender->sendMessage(Variables::ERROR_PREFIX . TF::RED . "You are already in creative!");
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You are already in creative!");
             return false;
         } else {
             $sender->setGamemode(GameMode::CREATIVE());
