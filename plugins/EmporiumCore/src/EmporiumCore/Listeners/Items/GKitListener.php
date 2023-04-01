@@ -31,6 +31,7 @@ class GKitListener implements Listener {
     public function onClaimKitAir(PlayerItemUseEvent $event) {
 
         $player = $event->getPlayer();
+        if (DataManager::getInstance()->getPlayerXuid($player->getName()) == "00") return;
         $item = $event->getItem();
         $count = $item->getCount();
 

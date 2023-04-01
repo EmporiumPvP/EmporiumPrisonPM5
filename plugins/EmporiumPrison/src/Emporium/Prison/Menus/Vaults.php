@@ -6,7 +6,9 @@ use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\library\formapi\SimpleForm;
 use Emporium\Prison\Managers\misc\GlowManager;
 
-use EmporiumData\DataManager;
+use EmporiumData\PermissionsManager;
+
+use muqsit\playervaults\PlayerVaults;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 
@@ -92,7 +94,7 @@ class Vaults extends Menu {
         return $item;
     } # all players have minimum 1 pv
     public function pv2($player): Item {
-        $permission = DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.2");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.2");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 2);
         if($permission) {
@@ -110,7 +112,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv3($player): Item {
-        $permission = DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.3");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.3");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 3);
         if($permission) {
@@ -128,7 +130,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv4($player): Item {
-        $permission = DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.4");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.4");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 4);
         if($permission) {
@@ -146,7 +148,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv5($player): Item {
-        $permission = DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.5");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.5");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 5);
         if($permission) {
@@ -164,7 +166,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv6($player): Item {
-        $permission = DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.6");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.6");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 6);
         if($permission) {
@@ -182,7 +184,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv7($player): Item {
-        $permission = DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.7");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.7");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 7);
         if($permission) {
@@ -200,7 +202,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv8($player): Item {
-        $permission = DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.8");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.8");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 8);
         if($permission) {
@@ -218,7 +220,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv9($player): Item {
-        $permission = DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.9");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.9");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 9);
         if($permission) {
@@ -253,7 +255,7 @@ class Vaults extends Menu {
                     break;
 
                 case 1:
-                    if(DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.2")) {
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.2")) {
                         $vaults->openVault($player, $player->getName(), 1);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
@@ -262,7 +264,7 @@ class Vaults extends Menu {
                     break;
 
                 case 2:
-                    if(DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.3")) {
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.3")) {
                         $vaults->openVault($player, $player->getName(), 1);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
@@ -271,7 +273,7 @@ class Vaults extends Menu {
                     break;
 
                 case 3:
-                    if(DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.4")) {
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.4")) {
                         $vaults->openVault($player, $player->getName(), 1);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
@@ -280,7 +282,7 @@ class Vaults extends Menu {
                     break;
 
                 case 4:
-                    if(DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.5")) {
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.5")) {
                         $vaults->openVault($player, $player->getName(), 1);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
@@ -289,7 +291,7 @@ class Vaults extends Menu {
                     break;
 
                 case 5:
-                    if(DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.6")) {
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.6")) {
                         $vaults->openVault($player, $player->getName(), 1);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
@@ -298,7 +300,7 @@ class Vaults extends Menu {
                     break;
 
                 case 6:
-                    if(DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.7")) {
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.7")) {
                         $vaults->openVault($player, $player->getName(), 1);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
@@ -307,7 +309,7 @@ class Vaults extends Menu {
                     break;
 
                 case 7:
-                    if(DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.8")) {
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.8")) {
                         $vaults->openVault($player, $player->getName(), 1);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
@@ -316,7 +318,7 @@ class Vaults extends Menu {
                     break;
 
                 case 8:
-                    if(DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.9")) {
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.9")) {
                         $vaults->openVault($player, $player->getName(), 1);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
@@ -328,7 +330,7 @@ class Vaults extends Menu {
         $form->setTitle(TF::BOLD . "Vaults");
 
         for ($i = 1; $i <= 9; $i++) {
-            if(DataManager::getInstance()->getPlayerData($player->getXuid(), "playervaults.vault.$i")) {
+            if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.$i")) {
                 $form->addButton(TF::AQUA . "Vault" . TF::WHITE . " $i");
                 continue;
             }

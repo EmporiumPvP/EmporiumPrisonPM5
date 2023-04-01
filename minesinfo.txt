@@ -1,0 +1,50 @@
+emporium prison mine data
+
+Coal:
+ - XP: 4 (doubled for block)
+ - Energy: 10-20 (doubled for block)
+ - Pickaxe: wooden
+ - Resources: Coal ore, coal block
+ - Mining Level: 1
+
+Iron:
+ - XP: 6 (doubled for block)
+ - Energy: 20-30 (doubled for block)
+ - Pickaxe: wooden
+ - Resources: iron ore, iron block
+ - Mining Level: 10
+
+Lapis:
+ - XP: 8 (doubled for block)
+ - Energy: 30-40 (doubled for block)
+ - Pickaxe: stone
+ - Resources: lapis ore, lapis block
+ - Mining Level: 30
+
+Redstone:
+ - XP: 10 (doubled for block)
+ - Energy: 40-50 (doubled for block)
+ - Pickaxe: stone
+ - Resources: redstone ore, redstone block
+ - Mining Level: 50
+
+Gold:
+ - XP: 12 (doubled for block)
+ - Energy: 50-60 (doubled for block)
+ - Pickaxe: gold
+ - Resources: gold ore, gold block
+ - Mining Level: 70
+
+Diamond:
+ - XP: 14 (doubled for block)
+ - Energy: 70-80 (doubled for block)
+ - Pickaxe: iron
+ - Resources: diamond ore diamond block
+ - Mining Level: 90
+
+Emerald:
+ - XP: 16 (doubled for block)
+ - Energy: 80-90 (doubled for block)
+ - Pickaxe: diamond
+ - Resources: emerald ore, emerald block
+ - Mining Level: 100

@@ -23,6 +23,8 @@ class Loader extends PluginBase
 
     protected function onLoad(): void
     {
+        self::$instance = $this;
+
         if (!is_dir($this->getDataFolder() . self::SERVER_FOLDER)) mkdir($this->getDataFolder() . self::SERVER_FOLDER);
         if (!is_dir($this->getDataFolder() . self::PLAYER_FOLDER)) mkdir($this->getDataFolder() . self::PLAYER_FOLDER);
 

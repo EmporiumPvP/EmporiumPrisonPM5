@@ -42,7 +42,8 @@ class BalanceCommand extends Command {
                 $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "{$player->getName()}'s balance: " . TF::GREEN . "$" . TF::WHITE . Translator::shortNumber($balance));
                 return true;
             }
-            $sender->sendMessage(Variables::SERVER_PREFIX . "§r§7That player cannot be found.");
+
+            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "§r§7That player cannot be found.");
             return false;
         }
 

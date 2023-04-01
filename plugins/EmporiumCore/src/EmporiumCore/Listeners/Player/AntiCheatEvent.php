@@ -29,6 +29,7 @@ class AntiCheatEvent implements Listener {
         $player = $event->getPlayer();
         $ping = $player->getNetworkSession()->getPing();
         $tps = $this->plugin->getServer()->getTicksPerSecond();
+        if (DataManager::getInstance()->getPlayerXuid($player->getName()) == "00") return;
         if ($tps >= 18) {
             if ($ping < 500) {
                 DataManager::getInstance()->setPlayerData($player->getXuid(), "anticheat.anti_nuke", (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "anticheat.anti_nuke") + 1);

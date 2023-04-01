@@ -20,9 +20,6 @@ class BanCommand extends Command {
         $this->setPermission("emporiumcore.command.ban");
     }
 
-    /**
-     * @throws JsonException
-     */
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
 
         if(!$sender instanceof Player) {
@@ -47,8 +44,8 @@ class BanCommand extends Command {
                                 if ($reason === "" || $reason === " ") {
                                     $reason = "No reason was specified.";
                                 }
-                                DataManager::setData($player, "Players", "Banned", true);
-                                DataManager::setData($player, "Cooldowns", "Ban", $args[1]);
+                                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.anned", true);
+                                DataManager::getInstance()->setPlayerData($player->getXuid(), "ban-timer", (int) $args[1]);
                                 $player->kick(Variables::BAN_HEADER . TF::AQUA . "\n§bDuration: " . TF::WHITE . "$time\n" . TF::AQUA . "Reason: " . TF::WHITE . "$reason");
                                 $sender->sendMessage(TF::GRAY . "You have banned " . TF::YELLOW . "{$player->getName()}.");
                                 $sender->sendMessage(TF::GRAY . "Ban Duration: " . TF::YELLOW . "$time.");

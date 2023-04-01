@@ -37,7 +37,11 @@ class BragCommand extends Command {
         $enchantsList = null;
         if(count($enchants) > 0) {
             foreach ($item->getEnchantments() as $enchant) {
-                $enchantsList .= TF::GREEN . $enchant->getType()->getName() . " " . TF::WHITE . $enchant->getLevel() . TF::EOL;
+                $name = $enchant->getType()->getName();
+                if (is_string($name)) $name = Server::getInstance()->getLanguage()->translateString($name);
+                else $name = Server::getInstance()->getLanguage()->translate($name);
+
+                $enchantsList .= TF::GREEN . $name . " " . TF::WHITE . $enchant->getLevel() . TF::EOL;
             }
         }
         if(count($enchants) > 0) {

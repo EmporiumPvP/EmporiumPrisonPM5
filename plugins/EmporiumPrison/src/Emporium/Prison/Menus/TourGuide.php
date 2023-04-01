@@ -33,7 +33,7 @@ class TourGuide extends Menu {
                 $tutorialProgress = $tutorialManager->getPlayerTutorialProgress($player);
                 if($tutorialProgress == 0) {
                     # update tutorial progression
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "tutorial-progress", DataManager::getInstance()->getPlayerData($player->getXuid(), "tutorial-progress") + 1);
+                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.tutorial-progress", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.tutorial-progress") + 1);
                     # start next tutorial stage
                     $tutorialManager->startTutorial($player);
                 }

@@ -1,0 +1,22 @@
+{
+    "events": {
+        "prison_break": 1
+    },
+    "meteors": {
+        "-32_153_-3": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-34_153_-3": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-30_153_-1": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        }
+    }
+}

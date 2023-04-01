@@ -8,6 +8,12 @@ use pocketmine\event\player\PlayerLoginEvent;
 
 class PlayerListener implements Listener
 {
+
+    /**
+     * @param PlayerLoginEvent $event
+     * @return void
+     * @priority HIGHEST
+     */
     public function onPlayerLoginEvent (PlayerLoginEvent $event) : void
     {
         if (DataManager::getInstance()->isNew($event->getPlayer())) DataManager::getInstance()->registerPlayer($event->getPlayer());

@@ -81,14 +81,13 @@ class MeteorListener implements Listener {
                 if ($miningBoosterTime > 0) {
                     $multipliedXp = $xp * $miningMultiplier;
                     $player->sendTip("+$multipliedXp xp");
-                    DataManager::addData($player, "Players", "xp", $multipliedXp);
-                    DataManager::setPlayerData();
+                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $multipliedXp);
                 } else {
                     $player->sendTip("+$xp xp");
-                    DataManager::addData($player, "Players", "xp", $xp);
+                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $xp);
                 }
                 # add pickaxe Data
-                DataManager::addData($player, "Players", "trainee-ore-mined", 1);
+
                 $oldData = $item->getNamedTag()->getInt("BlocksMined");
                 $newData = $oldData + 1;
                 $item->getNamedTag()->setInt("BlocksMined", $newData);

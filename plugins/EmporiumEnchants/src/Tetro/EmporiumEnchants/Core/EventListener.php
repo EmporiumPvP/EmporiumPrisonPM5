@@ -72,6 +72,7 @@ class EventListener implements Listener {
     public function onDamage(EntityDamageEvent $event): void
     {
         $entity = $event->getEntity();
+
         if ($entity instanceof Player) {
             if ($event->getCause() === EntityDamageEvent::CAUSE_FALL && !Utils::shouldTakeFallDamage($entity)) {
                 if ($entity->getArmorInventory()->getBoots()->getEnchantment(CustomEnchantManager::getEnchantment(CustomEnchantIds::SPRINGS)) === null) Utils::setShouldTakeFallDamage($entity, true);
@@ -80,6 +81,7 @@ class EventListener implements Listener {
             }
             ReactiveEnchantment::attemptReaction($entity, $event);
         }
+
         if ($event instanceof EntityDamageByEntityEvent) {
             $attacker = $event->getDamager();
             if ($attacker instanceof Player) ReactiveEnchantment::attemptReaction($attacker, $event);
@@ -129,6 +131,7 @@ class EventListener implements Listener {
                 ToggleableEnchantment::attemptToggle($player, $content, $enchantmentInstance, $player->getInventory(), $slot);
             }
         }
+
         foreach ($player->getArmorInventory()->getContents() as $slot => $content) {
             foreach ($content->getEnchantments() as $enchantmentInstance) {
                 ToggleableEnchantment::attemptToggle($player, $content, $enchantmentInstance, $player->getArmorInventory(), $slot);
@@ -138,12 +141,14 @@ class EventListener implements Listener {
         $onSlot = function (Inventory $inventory, int $slot, Item $oldItem): void {
             if ($inventory instanceof PlayerInventory || $inventory instanceof ArmorInventory) {
                 $holder = $inventory->getHolder();
-                if ($holder instanceof Player) {
-                    if (!$oldItem->equals(($newItem = $inventory->getItem($slot)), !$inventory instanceof ArmorInventory)) {
-                        if ($newItem->getId() === ItemIds::AIR || $inventory instanceof ArmorInventory) foreach ($oldItem->getEnchantments() as $oldEnchantment) ToggleableEnchantment::attemptToggle($holder, $oldItem, $oldEnchantment, $inventory, $slot, false);
-                        if ($oldItem->getId() === ItemIds::AIR || $inventory instanceof ArmorInventory) foreach ($newItem->getEnchantments() as $newEnchantment) ToggleableEnchantment::attemptToggle($holder, $newItem, $newEnchantment, $inventory, $slot);
-                    }
+
+                if (!$holder instanceof Player) return;
+
+                if (!$oldItem->equals(($newItem = $inventory->getItem($slot)), !$inventory instanceof ArmorInventory)) {
+                    if ($newItem->getId() === ItemIds::AIR || $inventory instanceof ArmorInventory) foreach ($oldItem->getEnchantments() as $oldEnchantment) ToggleableEnchantment::attemptToggle($holder, $oldItem, $oldEnchantment, $inventory, $slot, false);
+                    if ($oldItem->getId() === ItemIds::AIR || $inventory instanceof ArmorInventory) foreach ($newItem->getEnchantments() as $newEnchantment) ToggleableEnchantment::attemptToggle($holder, $newItem, $newEnchantment, $inventory, $slot);
                 }
+
             }
         };
         /**
@@ -183,16 +188,17 @@ class EventListener implements Listener {
     public function onQuit(PlayerQuitEvent $event): void
     {
         $player = $event->getPlayer();
-        if (!$player->isClosed()) {
-            foreach ($player->getInventory()->getContents() as $slot => $content) {
-                foreach ($content->getEnchantments() as $enchantmentInstance) {
-                    ToggleableEnchantment::attemptToggle($player, $content, $enchantmentInstance, $player->getInventory(), $slot, false);
-                }
+        if (!$player->isClosed()) return;
+
+        foreach ($player->getInventory()->getContents() as $slot => $content) {
+            foreach ($content->getEnchantments() as $enchantmentInstance) {
+                ToggleableEnchantment::attemptToggle($player, $content, $enchantmentInstance, $player->getInventory(), $slot, false);
             }
-            foreach ($player->getArmorInventory()->getContents() as $slot => $content) {
-                foreach ($content->getEnchantments() as $enchantmentInstance) {
-                    ToggleableEnchantment::attemptToggle($player, $content, $enchantmentInstance, $player->getArmorInventory(), $slot, false);
-                }
+        }
+
+        foreach ($player->getArmorInventory()->getContents() as $slot => $content) {
+            foreach ($content->getEnchantments() as $enchantmentInstance) {
+                ToggleableEnchantment::attemptToggle($player, $content, $enchantmentInstance, $player->getArmorInventory(), $slot, false);
             }
         }
     }

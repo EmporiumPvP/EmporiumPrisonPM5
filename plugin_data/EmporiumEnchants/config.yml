@@ -1,0 +1,13 @@
+# Rarity Configuration
+rarity-colors:
+  elite: blue
+  ultimate: yellow
+  legendary: gold
+  godly: light_purple
+  heroic: red
+  executive: black
+
+# Enchant Configuration
+enchants:
+  position: "lore" # Options: name, lore
+  roman-numerals: true # Options: true, false

@@ -139,10 +139,7 @@ class EmporiumCore extends PluginBase {
         # set motd
         $this->getServer()->getNetwork()->setName(TF::BOLD . TF::AQUA . "Emporium" . TF::LIGHT_PURPLE . "PvP");
 
-        $this->generateFiles();
-        ###############################
-        # Unregister Vanilla Commands #
-        ###############################
+        # unregister commands
         $map = $this->getServer()->getCommandMap();
         $commands = [
             "ban",
@@ -176,7 +173,6 @@ class EmporiumCore extends PluginBase {
             "stop",
             "tell",
             "time",
-            "timings",
             "title",
             "tp",
             "transferserver",

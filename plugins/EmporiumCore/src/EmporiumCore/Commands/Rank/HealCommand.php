@@ -33,7 +33,7 @@ class HealCommand extends Command {
             $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You are full HP!");
             return false;
         } else {
-            $sender->setHealth($maxHealth);
+            $sender->setHealth($sender->getMaxHealth());
             $sender->sendMessage(Variables::SERVER_PREFIX . TF::GREEN . "Healed!");
             return true;
         }

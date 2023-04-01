@@ -5,7 +5,8 @@ namespace Emporium\Prison\commands\Default;
 use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\Variables;
 
-use EmporiumCore\managers\data\DataManager;
+use EmporiumData\PermissionsManager;
+
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;

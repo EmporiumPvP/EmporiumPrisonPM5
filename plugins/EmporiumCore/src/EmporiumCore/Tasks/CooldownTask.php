@@ -26,8 +26,7 @@ class CooldownTask extends Task {
     public function onRun(): void {
 
         // For all Files
-        foreach ($this->getPlayers() as $player) {
-
+        foreach (DataManager::getInstance()->getPlayerNames() as $player) {
             # Variables
             // Combat
             $apples = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.apples");

@@ -183,7 +183,7 @@ class SellCommand extends Command {
                     return false;
                 } else {
                     $sender->getInventory()->remove($item);
-                    DataManager::addData($sender, "Players", "Money", $sellprice);
+                    DataManager::getInstance()->setPlayerData($sender->getXuid(), "profile.money", DataManager::getInstance()->getPlayerData($sender->getXuid(), "profile.money") + $sellprice);
                     $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have sold " . TF::WHITE . $count . "x " . TF::AQUA . $item->getName() . " for " . TF::GREEN . "$" . TF::WHITE . Translator::shortNumber($sellprice) . ".");
                     return true;
                 }
@@ -331,7 +331,7 @@ class SellCommand extends Command {
                     $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You do not have any sellable items in your inventory.");
                     return false;
                 } else {
-                    DataManager::addData($sender, "Players", "Money", $sellprice);
+                    DataManager::getInstance()->setPlayerData($sender->getXuid(), "profile.money", DataManager::getInstance()->getPlayerData($sender->getXuid(), "profile.money") + $sellprice);
                     $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have sold your inventory for $" . $sellprice . ".");
                     return true;
                 }

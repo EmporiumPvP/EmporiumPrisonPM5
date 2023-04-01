@@ -6,7 +6,6 @@ namespace Tetro\EmporiumEnchants\Enchants\Weapons\Global;
 # Pocketmine API
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Event;
-use Tetro\Core\Managers\Data\DataManager;
 use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
 use pocketmine\player\Player;

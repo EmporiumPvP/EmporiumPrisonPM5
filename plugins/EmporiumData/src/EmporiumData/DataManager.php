@@ -106,6 +106,8 @@ class DataManager
             "permissions" => []
         ];
 
+        foreach ($defaults as $key => $value) $this->setPlayerData($player->getXuid(), $key, $value);
+
         $this->plugin->provider->savePlayerDataAll($player->getXuid(), $this->playerData[$player->getXuid()]);
         $this->xuids[$player->getName()] = $player->getXuid();
     }

@@ -80,7 +80,7 @@ class HeroicContrabandGiveRewardDelay extends Task {
                 $amount = mt_rand(4000000, 6000000);
 
                 $this->player->sendMessage(TF::GRAY . "You got " . TF::GREEN . "$" . TF::WHITE . Translator::shortNumber($amount));
-                DataManager::addData($this->player, "Players", "Money", $amount);
+            DataManager::getInstance()->setPlayerData($this->player->getXuid(), "profile.money", DataManager::getInstance()->getPlayerData($this->player->getXuid(), "profile.money") + $amount);
                 break;
 
             # mystery elite enchants

@@ -15,6 +15,9 @@ class JsonProvider implements ProviderInterface
     {
         self::$PLAYER_FOLDER = $loader->getDataFolder() . Loader::PLAYER_FOLDER;
         self::$SERVER_FOLDER = $loader->getDataFolder() . Loader::SERVER_FOLDER;
+
+        if (!is_dir(self::$SERVER_FOLDER)) mkdir(self::$SERVER_FOLDER);
+        if (!is_dir(self::$PLAYER_FOLDER)) mkdir(self::$PLAYER_FOLDER);
     }
 
     public function getPlayerDataAll (string $xuid): array
@@ -30,16 +33,16 @@ class JsonProvider implements ProviderInterface
         $config->save();
     }
 
-    public function getServerData(string $filename, string $key): mixed
+    public function getServerDataAll(string $filename): array
     {
-        return (new Config(self::$SERVER_FOLDER . $filename . ".json", Config::JSON))->getNested($key);
+        return (new Config(self::$SERVER_FOLDER . $filename . ".json", Config::JSON))->getAll();
     }
 
-    public function saveServerData(string $filename, string $key, mixed $data): void
+    public function saveServerDataAll (string $filename, array $data): void
     {
         $config = new Config(self::$SERVER_FOLDER . $filename . ".json", Config::JSON);
 
-        $config->setNested($key, $data);
+        $config->setAll($data);
         $config->save();
     }
 }
