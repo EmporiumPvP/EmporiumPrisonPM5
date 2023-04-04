@@ -60,7 +60,6 @@ class DataManager
             "profile.muted" => false,
             "profile.frozen" => false,
             "profile.rank" => "player",
-            "profile.rank_format" => "§8<§7Player§8>§r",
             "profile.tag" => "tag",
             "profile.cexp" => 0,
             "profile.prestige" => 0,
@@ -194,6 +193,13 @@ class DataManager
     public function getPlayerXuid (string $name) : string
     {
         return $this->xuids[$name] ?? "00";
+    }
+
+    public function getPlayerName (string $xuid) : string
+    {
+        if (!in_array($xuid, $this->xuids)) return "??";
+
+        return array_search($xuid, $this->xuids);
     }
 
     public function getPlayerNames () : array

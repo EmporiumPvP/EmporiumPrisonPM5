@@ -1,0 +1,59 @@
+command:
+  name: "shop"
+  description: "Open the shop menu"
+  usage: "/shop"
+  aliases: []
+
+shop:
+  categories:
+    "§cTools":
+      item: "diamond_chestplate;1;§bTools;§7Click to open the tools category"
+      items:
+        "diamond_sword;1;§bDiamond Sword":
+          price: 10 #Purchase price
+          sell-price: 5 #Purchase price
+        "diamond_pickaxe;1;§bDiamond Pickaxe":
+          price: 15
+          sell-price: 10
+        "diamond_axe;1;§bDiamond Axe":
+          price: 10
+          sell-price: 5
+    "§bBlocks":
+      item: "stone;1;§bBlocks;§7Click to open the blocks category"
+      items:
+        "stone;1;§bStone":
+          price: 2
+          sell-price: 1
+  purchase:
+    items:
+      #Slot: amount|item
+      10: "64|241:5;64;§a+64;§7Click to add 64x items"
+      19: "10|241:5;10;;§a+10;§7Click to add 10x items"
+      28: "1|241:5;1;§a+1;§7Click to add 1x item"
+      16: "-64|241:14;64;§c-64;§7Click to remove 64x items"
+      25: "-10|241:14;10;§c-10;§7Click to remove 10x items"
+      34: "-1|241:14;1;§c-1;§7Click to remove 1x item"
+    #Slot where the clicked item is being displayed
+    display: 13
+    #Puchase/Sell toggle (Slot|item)
+    toggle:
+      slot: 22
+      item: "351:10;1;§aBuy for§6 {price}$;§7Click to buy|351:1;1;§cSell for§6 {price}$;§7Click to sell"
+  placeholder:
+    categories: "160:1;1; ;"
+    category: "160:14;1; ;"
+    category-double: "160:14;1; ;"
+    purchase: "160:11;1; ;"
+  slots:
+    categories: [12,13,14,21,22,23,30,31,32]
+    category: [10,11,12,13,14,15,16]
+    category-double: [10,11,12,13,14,15,16,19,20,21,22,23,24,25,28,29,30,31,32,33,34,37,38,39,40,41,42,43]
+  back:
+    category: "22:barrier;1;§cBack;§7Click to get back"
+    category-double: "49:barrier;1;§cBack;§7Click to get back"
+    purchase: "49:barrier;1;§cBack;§7Click to get back"
+  titles:
+    categories: "§eShop"
+    category: "§eShop§8 |§b {category}"
+    category-double: "§eShop§8 |§b {category}"
+    purchase: "§aConfirm Purchase!"

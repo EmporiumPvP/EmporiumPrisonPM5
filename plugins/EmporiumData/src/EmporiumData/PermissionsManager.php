@@ -3,6 +3,7 @@
 namespace EmporiumData;
 
 use EmporiumData\Provider\JsonProvider;
+use EmporiumData\Rank\RankManager;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\Server;
 use pocketmine\utils\Config;
@@ -30,8 +31,11 @@ class PermissionsManager
 
     public function load () : void
     {
-        $this->inheritance = (new Config(JsonProvider::$SERVER_FOLDER . "inheritance.yml"))->getAll();
-        $this->rankPermissions = (new Config(JsonProvider::$SERVER_FOLDER . "permissions.yml"))->getAll();
+        foreach (RankManager::getInstance()->getRanks() as $rank) {
+            $this->inheritance[$rank->getName()] = $rank->getInheritance();
+            $this->rankPermissions[$rank->getName()] = $rank->getPermissions();
+        }
+
         foreach (DataManager::getInstance()->getPlayerNames() as $playerXuid) $this->customPermissions[$playerXuid] = DataManager::getInstance()->getPlayerData($playerXuid, "permissions");
     }
 
@@ -81,13 +85,6 @@ class PermissionsManager
 
         $rank = strtolower(DataManager::getInstance()->getPlayerData($toXuid, "profile.rank"));
 
-        if (in_array($rank, ["admin", "dev", "manager", "owner", "founder"])) {
-            if (!in_array($permission, $this->rankPermissions["higher-ups"])) return $this->checkLowerRankPermissions($rank, $permission);
-
-            return true;
-        }
-
-
         if (!in_array($permission, $this->rankPermissions[$rank])) return $this->checkLowerRankPermissions($rank, $permission);
 
         return true;
@@ -95,7 +92,7 @@ class PermissionsManager
 
     private function checkLowerRankPermissions (string $rank, string $permission) : bool
     {
-        if (is_null($this->inheritance[$rank])) return false;
+        if (is_null($this->inheritance[$rank]) || $this->inheritance[$rank] == "") return false;
 
         $parent = $this->inheritance[$rank];
 

@@ -34,6 +34,7 @@ use EmporiumCore\Commands\Staff\FreezeCommand;
 use EmporiumCore\Commands\Staff\KickCommand;
 use EmporiumCore\Commands\Staff\KillCommand;
 use EmporiumCore\Commands\Staff\MuteCommand;
+use EmporiumCore\Commands\Staff\NBTDumpCommand;
 use EmporiumCore\Commands\Staff\SurvivalCommand;
 use EmporiumCore\Commands\Staff\TeleportCommand;
 use EmporiumCore\Commands\Staff\UnbanCommand;
@@ -247,6 +248,7 @@ class EmporiumCore extends PluginBase {
         $this->getServer()->getCommandMap()->register("warn", new WarnCommand());
         $this->getServer()->getCommandMap()->register("boss", new BossCommand());
         $this->getServer()->getCommandMap()->register("contraband", new ContrabandCommand());
+        $this->getServer()->getCommandMap()->register("nbtdump", new NBTDumpCommand());
 
         # register tasks
         $this->getScheduler()->scheduleRepeatingTask(new AntiCheatTask($this), 20);

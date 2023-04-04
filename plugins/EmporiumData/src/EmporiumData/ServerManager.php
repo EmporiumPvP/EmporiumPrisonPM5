@@ -63,6 +63,27 @@ class ServerManager
         return $base;
     }
 
+    public function removeData (string $key) : void
+    {
+        $vars = explode(".", $key);
+
+        if (!isset($this->data[$key])) return;
+
+        $currentNode = &$this->data[$key];
+        while(count($vars) > 0){
+            $nodeName = array_shift($vars);
+            if(isset($currentNode[$nodeName])){
+                if(count($vars) === 0){ //final node
+                    unset($currentNode[$nodeName]);
+                }elseif(is_array($currentNode[$nodeName])){
+                    $currentNode = &$currentNode[$nodeName];
+                }
+            }else{
+                break;
+            }
+        }
+    }
+
     /**
      * @return ServerManager
      */

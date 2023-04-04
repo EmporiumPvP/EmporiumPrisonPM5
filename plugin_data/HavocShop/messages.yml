@@ -1,0 +1,5 @@
+message.noSpace: "§cYou inventory is full!"
+message.notEnoughMoney: "§cYou don't have enough money to do this!"
+message.notEnoughItems: "§cYou don't have enough items in your inventory to do this!"
+message.boughtItem: "§aYou have successfully bought§f {amount}x§b {item}'s§a for§6 {price}$§a!"
+message.soldItem: "§aYou have successfully sold§f {amount}x§b {item}'s§a for§6 {price}$§a!"

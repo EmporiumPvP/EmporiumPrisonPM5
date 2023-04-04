@@ -6,30 +6,9 @@ class Translator {
 
     public static function timeConvert($seconds): string {
 
-        $s = $seconds%60;
-        $m = floor(($seconds%3600)/60);
-        $h = floor(($seconds%86400)/3600);
         $d = floor(($seconds%2592000)/86400);
 
-        if($d == 0) {
-            if($h < 10) {
-                $h = "0" . $h;
-            }
-            if($m < 10) {
-                $m = "0" . $m;
-            }
-            if($s < 10) {
-                $s = "0" . $s;
-            }
-            return "$h:$m:$s";
-        } else {
-            if($d > 1) {
-                $output = "$d day, $h:$m:$s";
-            } else {
-                $output = "$d days, $h:$m:$s";
-            }
-        }
-        return $output;
+        return "$d " . ($d > 1 ? "days" : "day") . ", " . gmdate("H:i:s", $seconds);
     }
 
     # Short Number Converter

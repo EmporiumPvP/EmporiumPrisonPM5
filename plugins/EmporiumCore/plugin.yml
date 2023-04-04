@@ -78,3 +78,5 @@ permissions:
     default: false
   emporiumcore.command.warn:
     default: false
+  nbtdump.command:
+    default: op

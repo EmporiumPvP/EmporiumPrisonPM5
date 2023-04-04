@@ -10,8 +10,12 @@ use EmporiumData\PermissionsManager;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
+use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
+use pocketmine\player\Player;
+use pocketmine\scheduler\ClosureTask;
+use pocketmine\utils\TextFormat;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\BlazeShootSound;
 use pocketmine\world\sound\ItemFrameAddItemSound;
@@ -21,7 +25,7 @@ class RankKitsMenu {
     public function Inventory($player): void {
         $menu = InvMenu::create(InvMenuTypeIds::TYPE_CHEST);
         $menu->setName("Rank Kits");
-        $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) {
+        $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) use ($menu) {
 
             $player = $transaction->getPlayer();
             $itemClicked = $transaction->getItemClicked();
@@ -33,8 +37,7 @@ class RankKitsMenu {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "cooldown.rank_kit_noble", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_GRAY . "Noble Rank Kit");
                     $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->sendTitle(TF::RED . "Inventory Full");
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
@@ -58,8 +61,7 @@ class RankKitsMenu {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "cooldown.rank_kit_imperial", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::LIGHT_PURPLE . "Imperial Rank Kit");
                     $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->sendTitle(TF::RED . "Inventory Full");
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
@@ -83,8 +85,7 @@ class RankKitsMenu {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "cooldown.rank_kit_supreme", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_AQUA . "Supreme Rank Kit");
                     $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->removeCurrentWindow();
                     $player->sendTitle(TF::RED . "Inventory Full");
@@ -108,8 +109,7 @@ class RankKitsMenu {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "cooldown.rank_kit_majesty", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_PURPLE . "Majesty Rank Kit");
                     $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->sendTitle(TF::RED . "Inventory Full");
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
@@ -133,8 +133,7 @@ class RankKitsMenu {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "cooldown.rank_kit_emperor", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::AQUA . "Emperor Rank Kit");
                     $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->sendTitle(TF::RED . "Inventory Full");
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
@@ -158,8 +157,7 @@ class RankKitsMenu {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "cooldown.rank_kit_president", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::RED . "President Rank Kit");
                     $player->broadcastSound(new BlazeShootSound(), [$player]);
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->sendTitle(TF::RED . "Inventory Full");
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
@@ -177,6 +175,24 @@ class RankKitsMenu {
             }
 
         }));
+
+
+        $this->evaluateItems($menu, $player);
+        $menu->send($player);
+
+        $task = new ClosureTask(function () use ($menu, $player) {
+            $this->evaluateItems($menu, $player);
+        });
+
+        $menu->setInventoryCloseListener(function (Player $player, Inventory $inventory) use ($task) {
+            $task->getHandler()->cancel();
+        });
+
+        EmporiumCore::getInstance()->getScheduler()->scheduleRepeatingTask($task, 4);
+    }
+
+    private function evaluateItems (InvMenu $menu, Player $player) : void
+    {
         $inventory = $menu->getInventory();
         $inventory->setItem(10, $this->nobleItem($player));
         $inventory->setItem(12, $this->imperialItem($player));
@@ -184,8 +200,6 @@ class RankKitsMenu {
         $inventory->setItem(16, $this->majestyItem($player));
         $inventory->setItem(20, $this->emperorItem($player));
         $inventory->setItem(24, $this->presidentItem($player));
-
-        $menu->send($player);
     }
 
     # noble
@@ -201,7 +215,7 @@ class RankKitsMenu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($nobleCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TextFormat::WHITE . Translator::timeConvert($nobleCooldown)
                 ];
                 $item->getNamedTag()->setString("NobleCooldown", 1);
             } else {
@@ -239,7 +253,7 @@ class RankKitsMenu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($imperialCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TextFormat::WHITE . Translator::timeConvert($imperialCooldown)
                 ];
                 $item->getNamedTag()->setString("ImperialCooldown", 1);
             } else {
@@ -277,7 +291,7 @@ class RankKitsMenu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($supremeCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TextFormat::WHITE . Translator::timeConvert($supremeCooldown)
                 ];
                 $item->getNamedTag()->setString("SupremeCooldown", 1);
             } else {
@@ -315,7 +329,7 @@ class RankKitsMenu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($majestyCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TextFormat::WHITE . Translator::timeConvert($majestyCooldown)
                 ];
                 $item->getNamedTag()->setString("MajestyCooldown", 1);
             } else {
@@ -353,7 +367,7 @@ class RankKitsMenu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($emperorCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TextFormat::WHITE . Translator::timeConvert($emperorCooldown)
                 ];
                 $item->getNamedTag()->setString("EmperorCooldown", 1);
             } else {
@@ -390,7 +404,7 @@ class RankKitsMenu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($presidentCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TextFormat::WHITE . Translator::timeConvert($presidentCooldown)
                 ];
                 $item->getNamedTag()->setString("PresidentCooldown", 1);
             } else {

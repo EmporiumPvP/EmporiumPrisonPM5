@@ -501,6 +501,7 @@ class KitsMenu extends Menu {
         $menu->send($player);
     }
 
+
     public function rankKitsItem(): Item {
         $item = VanillaItems::DIAMOND_SWORD();
         $item->setCustomName(TF::BOLD . TF::AQUA . "Rank Kits");

@@ -21,6 +21,8 @@ use Emporium\Prison\commands\Staff\FlaresCommand;
 use Emporium\Prison\commands\Staff\NPCCommand;
 
 # items
+use Emporium\Prison\Entity\FallingBlockEntity;
+use Emporium\Prison\Entity\Fireball;
 use Emporium\Prison\items\Boosters;
 use Emporium\Prison\items\Contraband;
 use Emporium\Prison\items\Flares;
@@ -29,6 +31,7 @@ use Emporium\Prison\items\Pickaxes;
 use Emporium\Prison\items\Scrolls;
 
 # listeners
+use Emporium\Prison\library\nbt\tag\CompoundTag;
 use Emporium\Prison\listeners\blocks\MeteorListener;
 use Emporium\Prison\listeners\Items\ArmourListener;
 use Emporium\Prison\listeners\Items\BoosterListener;
@@ -73,17 +76,24 @@ use Emporium\Prison\tasks\Server\spawnChunkLoaderTask;
 use Emporium\Prison\tasks\Server\tutorialMineChunkLoaderTask;
 
 # libraries
+use JonyGamesYT9\EntityAPI\entity\EntityFactory;
 use muqsit\invmenu\InvMenuHandler;
 use muqsit\invmenu\type\util\InvMenuTypeBuilders;
 
 # pocketmine
 use pocketmine\block\BlockFactory;
+use pocketmine\block\BlockLegacyIds;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\data\bedrock\EntityLegacyIds;
+use pocketmine\entity\Entity;
+use pocketmine\entity\EntityDataHelper;
+use pocketmine\entity\object\FallingBlock;
 use pocketmine\network\mcpe\protocol\types\inventory\WindowTypes;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
+use pocketmine\world\World;
 
 class EmporiumPrison extends PluginBase {
 
@@ -195,6 +205,7 @@ class EmporiumPrison extends PluginBase {
         # tasks
         $this->registerEvents();
         $this->registerCommands();
+        $this->registerEntities();
 
         # register help command
         $map = Server::getInstance()->getCommandMap();
@@ -221,6 +232,17 @@ class EmporiumPrison extends PluginBase {
             $world->stopTime();
         }
 
+    }
+
+    public function registerEntities () : void
+    {
+        \pocketmine\entity\EntityFactory::getInstance()->register(Fireball::class, function(World $world, \pocketmine\nbt\tag\CompoundTag $nbt) : Fireball {
+            return new Fireball(EntityDataHelper::parseLocation($nbt, $world), null, $nbt);
+        }, ['minecraft:fireball'], EntityLegacyIds::FIREBALL);
+
+        \pocketmine\entity\EntityFactory::getInstance()->register(FallingBlockEntity::class, function(World $world, \pocketmine\nbt\tag\CompoundTag $nbt) : FallingBlockEntity{
+            return new FallingBlockEntity(EntityDataHelper::parseLocation($nbt, $world), FallingBlock::parseBlockNBT(BlockFactory::getInstance(), $nbt), $nbt);
+        }, ['minecraft:falling_block_entity'], EntityLegacyIds::FALLING_BLOCK);
     }
 
     public function registerCommands () : void

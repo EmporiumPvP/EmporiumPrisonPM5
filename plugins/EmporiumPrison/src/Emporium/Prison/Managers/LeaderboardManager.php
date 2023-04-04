@@ -179,7 +179,7 @@ class LeaderboardManager {
         foreach(DataManager::getInstance()->getPlayerNames() as $player) {
             $level = DataManager::getInstance()->getPlayerData($player, "profile.level");
 
-            $playerMoney[$player] = $level;
+            $playerMoney[DataManager::getInstance()->getPlayerName($player)] = $level;
         }
 
         return $playerMoney;

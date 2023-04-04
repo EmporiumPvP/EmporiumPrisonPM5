@@ -5,15 +5,18 @@ namespace EmporiumCore\Menus;
 use Emporium\Prison\library\formapi\SimpleForm;
 use Emporium\Prison\Managers\misc\GlowManager;
 use Emporium\Prison\Managers\misc\Translator;
+use EmporiumCore\EmporiumCore;
 use EmporiumData\DataManager;
 use EmporiumData\PermissionsManager;
 use Items\GKits;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
+use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use pocketmine\player\Player;
+use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\EnderChestCloseSound;
 use pocketmine\world\sound\ItemFrameAddItemSound;
@@ -42,7 +45,7 @@ class GKitsMenu extends Menu {
         $menu = InvMenu::create(InvMenuTypeIds::TYPE_CHEST);
         $menu->setName("GKits");
         # menu listener
-        $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) use ($player): void {
+        $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) use ($player, $menu): void {
 
             # inventory variables
             $player = $transaction->getPlayer();
@@ -54,8 +57,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicVulkarion(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_vulkarion", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_RED . "Vulkarion Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -75,8 +77,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicZenith(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_zenith", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GOLD . "Zenith Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -96,8 +97,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicColossus(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_colossus", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::WHITE . "Colossus Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -117,8 +117,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicWarlock(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_warlock", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_PURPLE . "Warlock Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -138,8 +137,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicSlaughter(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_slaughter", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::RED . "Slaughter Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -159,8 +157,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicEnchanter(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_enchanter", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::AQUA . "Enchanter Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -180,8 +177,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicAtheos(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_atheos", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GRAY . "Atheos Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -201,8 +197,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicIapetus(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_iapetus", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::BLUE . "Iapetus Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -222,8 +217,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicBroteas(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_broteas", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GREEN . "Broteas Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -243,8 +237,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicAres(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_ares", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GOLD . "Ares Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -264,8 +257,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicGrimReaper(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_grim_reaper", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::RED . "Grim Reaper Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -285,8 +277,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->heroicExecutioner(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_executioner", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_RED . "Executioner Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -306,8 +297,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->Blacksmith(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_blacksmith", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_GRAY . "Blacksmith Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -327,8 +317,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->Hero(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_hero", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::WHITE . "Hero Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -348,8 +337,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->Cyborg(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_cyborg", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_AQUA . "Cyborg Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -369,8 +357,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->Crucible(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_crucible", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::YELLOW . "Crucible Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -390,8 +377,7 @@ class GKitsMenu extends Menu {
                     $player->getInventory()->addItem((new GKits)->Hunter(1));
                     DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_hunter", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::AQUA . "Hunter Gkit");
-                    $player->removeCurrentWindow();
-                    self::Inventory($player);
+                    $this->evaluateItems($menu, $player);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     $player->sendMessage(TF::RED . "Inventory Full");
@@ -407,6 +393,23 @@ class GKitsMenu extends Menu {
 
         }));
 
+        $this->evaluateItems($menu, $player);
+        # send inventory
+        $menu->send($player);
+
+        $task = new ClosureTask(function () use ($menu, $player) {
+            $this->evaluateItems($menu, $player);
+        });
+
+        $menu->setInventoryCloseListener(function (Player $player, Inventory $inventory) use ($task) {
+            $task->getHandler()->cancel();
+        });
+
+        EmporiumCore::getInstance()->getScheduler()->scheduleRepeatingTask($task, 4);
+    }
+
+    public function evaluateItems (InvMenu $menu, Player $player) : void
+    {
         # inventory
         $inventory = $menu->getInventory();
         # add items
@@ -427,8 +430,6 @@ class GKitsMenu extends Menu {
         $inventory->setItem(14, $this->CyborgItem($player));
         $inventory->setItem(15, $this->crucibleItem($player));
         $inventory->setItem(16, $this->hunterItem($player));
-        # send inventory
-        $menu->send($player);
     }
 
     # heroic vulkarion
@@ -445,7 +446,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicVulkarionCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicVulkarionCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicVulkarionCooldown", 1);
             } else {
@@ -483,7 +484,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicZenithCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicZenithCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicZenithCooldown", 1);
             } else {
@@ -522,7 +523,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicColossusCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicColossusCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicColossusCooldown", 1);
             } else {
@@ -560,7 +561,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicWarlockCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicWarlockCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicWarlockCooldown", 1);
             } else {
@@ -599,7 +600,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicSlaughterCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicSlaughterCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicSlaughterCooldown", 1);
             } else {
@@ -638,7 +639,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicEnchanterCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicEnchanterCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicEnchanterCooldown", 1);
             } else {
@@ -677,7 +678,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicAtheosCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicAtheosCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicAtheosCooldown", 1);
             } else {
@@ -716,7 +717,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicIapetusCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicIapetusCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicIapetusCooldown", 1);
             } else {
@@ -755,7 +756,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicBroteasCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicBroteasCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicBroteasCooldown", 1);
             } else {
@@ -794,7 +795,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicAresCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicAresCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicAresCooldown", 1);
             } else {
@@ -833,7 +834,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicGrimReaperCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicGrimReaperCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicGrimReaperCooldown", 1);
             } else {
@@ -872,7 +873,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroicExecutionerCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroicExecutionerCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroicExecutionerCooldown", 1);
             } else {
@@ -911,7 +912,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($blacksmithCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($blacksmithCooldown)
                 ];
                 $item->getNamedTag()->setString("BlacksmithCooldown", 1);
             } else {
@@ -950,7 +951,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($heroCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($heroCooldown)
                 ];
                 $item->getNamedTag()->setString("HeroCooldown", 1);
             } else {
@@ -989,7 +990,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($cyborgCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($cyborgCooldown)
                 ];
                 $item->getNamedTag()->setString("CyborgCooldown", 1);
             } else {
@@ -1028,7 +1029,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($crucibleCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($crucibleCooldown)
                 ];
                 $item->getNamedTag()->setString("CrucibleCooldown", 1);
             } else {
@@ -1067,7 +1068,7 @@ class GKitsMenu extends Menu {
                 # kit on cooldown
                 $lore = [
                     "§r",
-                    TF::BOLD . TF::RED . "ON COOLDOWN " . Translator::timeConvert($hunterCooldown)
+                    TF::BOLD . TF::RED . "ON COOLDOWN " . TF::WHITE . Translator::timeConvert($hunterCooldown)
                 ];
                 $item->getNamedTag()->setString("HunterCooldown", 1);
             } else {

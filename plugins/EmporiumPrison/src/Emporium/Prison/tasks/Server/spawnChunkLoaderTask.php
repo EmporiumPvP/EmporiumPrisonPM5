@@ -20,6 +20,7 @@ class spawnChunkLoaderTask extends AsyncTask {
 
     public function onCompletion(): void
     {
+        return;
         $world = EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world");
         # enable world
         if($world !== null) {

@@ -8,33 +8,28 @@ use Exception;
 
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\math\Vector3;
+use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
+use pocketmine\utils\TextFormat;
 use pocketmine\world\particle\ExplodeParticle;
 use pocketmine\world\sound\ExplodeSound;
+use pocketmine\world\sound\NoteInstrument;
+use pocketmine\world\sound\NoteSound;
 use pocketmine\world\World;
 
 class MeteorFlareEntityTask extends Task
 {
 
-    private World $world;
-    private int $x;
-    private int $y;
-    private int $z;
     private ItemEntity $itemEntity;
-    private string $name;
-    private string $type;
-    private String $colour;
+    private Player $player;
+    private int $timer = 30;
 
-    public function __construct(World $world, int $x, int $y, int $z, ItemEntity $itemEntity, String $name, String $type, $colour)
+    public function __construct(Player $player, ItemEntity $itemEntity, string $color, string $type)
     {
-        $this->world = $world;
-        $this->x = $x;
-        $this->y = $y;
-        $this->z = $z;
+        $this->player = $player;
         $this->itemEntity = $itemEntity;
-        $this->name = $name;
+        $this->color = $color;
         $this->type = $type;
-        $this->colour = $colour;
     }
 
     /**

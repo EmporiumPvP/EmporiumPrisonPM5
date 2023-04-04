@@ -5,6 +5,7 @@ namespace EmporiumData;
 use EmporiumData\Listener\PlayerListener;
 use EmporiumData\Provider\JsonProvider;
 use EmporiumData\Provider;
+use EmporiumData\Rank\RankManager;
 use pocketmine\plugin\PluginBase;
 
 class Loader extends PluginBase
@@ -18,6 +19,7 @@ class Loader extends PluginBase
     private DataManager $dataManager;
     private PermissionsManager $permissionManager;
     private ServerManager $serverManager;
+    private RankManager $rankManager;
 
     public Provider\JsonProvider $provider;
 
@@ -34,6 +36,7 @@ class Loader extends PluginBase
         $this->provider = new JsonProvider($this);
         $this->serverManager = new ServerManager($this);
         $this->dataManager = new DataManager($this);
+        $this->rankManager = new RankManager();
         $this->permissionManager = new PermissionsManager($this);
     }
 
