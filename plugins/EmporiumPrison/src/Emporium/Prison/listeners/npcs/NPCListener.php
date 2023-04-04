@@ -20,6 +20,7 @@ use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\Position;
 use pocketmine\world\sound\EndermanTeleportSound;
 
+use Tetro\EmporiumTinker\menus\TinkerMenu;
 use Tetro\EmporiumTinker\Tinker;
 
 class NPCListener implements Listener {

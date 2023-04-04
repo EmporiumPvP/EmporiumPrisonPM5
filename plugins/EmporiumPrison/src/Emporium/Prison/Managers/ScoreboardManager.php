@@ -92,8 +92,8 @@ class ScoreboardManager {
                 $progressRounded = 0;
             }
             # pickaxe energy progress
-            $pickaxeEnergy = null;
-            $pickaxeEnergyNeeded = null;
+            $pickaxeEnergy = 0;
+            $pickaxeEnergyNeeded = 0;
             $item = $player->getInventory()->getItemInHand();
             if($item->getNamedTag()->getTag("PickaxeType") !== null) {
                 if($item->getNamedTag()->getTag("Energy") !== null) {

@@ -2,6 +2,7 @@
 
 namespace Tetro\EmporiumTinker\menus;
 
+use customiesdevs\customies\item\CustomiesItemFactory;
 use Emporium\Prison\EmporiumPrison;
 
 use Emporium\Prison\Managers\misc\GlowManager;
@@ -31,6 +32,10 @@ class TinkerMenu {
         $menu = InvMenu::create(InvMenuTypeIds::TYPE_DOUBLE_CHEST);
         $menu->setName("Tinker");
         $menu->setListener(function(InvMenuTransaction $transaction) use ($menu, $player): InvMenuTransactionResult {
+
+            if($transaction->getIn()->getNamedTag()->getTag("CustomEnchantBook") === null) {
+                return $transaction->discard();
+            }
             # player is accepting energy offered
             if($transaction->getOut()->getNamedTag()->getTag("EnergyOffered")) {
                 if($this->totalEnergy === 0) return $transaction->discard();
@@ -127,9 +132,6 @@ class TinkerMenu {
                 }
             }
 
-            if($transaction->getIn()->getNamedTag()->getTag("CustomEnchantBook") === null) {
-                return $transaction->discard();
-            }
             return $transaction->continue();
         });
         $menu->setInventoryCloseListener(function(Player $player, Inventory $inventory) {
@@ -145,9 +147,19 @@ class TinkerMenu {
         $inv = $menu->getInventory();
         # create energy item
         $energyItem = $this->generateEnergyOfferedItem();
+
+        for($i = 0; $i < 9; $i++) {
+            $inv->setItem($i, $this->filler());
+        }
         $inv->setItem(4, $energyItem);
         # send menu
         $menu->send($player);
+    }
+
+    public function filler(): Item {
+        $item = CustomiesItemFactory::getInstance()->get("2dglasspanes:pane_lightgrey");
+        $item->setCustomName("§r");
+        return $item;
     }
 
     public function generateEnergyOfferedItem(): Item {

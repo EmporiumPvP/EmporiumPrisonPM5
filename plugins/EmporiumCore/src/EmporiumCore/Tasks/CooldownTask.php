@@ -6,6 +6,7 @@ use EmporiumCore\EmporiumCore;
 use EmporiumCore\Variables;
 use EmporiumData\DataManager;
 use pocketmine\scheduler\Task;
+use pocketmine\utils\TextFormat;
 
 class CooldownTask extends Task {
 
@@ -69,7 +70,7 @@ class CooldownTask extends Task {
             $prestigekit4 = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit4");
             $prestigekit5 = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.prestige_kit5");
             # Set Punishments
-            DataManager::getInstance()->setPlayerData($player, "anti_auto", 0);
+            DataManager::getInstance()->setPlayerData($player, "anticheat.anti_auto", 0);
 
             // Check for Punishment
             if ($ban === 0) {
@@ -216,6 +217,9 @@ class CooldownTask extends Task {
             // Punishment
             if ($mute === 1) {
                 $player->sendMessage(Variables::SERVER_PREFIX . "§r§7You are no longer muted");
+            }
+            if($antispam === 1) {
+                $player->sendMessage(Variables::SERVER_PREFIX . TextFormat::GRAY . "You can now talk in chat");
             }
         }
     }

@@ -3,6 +3,9 @@
 namespace Emporium\Prison;
 
 # default commands
+use Emporium\Prison\area\AreaException;
+use Emporium\Prison\area\AreaListener;
+use Emporium\Prison\area\AreaManager;
 use Emporium\Prison\commands\Default\BankCommand;
 use Emporium\Prison\commands\Default\ExtractCommand;
 use Emporium\Prison\commands\Default\MinesCommand;
@@ -93,6 +96,7 @@ class EmporiumPrison extends PluginBase {
     private PickaxeManager $pickaxeManager;
     private MiningManager $miningManager;
     private PlayerLevelManager $playerLevelManager;
+    private AreaManager $areaManager;
 
     private static EmporiumPrison $instance;
 
@@ -159,9 +163,13 @@ class EmporiumPrison extends PluginBase {
         $this->playerPrestigeMenu = new PlayerPrestige();
     }
 
+    /**
+     * @throws AreaException
+     */
     public function onEnable(): void {
 
         self::$instance = $this;
+        $this->areaManager = new AreaManager($this);
 
         # invmenu listener
         if(!InvMenuHandler::isRegistered()){
@@ -249,11 +257,6 @@ class EmporiumPrison extends PluginBase {
         $this->getServer()->getPluginManager()->registerEvents(new DiamondMineListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new EmeraldMineListener(), $this);
 
-        # other listeners
-        $this->getServer()->getPluginManager()->registerEvents(new PlayerListener(), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new MeteorListener(), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new NPCListener(), $this);
-
         # item listeners
         $this->getServer()->getPluginManager()->registerEvents(new BoosterListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new EnergyListener(), $this);
@@ -261,6 +264,12 @@ class EmporiumPrison extends PluginBase {
         $this->getServer()->getPluginManager()->registerEvents(new WhiteScrollListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new PlayerLevelManager(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new ArmourListener(), $this);
+
+        # other listeners
+        $this->getServer()->getPluginManager()->registerEvents(new PlayerListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new MeteorListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new NPCListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new AreaListener($this), $this);
     }
 
     public function registerTasks () : void
@@ -299,6 +308,14 @@ class EmporiumPrison extends PluginBase {
 
     public function getPlayerLevelManager(): PlayerLevelManager {
         return $this->playerLevelManager;
+    }
+
+    /**
+     * @return AreaManager
+     */
+    public function getAreaManager(): AreaManager
+    {
+        return $this->areaManager;
     }
 
     public function getBoosters(): Boosters {

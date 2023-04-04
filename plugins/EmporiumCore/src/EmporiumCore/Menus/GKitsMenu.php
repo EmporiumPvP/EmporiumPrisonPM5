@@ -52,7 +52,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicVulkarion")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicVulkarion(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicVulkarion(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_vulkarion-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_vulkarion", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_RED . "Vulkarion Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -73,7 +73,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicZenith")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicZenith(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicZenith(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_zenith-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_zenith", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GOLD . "Zenith Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -94,7 +94,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicColossus")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicColossus(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicColossus(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_colossus-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_colossus", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::WHITE . "Colossus Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -115,7 +115,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicWarlock")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicWarlock(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicWarlock(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_warlock-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_warlock", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_PURPLE . "Warlock Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -136,7 +136,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicSlaughter")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicSlaughter(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicSlaughter(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_slaughter-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_slaughter", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::RED . "Slaughter Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -157,7 +157,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicEnchanter")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicEnchanter(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicEnchanter(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_enchanter-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_enchanter", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::AQUA . "Enchanter Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -178,7 +178,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicAtheos")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicAtheos(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicAtheos(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_atheos-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_atheos", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GRAY . "Atheos Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -199,7 +199,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicIapetus")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicIapetus(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicIapetus(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_iapetus-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_iapetus", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::BLUE . "Iapetus Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -220,7 +220,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicBroteas")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicBroteas(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicBroteas(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_broteas-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_broteas", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GREEN . "Broteas Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -241,7 +241,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicAres")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicAres(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicAres(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_ares-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_ares", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GOLD . "Ares Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -262,7 +262,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicGrimReaper")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicGrimReaper(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicGrimReaper(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_grim_reaper-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_grim_reaper", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::RED . "Grim Reaper Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -283,7 +283,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("HeroicExecutioner")) {
                 if($player->getInventory()->canAddItem((new GKits)->heroicExecutioner(1))) {
                     $player->getInventory()->addItem((new GKits)->heroicExecutioner(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_heroic_executioner-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_heroic_executioner", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_RED . "Executioner Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -304,7 +304,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("Blacksmith")) {
                 if($player->getInventory()->canAddItem((new GKits)->Blacksmith(1))) {
                     $player->getInventory()->addItem((new GKits)->Blacksmith(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_blacksmith-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_blacksmith", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_GRAY . "Blacksmith Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -325,7 +325,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("Hero")) {
                 if($player->getInventory()->canAddItem((new GKits)->Hero(1))) {
                     $player->getInventory()->addItem((new GKits)->Hero(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_hero-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_hero", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::WHITE . "Hero Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -346,7 +346,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("Cyborg")) {
                 if($player->getInventory()->canAddItem((new GKits)->Cyborg(1))) {
                     $player->getInventory()->addItem((new GKits)->Cyborg(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_cyborg-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_cyborg", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_AQUA . "Cyborg Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -367,7 +367,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("Crucible")) {
                 if($player->getInventory()->canAddItem((new GKits)->Crucible(1))) {
                     $player->getInventory()->addItem((new GKits)->Crucible(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_crucible-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_crucible", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::YELLOW . "Crucible Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -388,7 +388,7 @@ class GKitsMenu extends Menu {
             if($itemClicked->getNamedTag()->getTag("Hunter")) {
                 if($player->getInventory()->canAddItem((new GKits)->Hunter(1))) {
                     $player->getInventory()->addItem((new GKits)->Hunter(1));
-                    DataManager::getInstance()->setPlayerData($player->getXuid(),"gkit_hunter-timer", 259200); # 3 day cooldown
+                    DataManager::getInstance()->setPlayerData($player->getXuid(),"cooldown.gkit_hunter", 259200); # 3 day cooldown
                     $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::AQUA . "Hunter Gkit");
                     $player->removeCurrentWindow();
                     self::Inventory($player);
@@ -434,7 +434,7 @@ class GKitsMenu extends Menu {
     # heroic vulkarion
     public function heroicVulkarionItem($player): Item {
 
-        $heroicVulkarionCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_vulkarion-timer");
+        $heroicVulkarionCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_vulkarion");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicvulkarion");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -473,7 +473,7 @@ class GKitsMenu extends Menu {
     # heroic zenith
     public function heroicZenithItem($player): Item {
 
-        $heroicZenithCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_zenith-timer");
+        $heroicZenithCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_zenith");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroiczenith");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -511,7 +511,7 @@ class GKitsMenu extends Menu {
     # heroic colossus
     public function heroicColossusItem($player): Item {
 
-        $heroicColossusCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_colossus-timer");
+        $heroicColossusCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_colossus");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroiccolossus");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -550,7 +550,7 @@ class GKitsMenu extends Menu {
     # heroic warlock
     public function heroicWarlockItem($player): Item {
 
-        $heroicWarlockCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_warlock-timer");
+        $heroicWarlockCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_warlock");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicwarlock");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -588,7 +588,7 @@ class GKitsMenu extends Menu {
     # heroic slaughter
     public function heroicSlaughterItem($player): Item {
 
-        $heroicSlaughterCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_slaughter-timer");
+        $heroicSlaughterCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_slaughter");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicslaughter");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -627,7 +627,7 @@ class GKitsMenu extends Menu {
     # heroic enchanter
     public function heroicEnchanterItem($player): Item {
 
-        $heroicEnchanterCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_enchanter-timer");
+        $heroicEnchanterCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_enchanter");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicenchanter");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -666,7 +666,7 @@ class GKitsMenu extends Menu {
     # heroic atheos
     public function heroicAtheosItem($player): Item {
 
-        $heroicAtheosCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_atheos-timer");
+        $heroicAtheosCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_atheos");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicatheos");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -705,7 +705,7 @@ class GKitsMenu extends Menu {
     # heroic iapetus
     public function heroicIapetusItem($player): Item {
 
-        $heroicIapetusCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_iapetus-timer");
+        $heroicIapetusCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_iapetus");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroiciapetus");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -744,7 +744,7 @@ class GKitsMenu extends Menu {
     # heroic broteas
     public function heroicBroteasItem($player): Item {
 
-        $heroicBroteasCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_broteas-timer");
+        $heroicBroteasCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_broteas");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicbroteas");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -783,7 +783,7 @@ class GKitsMenu extends Menu {
     # heroic ares
     public function heroicAresItem($player): Item {
 
-        $heroicAresCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_ares-timer");
+        $heroicAresCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_ares");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicares");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -822,7 +822,7 @@ class GKitsMenu extends Menu {
     # heroic grim reaper
     public function heroicGrimReaperItem($player): Item {
 
-        $heroicGrimReaperCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_grim_Reaper-timer");
+        $heroicGrimReaperCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_grim_Reaper");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicgrimreaper");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -861,7 +861,7 @@ class GKitsMenu extends Menu {
     # heroic executioner
     public function heroicExecutionerItem($player): Item {
 
-        $heroicExecutionerCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_heroic_executioner-timer");
+        $heroicExecutionerCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_executioner");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicexecutioner");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -900,7 +900,7 @@ class GKitsMenu extends Menu {
     # blacksmith
     public function blacksmithItem($player): Item {
 
-        $blacksmithCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_blacksmith-timer");
+        $blacksmithCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_blacksmith");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.blacksmith");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -939,7 +939,7 @@ class GKitsMenu extends Menu {
     # hero
     public function heroItem($player): Item {
 
-        $heroCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_hero-timer");
+        $heroCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_hero");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.hero");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -978,7 +978,7 @@ class GKitsMenu extends Menu {
     # cyborg
     public function cyborgItem($player): Item {
 
-        $cyborgCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_cyborg-timer");
+        $cyborgCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_cyborg");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.hero");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -1017,7 +1017,7 @@ class GKitsMenu extends Menu {
     # crucible
     public function crucibleItem($player): Item {
 
-        $crucibleCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_crucible-timer");
+        $crucibleCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_crucible");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.crucible");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
@@ -1056,7 +1056,7 @@ class GKitsMenu extends Menu {
     # hunter
     public function hunterItem($player): Item {
 
-        $hunterCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"gkit_hunter-timer");
+        $hunterCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_hunter");
         $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.hunter");
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");

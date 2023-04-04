@@ -314,8 +314,7 @@ class Menu {
                     }
                 FireworksParticle::Fireworks3($player);
                 $player->removeCurrentWindow();
-                $player->sendTitle(TF::GOLD . "Pickaxe", TF::GOLD . "Level Up", 10, 60, 10);
-                $player->sendMessage(TF::BOLD . TF::GOLD . "Pickaxe Level Up");
+                EmporiumPrison::getInstance()->getPickaxeManager()->levelUpAnimation($player);
                 $player->getInventory()->remove($item);
                 $updatedPickaxe = $pickaxeManager->levelUpPickaxe($item);
                 $player->getInventory()->addItem($updatedPickaxe);
@@ -331,44 +330,28 @@ class Menu {
         });
         # set items
         $inventory = $menu->getInventory();
-        $inventory->setItem(0, $this->fillerItem());
-        $inventory->setItem(1, $this->fillerItem());
-        $inventory->setItem(2, $this->fillerItem());
-        $inventory->setItem(3, $this->fillerItem());
+
+        # pickaxe
         $inventory->setItem(4, $item);
-        $inventory->setItem(5, $this->fillerItem());
-        $inventory->setItem(6, $this->fillerItem());
-        $inventory->setItem(7, $this->fillerItem());
-        $inventory->setItem(8, $this->fillerItem());
-        $inventory->setItem(9, $this->fillerItem());
-        $inventory->setItem(10, $this->fillerItem());
+        # enchant options
         $inventory->setItem(11, $enchant1);
         $inventory->setItem(12, $enchant2);
         $inventory->setItem(13, $enchant3);
         $inventory->setItem(14, $enchant4);
         $inventory->setItem(15, $enchant5);
-        $inventory->setItem(16, $this->fillerItem());
-        $inventory->setItem(17, $this->fillerItem());
-        $inventory->setItem(18, $this->fillerItem());
-        $inventory->setItem(19, $this->fillerItem());
-        $inventory->setItem(20, $this->fillerItem());
-        $inventory->setItem(21, $this->fillerItem());
-        $inventory->setItem(22, $this->fillerItem());
-        $inventory->setItem(23, $this->fillerItem());
-        $inventory->setItem(24, $this->fillerItem());
-        $inventory->setItem(25, $this->fillerItem());
-        $inventory->setItem(26, $this->fillerItem());
+        # filler
+        for($i = 0; $i <= 26; $i++) {
+            if($inventory->isSlotEmpty($i)) {
+                $inventory->setItem($i, $this->filler());
+            }
+        }
 
         $menu->send($player);
     }
 
-    public function fillerItem(): Item {
-
-        $item = CustomiesItemFactory::getInstance()->get("customies:filler");
+    public function filler(): Item {
+        $item = CustomiesItemFactory::getInstance()->get("2dglasspanes:pane_lightgrey");
         $item->setCustomName("§r");
-        $lore = [""];
-        $item->setLore($lore);
-        #$item->addEnchantment(GlowManager::$enchInst);
         return $item;
     }
 }

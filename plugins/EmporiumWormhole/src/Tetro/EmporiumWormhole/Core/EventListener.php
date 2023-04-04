@@ -45,7 +45,7 @@ class EventListener implements Listener {
                                 # play sound to player
                                 $player->broadcastSound(new EndermanTeleportSound(), [$player]);
                                 # remove energy from pickaxe
-                                EmporiumPrison::getInstance()->getPickaxeManager()->removeLevelUpEnergy($player, $item);
+                                EmporiumPrison::getInstance()->getPickaxeManager()->removeLevelUpEnergy($item);
                                 # send inventory
                                 $menu = new Menu();
                                 $menu->Inventory($player, $item);

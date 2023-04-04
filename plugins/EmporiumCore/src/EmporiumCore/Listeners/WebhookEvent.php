@@ -10,104 +10,20 @@ use pocketmine\event\player\{PlayerCommandPreprocessEvent, PlayerDeathEvent, Pla
 use pocketmine\player\Player;
 use pocketmine\Server;
 
-class WebhookEvent implements Listener {
+class WebhookEvent implements Listener
+{
 
     private EmporiumCore $plugin;
 
-    public function __construct(EmporiumCore $plugin) {
+    public function __construct(EmporiumCore $plugin)
+    {
         $this->plugin = $plugin;
     }
 
     /////////////////////////////// DEATH ///////////////////////////////
-    public function onDeath(PlayerDeathEvent $event) {
 
-        $player = $event->getPlayer();
-        $killer = $player->getLastDamageCause();
-
-        if ($killer instanceof EntityDamageByEntityEvent) {
-            $killer = $killer->getDamager();
-            if ($killer instanceof Player) {
-                // Create Webhook
-                $message = "**" . $event->getPlayer()->getName() . "** has been killed by **" . $killer->getName() . "**.";
-                $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
-                $curlopts = [
-                    "content" => $message,
-                    "username" => "Emporium | Moderation"
-                ];
-                // Send Webhook
-                $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($event->getPlayer()->getName(), $webhook, serialize($curlopts)));
-            }
-        }
-    }
-
-    /////////////////////////////// JOIN ///////////////////////////////
-    public function onJoin(PlayerJoinEvent $event) {
-
-        // Create Webhook
-        $count = count($this->plugin->getServer()->getOnlinePlayers());
-        $message = "**{$event->getPlayer()->getName()}** has joined the server. **(" . $count . "/" . $this->plugin->getServer()->getMaxPlayers() . ")**";
-        $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
-        $curlopts = [
-            "content" => $message,
-            "username" => "Emporium | Moderation"
-        ];
-
-        // Send Webhook
-        $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($event->getPlayer()->getName(), $webhook, serialize($curlopts)));
-    }
-
-    /////////////////////////////// QUIT ///////////////////////////////
-    public function onQuit(PlayerQuitEvent $event) {
-
-        // Create Webhook
-        $count = count($this->plugin->getServer()->getOnlinePlayers()) - 1;
-        $message = "**{$event->getPlayer()->getName()}** has left the server. **(" . $count . "/" . $this->plugin->getServer()->getMaxPlayers() . ")**";
-        $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
-        $curlopts = [
-            "content" => $message,
-            "username" => "Emporium | Moderation"
-        ];
-
-        // Send Webhook
-        $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($event->getPlayer()->getName(), $webhook, serialize($curlopts)));
-    }
-
-    /////////////////////////////// SEND MESSAGE ///////////////////////////////
-    public function onCommand(PlayerCommandPreprocessEvent $event) {
-
-        // Remove Discord Pings
-        $message = str_replace(["@everyone", "@here"], '', $event->getMessage());
-        if($message === "") {
-            return;
-        }
-
-        // Create Webhook
-        $message = "**" . $event->getPlayer()->getName() . "**: `" . $message . "`";
-        $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
-        if ($event->getMessage()[0] === "/") {
-
-            // Create Command Webhook
-            $curlopts = [
-                "content" => $message,
-                "username" => "EmporiumPvP | Commands"
-            ];
-
-        } else {
-
-            // Create Chat Webhook
-            $curlopts = [
-                "content" => $message,
-                "username" => "Emporium | Chat"
-            ];
-
-        }
-
-        // Send Webhook
-        $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($event->getPlayer()->getName(), $webhook, serialize($curlopts)));
-    }
-
-    /////////////////////////////// STAFF WEBHOOK ///////////////////////////////
-    public static function staffWebhook($sender, $object, $command) {
+    public static function staffWebhook($sender, $object, $command)
+    {
 
         if ($command === "Ban") {
             // Create Webhook
@@ -136,21 +52,21 @@ class WebhookEvent implements Listener {
                 "username" => "Emporium | Moderation"
             ];
         }
-        switch($command) {
+        switch ($command) {
             case "creative":
             case "survival":
-            if ($object === $sender) {
-                // Create Webhook
-                $message = "**{$sender->getName()}** has changed their gamemode";
-            } else {
-                // Create Webhook
-                $message = "**{$sender->getName()}** has changed **{$object->getName()}**'s gamemode";
-            }
-            $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
-            $curlopts = [
-                "content" => $message,
-                "username" => "Emporium | Moderation"
-            ];
+                if ($object === $sender) {
+                    // Create Webhook
+                    $message = "**{$sender->getName()}** has changed their gamemode";
+                } else {
+                    // Create Webhook
+                    $message = "**{$sender->getName()}** has changed **{$object->getName()}**'s gamemode";
+                }
+                $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
+                $curlopts = [
+                    "content" => $message,
+                    "username" => "Emporium | Moderation"
+                ];
         }
         if ($command === "item") {
             // Create Webhook
@@ -267,11 +183,13 @@ class WebhookEvent implements Listener {
         }
 
         // Send Webhook
-        $sender->getServer()->getAsyncPool()->submitTask(new Webhooks($sender->getName(), $webhook, serialize($curlopts)));
+        $sender->getServer()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
     }
 
-    /////////////////////////////// ITEM WEBHOOK ///////////////////////////////
-    public static function itemWebhook($player, $item) {
+    /////////////////////////////// JOIN ///////////////////////////////
+
+    public static function itemWebhook($player, $item)
+    {
 
         if ($item === "GKitHeroicVulkarion") {
             // Create Webhook
@@ -428,17 +346,19 @@ class WebhookEvent implements Listener {
         }
 
         // Send Webhook
-        if($webhook === null) {
+        if ($webhook === null) {
             return;
         } else {
-            $player->getServer()->getAsyncPool()->submitTask(new Webhooks($player->getName(), $webhook, serialize($curlopts)));
+            $player->getServer()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
         }
     }
 
-    /////////////////////////////// EVENTS WEBHOOK ///////////////////////////////
-    public static function EventsWebhook($player, $event) {
+    /////////////////////////////// QUIT ///////////////////////////////
 
-        if($event === "Stronghold") {
+    public static function EventsWebhook($event)
+    {
+
+        if ($event === "Stronghold") {
             # Create Webhook
             $message = "The Stronghold Event has started";
             $webhook = "https://discord.com/api/webhooks/1054914712770465843/dbiR0pfZFb05u3-DwNgw8eTcM8nFeJSUyTP8IvYbUfQrE9faa5UWBT-mbc8J612l4tOr";
@@ -447,7 +367,7 @@ class WebhookEvent implements Listener {
                 "username" => "Emporium | Events"
             ];
         }
-        if($event === "PrisonBreak") {
+        if ($event === "PrisonBreak") {
             # Create Webhook
             $message = "The Prison Break Event has started";
             $webhook = "https://discord.com/api/webhooks/1054914712770465843/dbiR0pfZFb05u3-DwNgw8eTcM8nFeJSUyTP8IvYbUfQrE9faa5UWBT-mbc8J612l4tOr";
@@ -456,7 +376,7 @@ class WebhookEvent implements Listener {
                 "username" => "Emporium | Events"
             ];
         }
-        if($event === "AlienInvasion") {
+        if ($event === "AlienInvasion") {
             # Create Webhook
             $message = "The Alien Invasion Event has started";
             $webhook = "https://discord.com/api/webhooks/1054914712770465843/dbiR0pfZFb05u3-DwNgw8eTcM8nFeJSUyTP8IvYbUfQrE9faa5UWBT-mbc8J612l4tOr";
@@ -465,7 +385,7 @@ class WebhookEvent implements Listener {
                 "username" => "Emporium | Events"
             ];
         }
-        if($event === "MeteorCompetition") {
+        if ($event === "MeteorCompetition") {
             # Create Webhook
             $message = "The Meteor Competition has started";
             $webhook = "https://discord.com/api/webhooks/1054914712770465843/dbiR0pfZFb05u3-DwNgw8eTcM8nFeJSUyTP8IvYbUfQrE9faa5UWBT-mbc8J612l4tOr";
@@ -476,8 +396,104 @@ class WebhookEvent implements Listener {
         }
 
         // Send Webhook
-        Server::getInstance()->getAsyncPool()->submitTask(new Webhooks($player, $webhook, serialize($curlopts)));
+        Server::getInstance()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
 
+    }
+
+    /////////////////////////////// SEND MESSAGE ///////////////////////////////
+
+    public function onDeath(PlayerDeathEvent $event)
+    {
+
+        $player = $event->getPlayer();
+        $killer = $player->getLastDamageCause();
+
+        if ($killer instanceof EntityDamageByEntityEvent) {
+            $killer = $killer->getDamager();
+            if ($killer instanceof Player) {
+                // Create Webhook
+                $message = "**" . $event->getPlayer()->getName() . "** has been killed by **" . $killer->getName() . "**.";
+                $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
+                $curlopts = [
+                    "content" => $message,
+                    "username" => "Emporium | Moderation"
+                ];
+                // Send Webhook
+                $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
+            }
+        }
+    }
+
+    /////////////////////////////// STAFF WEBHOOK ///////////////////////////////
+
+    public function onJoin(PlayerJoinEvent $event)
+    {
+
+        // Create Webhook
+        $count = count($this->plugin->getServer()->getOnlinePlayers());
+        $message = "**{$event->getPlayer()->getName()}** has joined the server. **(" . $count . "/" . $this->plugin->getServer()->getMaxPlayers() . ")**";
+        $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
+        $curlopts = [
+            "content" => $message,
+            "username" => "Emporium | Moderation"
+        ];
+
+        // Send Webhook
+        $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
+    }
+
+    /////////////////////////////// ITEM WEBHOOK ///////////////////////////////
+
+    public function onQuit(PlayerQuitEvent $event)
+    {
+
+        // Create Webhook
+        $count = count($this->plugin->getServer()->getOnlinePlayers()) - 1;
+        $message = "**{$event->getPlayer()->getName()}** has left the server. **(" . $count . "/" . $this->plugin->getServer()->getMaxPlayers() . ")**";
+        $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
+        $curlopts = [
+            "content" => $message,
+            "username" => "Emporium | Moderation"
+        ];
+
+        // Send Webhook
+        $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
+    }
+
+    /////////////////////////////// EVENTS WEBHOOK ///////////////////////////////
+
+    public function onCommand(PlayerCommandPreprocessEvent $event)
+    {
+
+        // Remove Discord Pings
+        $message = str_replace(["@everyone", "@here"], '', $event->getMessage());
+        if ($message === "") {
+            return;
+        }
+
+        // Create Webhook
+        $message = "**" . $event->getPlayer()->getName() . "**: `" . $message . "`";
+        $webhook = "https://discord.com/api/webhooks/1073240681985880114/IH8qqjVhtUf-snbdC0oHA36F_9rcLFee5TdIwnPgNyZwz9P-c-SPyl5qeExZhUAv7InL";
+        if ($event->getMessage()[0] === "/") {
+
+            // Create Command Webhook
+            $curlopts = [
+                "content" => $message,
+                "username" => "EmporiumPvP | Commands"
+            ];
+
+        } else {
+
+            // Create Chat Webhook
+            $curlopts = [
+                "content" => $message,
+                "username" => "Emporium | Chat"
+            ];
+
+        }
+
+        // Send Webhook
+        $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
     }
 
 }

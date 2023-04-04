@@ -1,0 +1,265 @@
+player:
+  format: "&8<&r&7Player&l&8>&r"
+  inheritance: null
+  permissions:
+    # commands
+    - emporiumcore.command.balance
+    - emporiumcore.command.brag
+    - emporiumcore.command.discord
+    - emporiumcore.command.gamble
+    - emporiumcore.command.kits
+    - emporiumcore.command.gkits
+    - emporiumcore.command.pay
+    - emporiumcore.command.prestige
+    - emporiumcore.command.prestigepanel
+    - emporiumcore.command.ranks
+    - emporiumcore.command.rules
+    - emporiumcore.command.shop
+    - emporiumcore.command.tags
+    - emporiumcore.command.tell
+    - emporiumcore.command.tpask
+    - emporiumcore.command.trash
+    - emporiumcore.command.voteshop
+    - emporiumcore.command.items
+    - emporiumcore.command.ceshop
+    - emporiumprison.command.bank
+    - emporiumprison.command.extract
+    - emporiumprison.command.help
+    - emporiumprison.command.mines
+    - emporiumprison.command.pickaxeprestige
+    - emporiumprison.command.playerlevel
+    - emporiumprison.command.playerprestige
+    - emporiumprison.command.spawn
+    - emporiumenchants.command.enchant
+    - emporiumenchants.command.info
+    - emporiumenchants.command.list
+    - emporiumenchants.command.remove
+
+    # vaults
+    - playervaults.vault.1
+noble:
+  format: "&2<&r&aNoble&l&2>&r"
+  inheritance: player
+  permissions:
+    # kits
+    - emporiumcore.rankkit.noble
+    # vaults
+    - playervaults.vault.1
+    - playervaults.vault.2
+    # commands
+    - emporiumcore.command.feed
+    - emporiumcore.command.clear
+    - emporiumcore.command.ceshop
+imperial:
+  format: "&5<&r&dImperial&l&5>&r"
+  inheritance: noble
+  permissions:
+    # kits
+    - emporiumcore.rankkit.noble
+    - emporiumcore.rankkit.imperial
+    # vaults
+    - playervaults.vault.1
+    - playervaults.vault.2
+    - playervaults.vault.3
+    # commands
+    - emporiumcore.command.feed
+    - emporiumcore.command.clear
+    - emporiumcore.command.ceshop
+    - emporiumprison.command.oreexchanger
+supreme:
+  format: "&b<&r&3Supreme&l&b>&r"
+  inheritance: imperial
+  permissions:
+    # kits
+    - emporiumcore.rankkit.noble
+    - emporiumcore.rankkit.imperial
+    - emporiumcore.rankkit.supreme
+    # vaults
+    - playervaults.vault.1
+    - playervaults.vault.2
+    - playervaults.vault.3
+    - playervaults.vault.4
+    # commands
+    - emporiumcore.command.feed
+    - emporiumcore.command.clear
+    - emporiumcore.command.ceshop
+    - emporiumprison.command.oreexchanger
+    - emporiumprison.command.blacksmith
+majesty:
+  format: "&d<&r&5Majesty&l&d>&r"
+  inheritance: supreme
+  permissions:
+    # kits
+    - emporiumcore.rankkit.noble
+    - emporiumcore.rankkit.imperial
+    - emporiumcore.rankkit.supreme
+    - emporiumcore.rankkit.majesty
+    # vaults
+    - playervaults.vault.1
+    - playervaults.vault.2
+    - playervaults.vault.3
+    - playervaults.vault.4
+    - playervaults.vault.5
+    # commands
+    - emporiumcore.command.feed
+    - emporiumcore.command.heal
+    - emporiumcore.command.clear
+    - emporiumcore.command.ceshop
+    - emporiumprison.command.oreexchanger
+    - emporiumprison.command.blacksmith
+emperor:
+  format: "&e<&r&bEmperor&l&e>&r"
+  inheritance: majesty
+  permissions:
+    # kits
+    - emporiumcore.rankkit.noble
+    - emporiumcore.rankkit.imperial
+    - emporiumcore.rankkit.supreme
+    - emporiumcore.rankkit.majesty
+    - emporiumcore.rankkit.emperor
+    # vaults
+    - playervaults.vault.1
+    - playervaults.vault.2
+    - playervaults.vault.3
+    - playervaults.vault.4
+    - playervaults.vault.5
+    - playervaults.vault.6
+    # commands
+    - emporiumcore.command.feed
+    - emporiumcore.command.heal
+    - emporiumcore.command.clear
+    - emporiumcore.command.sell
+    - emporiumcore.command.ceshop
+    - emporiumprison.command.oreexchanger
+    - emporiumprison.command.blacksmith
+president:
+  format: "&4<&r&cPresident&l&4>&r"
+  inheritance: emperor
+  permissions:
+    # kits
+    - emporiumcore.rankkit.noble
+    - emporiumcore.rankkit.imperial
+    - emporiumcore.rankkit.supreme
+    - emporiumcore.rankkit.majesty
+    - emporiumcore.rankkit.emperor
+    - emporiumcore.rankkit.president
+    # vaults
+    - playervaults.vault.1
+    - playervaults.vault.2
+    - playervaults.vault.3
+    - playervaults.vault.4
+    - playervaults.vault.5
+    - playervaults.vault.6
+    - playervaults.vault.7
+    # commands
+    - emporiumcore.command.feed
+    - emporiumcore.command.heal
+    - emporiumcore.command.clear
+    - emporiumcore.command.sell
+    - emporiumcore.command.ceshop
+    - emporiumprison.command.oreexchanger
+    - emporiumprison.command.blacksmith
+    - emporiumprison.command.EmporiumTinker
+trial:
+  format: "&2[&r&7Trial-Mod&l&2]&r"
+  inheritance: player
+  permissions:
+    - emporiumcore.command.clearchat
+    - emporiumcore.command.creative
+    - emporiumcore.command.kick
+    - emporiumcore.command.kill
+    - emporiumcore.command.mute
+    - emporiumcore.command.survival
+    - emporiumcore.command.teleport
+    - emporiumcore.command.unban
+    - emporiumcore.command.unfreeze
+    - emporiumcore.command.unmute
+    - emporiumcore.command.warn
+    - invsee.command.invsee
+    - invsee.command.enderinvsee
+    - invsee.inventory.view
+    - invsee.enderinventory.view
+builder:
+  format: "&1[&r&9Builder&l&1]&r"
+  inheritance: player
+  permissions:
+    - emporiumcore.command.clearchat
+    - emporiumcore.command.creative
+    - emporiumcore.command.mute
+    - emporiumcore.command.survival
+    - emporiumcore.command.teleport
+    - emporiumcore.command.warn
+helper:
+  format: "&g[&r&eHelper&l&g]&r"
+  inheritance: trial
+  permissions:
+    - emporiumcore.command.broadcast
+    - emporiumcore.command.clearchat
+    - emporiumcore.command.contraband
+    - emporiumcore.command.creative
+    - emporiumcore.command.freeze
+    - emporiumcore.command.kick
+    - emporiumcore.command.kill
+    - emporiumcore.command.mute
+    - emporiumcore.command.survival
+    - emporiumcore.command.teleport
+    - emporiumcore.command.unban
+    - emporiumcore.command.unfreeze
+    - emporiumcore.command.unmute
+    - emporiumcore.command.warn
+    - invsee.command.invsee
+    - invsee.command.enderinvsee
+    - invsee.inventory.view
+    - invsee.enderinventory.view
+mod:
+  format: "&2[&r&aMod&l&2]&r"
+  inheritance: helper
+  permissions:
+    - emporiumcore.command.ban
+    - emporiumcore.command.broadcast
+    - emporiumcore.command.clearchat
+    - emporiumcore.command.contraband
+    - emporiumcore.command.creative
+    - emporiumcore.command.freeze
+    - emporiumcore.command.kick
+    - emporiumcore.command.kill
+    - emporiumcore.command.mute
+    - emporiumcore.command.ranks.set
+    - emporiumcore.command.survival
+    - emporiumcore.command.teleport
+    - emporiumcore.command.unban
+    - emporiumcore.command.unfreeze
+    - emporiumcore.command.unmute
+    - emporiumcore.command.warn
+    - invsee.command.invsee
+    - invsee.command.enderinvsee
+    - invsee.inventory.view
+    - invsee.enderinventory.view
+    - emporiumprison.command.booster
+    - emporiumprison.command.energy
+    - emporiumprison.command.flare
+
+admin:
+  format: "&c[&r&4Admin&l&c]&r"
+  inheritance: mod
+  permissions: []
+
+developer:
+  format: "&b[&r&3Developer&l&b]&r"
+  inheritance: mod
+  permissions: []
+
+manager:
+  format: "&9[&r&1Manager&l&9]&r"
+  inheritance: mod
+  permissions: []
+
+owner:
+  format: "&4[&r&cOWNER&l&4]&r"
+  inheritance: mod
+  permissions: []
+
+founder:
+  format: "&3[&r&f&k||&r&l&bFounder&r&k&f||&r&3&l]&r"
+  inheritance: mod
+  permissions: []

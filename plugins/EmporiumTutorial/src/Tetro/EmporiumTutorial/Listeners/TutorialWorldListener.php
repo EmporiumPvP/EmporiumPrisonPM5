@@ -2,6 +2,9 @@
 
 namespace Tetro\EmporiumTutorial\Listeners;
 
+use DialogueUIAPI\Yanoox\DialogueUIAPI\DialogueAPI;
+use DialogueUIAPI\Yanoox\DialogueUIAPI\element\DialogueButton;
+
 use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\Managers\EnergyManager;
 use Emporium\Prison\Managers\MiningManager;
@@ -10,17 +13,13 @@ use Emporium\Prison\Managers\PlayerLevelManager;
 use Emporium\Prison\tasks\BedrockSpawnTask;
 use Emporium\Prison\tasks\Ores\CoalBlockSpawnTask;
 use Emporium\Prison\tasks\Ores\OreRegenTask;
-use Emporium\Prison\Variables;
 
 use JsonException;
+
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\inventory\transaction\action\DropItemAction;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
-use Tetro\EmporiumWormhole\EmporiumWormhole;
-
-use EmporiumData\DataManager;
-
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\event\block\BlockBreakEvent;
@@ -30,6 +29,10 @@ use pocketmine\utils\TextFormat;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\EndermanTeleportSound;
 use pocketmine\world\sound\XpLevelUpSound;
+
+use Tetro\EmporiumWormhole\EmporiumWormhole;
+
+use EmporiumData\DataManager;
 
 use Tetro\EmporiumTutorial\EmporiumTutorial;
 use Tetro\EmporiumTutorial\Managers\TutorialManager;
@@ -146,6 +149,7 @@ class TutorialWorldListener implements Listener {
 
         # tutorial player data
         $tutorialProgress = $this->tutorialManager->getPlayerTutorialProgress($player);
+        $tutorialBlocksMined = $this->tutorialManager->getPlayerTutorialBlocksMined($player);
 
         # pickaxe checks
         if($item->getNamedTag()->getTag("PickaxeType") === null) {
@@ -297,7 +301,7 @@ class TutorialWorldListener implements Listener {
         if($energy >= $energyNeeded) {
             # tutorial check
             if($tutorialProgress == 3) {
-                DataManager::getInstance()->setPlayerData($player->getXuid(),  "profile.tutorial-progress", DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.tutorial-progress") + 1);
+                DataManager::getInstance()->setPlayerData($player->getXuid(),  "profile.tutorial-progress", (int)DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.tutorial-progress") + 1);
                 $this->tutorialManager->startTutorial($player);
                 $event->cancel();
                 return;
@@ -378,6 +382,86 @@ class TutorialWorldListener implements Listener {
 
         # update pickaxe
         $this->pickaxeManager->updatePickaxeSetInHand($player, $item);
+
+        # tutorial progress 1 messages
+        if($tutorialProgress === 1) {
+            switch($tutorialBlocksMined) {
+
+                case 0:
+                    $dialogue = DialogueAPI::create(
+                        "TourGuideProgressMessage1",
+                        "Tour Guide",
+                        "Congrats, you have mined your first ore!" . TF::EOL . TF::EOL .
+                        "When you mine an Ore, you gain XP and Energy, XP goes towards your Player Level, and Energy goes towards your Pickaxe." . TF::EOL . TF::EOL .
+                        "Ores also regenerate when you mine them, and they have a chance to instantly regenerate into their Block form" . TF::EOL . TF::EOL .
+                        "For more information on Player Levels and Energy run /help",
+                        [DialogueButton::create("Next")
+                            ->setHandler(function (Player $player, string $buttonName): void {})]);
+                    $dialogue->displayTo([$player]);
+                    break;
+
+                case 15:
+                    $dialogue = DialogueAPI::create(
+                        "TourGuideProgressMessage2",
+                        "Tour Guide",
+                        "Take a look at your pickaxe in your inventory." . " Your pickaxe Level is displayed next to the name, as well your successful and failed Enchants." . TF::EOL . TF::EOL .
+                        "Under that you will see your Energy bar, this is where your pickaxe Energy is stored. Each pickaxe level requires more Energy to Forge. You can extract the energy from your pickaxe by using /extract But you will lose 10% of the energy when doing this" . TF::EOL . TF::EOL .
+                        "Next you will see Blocks Mined, this is how many blocks you have mined in total with that pickaxe." . TF::EOL . TF::EOL .
+                        "Lastly at the bottom of the pickaxe it says Required Mining Level, this is what Level you need to be to use this Pickaxe.",
+                        [DialogueButton::create("Next")
+                            ->setHandler(function (Player $player, string $buttonName): void {})]);
+                    $dialogue->displayTo([$player]);
+                    break;
+
+                case 25:
+                    $dialogue = DialogueAPI::create(
+                        "TourGuideProgressMessage3",
+                        "Tour Guide",
+                        "You can /prestige your pickaxe when it reaches max Level (100)" . TF::EOL . TF::EOL .
+                        "Each time you prestige your pickaxe you unlock new features for that pickaxe" . TF::EOL . TF::EOL .
+                        "For more information on pickaxes run /help",
+                        [DialogueButton::create("Next")
+                            ->setHandler(function (Player $player, string $buttonName): void {})]);
+                    $dialogue->displayTo([$player]);
+                    break;
+
+                case 35:
+                    $dialogue = DialogueAPI::create(
+                        "TourGuideProgressMessage4",
+                        "Tour Guide",
+                        "You found an Elite Clue Scroll!" . TF::EOL . TF::EOL .
+                        "When you mine there is a chance you will find a clue scroll." . TF::EOL . TF::EOL .
+                        "You can complete these clue scrolls to gain rewards, or you can sell them on the auction house (This feature is still under development)" . TF::EOL . TF::EOL .
+                        "Clue scrolls have 5 different rarities:" . TF::EOL .
+                        "Elite" . TF::EOL .
+                        "Ultimate" . TF::EOL .
+                        "Legendary" . TF::EOL .
+                        "Godly" . TF::EOL .
+                        "Heroic" . TF::EOL . TF::EOL .
+                        "The higher the rarity the more difficult the task and better the rewards!" . TF::EOL . TF::EOL .
+                        TF::BOLD . TF::RED . "(!) This feature is still under development",
+                        [DialogueButton::create("Next")
+                            ->setHandler(function (Player $player, string $buttonName): void {})]);
+                    $dialogue->displayTo([$player]);
+                    break;
+
+                case 50:
+                    $dialogue = DialogueAPI::create(
+                        "TourGuideProgressMessage5",
+                        "Tour Guide",
+                        "/help is a great resource. There are several options to the /help menu. If you need more help, try asking the community in our /discord server or by asking one of our /staff",
+                        [DialogueButton::create("Next")
+                            ->setHandler(function (Player $player, string $buttonName): void {})]);
+                    $dialogue->displayTo([$player]);
+                    break;
+
+                case 60:
+                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.tutorial-progress", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.tutorial-progress") + 1);
+                    $this->tutorialManager->startTutorial($player);
+                    break;
+            }
+
+        }
     }
 
     private function addEnergyToPickaxe(int $energy, Item $item, int $boosterTime, int $energyMultiplier): void {

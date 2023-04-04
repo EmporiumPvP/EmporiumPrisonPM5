@@ -48,7 +48,7 @@ class AntiCheatTask extends Task {
                     "username" => "EmporiumPvP | WardenAC"
                 ];
                 // Send Webhook
-                $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($player->getName(), $webhook, serialize($curlopts)));
+                $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
             }
 
             // Anti-Nuke

@@ -4,6 +4,7 @@ namespace Emporium\Prison\commands\Default;
 
 use Emporium\Prison\EmporiumPrison;
 
+use Emporium\Prison\tasks\TeleportTask;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -29,10 +30,12 @@ class SpawnCommand extends Command {
 
         if($tutorialManager->checkPlayerTutorialComplete($sender) === true) {
             $sender->broadcastSound(new EndermanTeleportSound(), [$sender]);
-            $sender->teleport(new Position(-1525.5, 169, -316.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
+            $spawn = new Position(-1525.5, 169, -316.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
+            EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($sender, $spawn, 10), 20);
             return;
         }
         $sender->broadcastSound(new EndermanTeleportSound(), [$sender]);
-        $sender->teleport(new Position(-29.5, 154, -2.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("TutorialMine")));
+        $spawn = new Position(-29.5, 154, -2.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("TutorialMine"));
+        EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($sender, $spawn, 10), 20);
     }
 }

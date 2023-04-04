@@ -51,10 +51,7 @@ class RedstoneMineListener implements Listener {
         if($world != "world") return;
 
         # ore check
-        if(!in_array($blockId, $this->ores)) {
-            $event->cancel();
-            return;
-        }
+        if(!in_array($blockId, $this->ores)) return;
 
         # item info
         $item = $event->getPlayer()->getInventory()->getItemInHand();

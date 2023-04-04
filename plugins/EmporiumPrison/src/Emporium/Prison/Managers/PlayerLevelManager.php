@@ -12,6 +12,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerMoveEvent;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
+use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\TextFormat;
@@ -40,55 +41,6 @@ class PlayerLevelManager implements Listener {
 
         return EmporiumPrison::getInstance()->getPlayerLevelXpData()[$playerLevel + 1];
     }
-
-
-    public function createItemEntity (Player $player): void
-    {
-        $position = $this->calculateRelativePosition($player);
-
-        $itemEntity = new ItemEntity(Location::fromObject($position, $player->getLocation()->getWorld(), lcg_value() * 360, 0), VanillaItems::DIAMOND_PICKAXE());
-        $itemEntity->setHasGravity(false);
-        $itemEntity->setPickupDelay(-1);
-        $itemEntity->setNameTag(TextFormat::BOLD . TextFormat::RED . "PICKAXE LEVEL UP");
-        $itemEntity->setNameTagAlwaysVisible();
-
-        $this->playerPickaxe[$player->getXuid()] = $itemEntity;
-        $this->playerPickaxe[$player->getXuid()]->spawnTo($player);
-    }
-
-    public function updatePickaxePosition (Player $for) : void
-    {
-        if (isset($this->playerPickaxe[$for->getXuid()])) {
-            $this->playerPickaxe[$for->getXuid()]->teleport($this->calculateRelativePosition($for));
-        }
-    }
-
-    /**
-     * @param Player $player
-     * @return Vector3
-     */
-    private function calculateRelativePosition(Player $player): Vector3{
-        $position = $player->getPosition()->asVector3();
-        $direction = $player->getDirectionVector();
-        $subtract = $direction->multiply(0.75);
-        $position = $position->add($subtract->getX(), $subtract->getY(), $subtract->getZ());
-        $position->y += ($player->getEyeHeight() + -0);
-        return $position;
-    }
-
-    public function onPlayerMoveEvent (PlayerMoveEvent $event)
-    {
-        $this->updatePickaxePosition($event->getPlayer());
-    }
-
-    public function removeItemEntity(Player $for)
-    {
-        if (isset($this->playerPickaxe[$for->getXuid()])) {
-            $this->playerPickaxe[$for->getXuid()]->close();
-            $this->playerPickaxe[$for->getXuid()] = null;
-        }
-    }
-
 
     /**
      * @throws JsonException
@@ -257,12 +209,8 @@ class PlayerLevelManager implements Listener {
                     break;
             }
         }
-        // Can you create a new task in the tasks folder called LevelUpTask
 
-        $this->createItemEntity($player);
-        EmporiumPrison::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use ($player) {
-            $this->removeItemEntity($player);
-        }), 100);
+        EmporiumPrison::getInstance()->getPickaxeManager()->levelUpAnimation($player);
 
         # if player level >= 10 and tutorial is not complete set to complete
         $tutorialProgress = DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.tutorial-progress");
@@ -273,6 +221,12 @@ class PlayerLevelManager implements Listener {
             $tutorialManager = new TutorialManager();
             $tutorialManager->startTutorial($player);
         }
+    }
+
+    public function prestigePlayer(Player $player): void {
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.prestige", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.prestige") + 1);
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.level", 0);
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", 0);
     }
 
 }

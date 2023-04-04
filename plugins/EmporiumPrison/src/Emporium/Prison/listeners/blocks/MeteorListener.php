@@ -4,7 +4,6 @@ namespace Emporium\Prison\listeners\blocks;
 
 use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\tasks\Meteors\MeteorTask;
-use Emporium\Prison\Variables;
 
 use EmporiumData\ServerManager;
 use EmporiumData\DataManager;
@@ -14,13 +13,13 @@ use JsonException;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
+use pocketmine\item\Pickaxe;
 use pocketmine\item\StringToItemParser;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\FizzSound;
 
 class MeteorListener implements Listener {
 
-    # flares temporarily disabled
     /**
      * @throws JsonException
      */
@@ -39,7 +38,7 @@ class MeteorListener implements Listener {
         $blockName = $blockX . "_" . $blockY . "_" . $blockZ;
 
         $item = $event->getPlayer()->getInventory()->getItemInHand();
-        $itemUsed = $event->getPlayer()->getInventory()->getItemInHand()->getId();
+        $itemUsed = $event->getPlayer()->getInventory()->getItemInHand();
 
         # boosters
         $energyBoosterTime = EmporiumPrison::getInstance()->getEnergyManager()->getTime($player);
@@ -50,59 +49,66 @@ class MeteorListener implements Listener {
         # meteor Data
         $meteorName = $blockName;
 
+        # block check
+        if (!$blockId == BlockLegacyIds::NETHER_QUARTZ_ORE) return;
+
+        $event->getPlayer()->sendMessage("Is Quartz");
         # check if block is a meteor
-        if(!ServerManager::getInstance()->getData("meteors." . $meteorName)) return;
+        if(!ServerManager::getInstance()->getData("meteors.$meteorName")) return;
+        $event->getPlayer()->sendMessage("Exists");
 
         $meteorX = $blockX;
         $meteorY = $blockY;
         $meteorZ = $blockZ;
-        (int) $breaksLeft = ServerManager::getInstance()->getData("meteors." . $meteorName . ".breaks-left");
-        $rarity = ServerManager::getInstance()->getData("meteors." . $meteorName . ".rarity");
+        $breaksLeft = ServerManager::getInstance()->getData("meteors.$meteorName.breaks-left");
+        $rarity = ServerManager::getInstance()->getData("meteors.$meteorName.rarity");
 
-        if ($blockId === BlockLegacyIds::NETHER_QUARTZ_ORE) {
+        # pickaxe check
+        if (!$itemUsed instanceof Pickaxe) return;
 
-            # pickaxe check
-            if (!$itemUsed == 270 || !$itemUsed == 274 || !$itemUsed == 285 || !$itemUsed == 257 || !$itemUsed == 278) {
-                return;
-            } else {
-                # add energy to pickaxe
-                $energy = mt_rand(50, 120);
-                if ($energyBoosterTime >= 1) {
-                    $multipliedEnergy = $energy * $energyMultiplier;
-                    $oldData = $item->getNamedTag()->getInt("Energy");
-                    $newData = $oldData + $multipliedEnergy;
-                } else {
-                    $oldData = $item->getNamedTag()->getInt("Energy");
-                    $newData = $oldData + $energy;
-                }
-                $item->getNamedTag()->setInt("Energy", $newData);
-                $xp = mt_rand(10, 30);
-                # add xp to player
-                if ($miningBoosterTime > 0) {
-                    $multipliedXp = $xp * $miningMultiplier;
-                    $player->sendTip("+$multipliedXp xp");
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $multipliedXp);
-                } else {
-                    $player->sendTip("+$xp xp");
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $xp);
-                }
-                # add pickaxe Data
-
-                $oldData = $item->getNamedTag()->getInt("BlocksMined");
-                $newData = $oldData + 1;
-                $item->getNamedTag()->setInt("BlocksMined", $newData);
-                # update pickaxe check player level
-                EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxeSetInHand($player, $item);
-                EmporiumPrison::getInstance()->getPlayerLevelManager()->checkPlayerLevelUp($player);
-            }
+        # add energy to pickaxe
+        $energy = mt_rand(50, 120);
+        if ($energyBoosterTime >= 1) {
+            $multipliedEnergy = $energy * $energyMultiplier;
+            $oldData = $item->getNamedTag()->getInt("Energy");
+            $newData = $oldData + $multipliedEnergy;
+        } else {
+            $oldData = $item->getNamedTag()->getInt("Energy");
+            $newData = $oldData + $energy;
         }
+        $item->getNamedTag()->setInt("Energy", $newData);
+        $xp = mt_rand(10, 30);
+
+        # add xp to player
+        if ($miningBoosterTime > 0) {
+            $multipliedXp = $xp * $miningMultiplier;
+            $player->sendTip("+$multipliedXp xp");
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $multipliedXp);
+        } else {
+            $player->sendTip("+$xp xp");
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $xp);
+        }
+
+        # add pickaxe Data
+        $oldData = $item->getNamedTag()->getInt("BlocksMined");
+        $newData = $oldData + 1;
+        $item->getNamedTag()->setInt("BlocksMined", $newData);
+
+        # update pickaxe check player level
+        EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxeSetInHand($player, $item);
+        EmporiumPrison::getInstance()->getPlayerLevelManager()->checkPlayerLevelUp($player);
+
+        # player just used the last break
+        if($breaksLeft == 1) ServerManager::getInstance()->removeData("meteors.$meteorName");
+
         # check block breaks left
         if ($breaksLeft > 1) {
             # meteor has more breaks left respawn
             EmporiumPrison::getInstance()->getScheduler()->scheduleTask(new MeteorTask($world, $meteorX, $meteorY, $meteorZ));
             # set new meteor Data
-            ServerManager::getInstance()->setData("meteors." . $meteorName . ".breaks-left", (int) ServerManager::getInstance()->getData("meteors." . $meteorName . ".breaks-left") - 1);
+            ServerManager::getInstance()->setData("meteors.$meteorName.breaks-left", ServerManager::getInstance()->getData("meteors.$meteorName.breaks-left") - 1);
         }
+
         # meteor is complete
         $player->broadcastSound(new FizzSound(5));
 
@@ -211,6 +217,7 @@ class MeteorListener implements Listener {
                 break;
 
         }
+
         # set drops
         $event->setXpDropAmount(0);
         $event->setDrops([]);

@@ -64,10 +64,14 @@ class ShatterCE extends RecursiveEnchant {
 
     public function safeReact(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void
     {
-        $player->sendMessage(TextFormat::RED . "Shatter");
-        $player->broadcastSound(new PotionSplashSound(), [$player]);
-        /*
+        if(!(mt_rand(1, $this->chance) == $this->chance)) return;
+
         if ($event instanceof BlockBreakEvent) {
+            if ($event->isCancelled()) return;
+
+            $player->sendMessage(TextFormat::RED . "Shatter");
+            $player->broadcastSound(new PotionSplashSound(), [$player]);
+
             $breakFace = self::$lastBreakFace[$player->getName()];
             for ($i = 0; $i <= $level * $this->extraData["distanceMultiplier"]; $i++) {
                 $block = $event->getBlock()->getSide(Facing::opposite($breakFace), $i);
@@ -89,8 +93,9 @@ class ShatterCE extends RecursiveEnchant {
                     $player->getWorld()->useBreakOn($block->getPosition(), $item, $player, true);
                 }
             }
+            $this->setCooldown($player, 60);
         }
-        */
+
     }
 
 }

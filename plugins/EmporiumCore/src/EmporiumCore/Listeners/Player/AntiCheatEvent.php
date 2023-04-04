@@ -11,6 +11,8 @@ use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\mcpe\protocol\{LevelSoundEventPacket};
 use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\player\Player;
+use Tetro\EmporiumEnchants\Core\CustomEnchant;
+use Tetro\EmporiumEnchants\Core\CustomEnchantManager;
 
 # Plugin
 class AntiCheatEvent implements Listener {
@@ -32,6 +34,7 @@ class AntiCheatEvent implements Listener {
         if (DataManager::getInstance()->getPlayerXuid($player->getName()) == "00") return;
         if ($tps >= 18) {
             if ($ping < 500) {
+                if($player->getInventory()->getItemInHand()->hasEnchantment(CustomEnchantManager::getEnchantmentByName("Shatter"))) return;
                 DataManager::getInstance()->setPlayerData($player->getXuid(), "anticheat.anti_nuke", (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "anticheat.anti_nuke") + 1);
             }
         }

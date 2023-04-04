@@ -6,6 +6,7 @@ use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\Managers\misc\Translator;
 
 use pocketmine\item\Item;
+use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
@@ -822,5 +823,11 @@ class PickaxeManager {
         }
 
         return $item;
+    }
+
+    public function levelUpAnimation(Player $player): void {
+        $pk = OnScreenTextureAnimationPacket::create(3);
+        $player->getNetworkSession()->sendDataPacket($pk);
+        $player->sendTitle(TF::GOLD . "Pickaxe Level Up", "", 5, 30, 5);
     }
 }

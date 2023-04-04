@@ -3,17 +3,142 @@
         "prison_break": 1
     },
     "meteors": {
-        "-32_153_-3": {
+        "-1674_103_88": {
             "timer": 30,
             "breaks-left": 50,
             "rarity": "elite"
         },
-        "-34_153_-3": {
+        "-1677_100_100": {
             "timer": 30,
             "breaks-left": 50,
             "rarity": "elite"
         },
-        "-30_153_-1": {
+        "-1677_101_100": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1675_101_104": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1674_101_104": {
+            "timer": -1,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1678_101_102": {
+            "timer": -1,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1670_101_106": {
+            "timer": -1,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1675_100_100": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1536_167_-1554": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1489_92_-1497": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1508_92_-1516": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1526_92_-1532": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1488_92_-218": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1509_92_-140": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1508_91_-145": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1512_91_-152": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1507_91_-153": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1507_91_-150": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1513_91_-148": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1509_91_-148": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1500_91_-144": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1503_91_-143": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1505_91_-168": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1508_91_-173": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1515_92_-174": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1518_94_-97": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1489_94_-111": {
+            "timer": 30,
+            "breaks-left": 50,
+            "rarity": "elite"
+        },
+        "-1659_100_110": {
             "timer": 30,
             "breaks-left": 50,
             "rarity": "elite"

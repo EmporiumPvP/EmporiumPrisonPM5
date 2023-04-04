@@ -42,21 +42,16 @@ class MeteorFlareEntityTask extends Task
      */
     public function onRun(): void
     {
-        var_dump(ServerManager::getInstance()->getData("meteors." . $this->name . ".timer" . ".$this->name.timer"));
-        if(ServerManager::getInstance()->getData("meteors." . $this->name . ".timer" . ".$this->name.timer") >= 1) {
-            ServerManager::getInstance()->setData("meteors." . $this->name . ".timer", ServerManager::getInstance()->getData($this->name . ".$this->name.timer") - 1);
-            $this->itemEntity->setNameTag($this->colour . " $this->type Flare\n\nArriving in: " . ServerManager::getInstance()->getData($this->name . ".$this->name.timer") . "s");
+        $this->timer--;
+        if ($this->timer <= 5) $this->itemEntity->close();
+        if ($this->timer <= 0) $this->getHandler()->cancel();
+
+        if ($this->timer > 26) {
+            $this->player->sendTitle(TextFormat::RESET, TextFormat::DARK_RED . "=======" . TextFormat::RED . TextFormat::BOLD . " METEOR STRIKE " . TextFormat::RESET . TextFormat::DARK_RED . "=======\n" . TextFormat::DARK_RED  . "=======" . TextFormat::RED . TextFormat::BOLD . " T-30  SECONDS " . TextFormat::RESET . TextFormat::DARK_RED . "=======", 4, 12, 4);
+            $this->player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 24), [$this->player]);
+            $this->player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 20), [$this->player]);
         }
 
-        if (ServerManager::getInstance()->getData($this->name . ".timer" . ".$this->name.timer") == 0) {
-            # remove item entity
-            $this->itemEntity->close();
-            # send sounds
-            $this->world->addSound(new Vector3($this->x, $this->y, $this->z), new ExplodeSound());
-            # send particles
-            $this->world->addParticle(new Vector3($this->x, $this->y, $this->z), new ExplodeParticle());
-            # cancel task
-            $this->getHandler()->cancel();
-        }
+        $this->itemEntity->setNameTag($this->color . $this->type . " Flare\n\nArriving in: " . $this->timer . "s");
     }
 }

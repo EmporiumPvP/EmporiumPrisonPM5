@@ -161,7 +161,8 @@ class LeaderboardManager {
         # get all player money data
         foreach(DataManager::getInstance()->getPlayerNames() as $player) {
             $balance = DataManager::getInstance()->getPlayerData($player, "profile.money");
-            $playerMoney[$player] = $balance;
+
+            $playerMoney[DataManager::getInstance()->getPlayerName($player)] = $balance;
         }
 
         return $playerMoney;

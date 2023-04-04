@@ -5,8 +5,12 @@ namespace Emporium\Prison\items;
 use Emporium\Prison\Managers\misc\GlowManager;
 use Emporium\Prison\Managers\misc\Translator;
 
+use pocketmine\block\VanillaBlocks;
+use pocketmine\item\Dye;
 use pocketmine\item\Item;
 
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
 
@@ -53,7 +57,6 @@ class Orbs {
 
         $stringAmount = strval($amount);
         $translatedAmount = Translator::shortNumber($amount);
-
         $item = VanillaItems::LIGHT_BLUE_DYE();
         $item->setCustomName(TF::BOLD . TF::WHITE . $translatedAmount . TF::AQUA . " Energy " . TF::RESET);
         $lore = [

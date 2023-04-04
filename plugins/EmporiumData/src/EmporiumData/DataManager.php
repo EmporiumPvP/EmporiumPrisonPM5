@@ -103,7 +103,6 @@ class DataManager
             "cooldown.rank_kit_majesty" => 0,
             "cooldown.rank_kit_emperor" => 0,
             "cooldown.rank_kit_president" => 0,
-            "permissions" => []
         ];
 
         foreach ($defaults as $key => $value) $this->setPlayerData($player->getXuid(), $key, $value);

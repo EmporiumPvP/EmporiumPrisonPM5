@@ -52,31 +52,12 @@ class PickaxePrestige {
         # add pickaxes to menu
         foreach ($player->getInventory()->getContents() as $item) {
             if($item->getNamedTag()->getTag("PickaxeType")) {
+                if($item->getNamedTag()->getTag("Prestige") == 6) return;
                 if($item->getNamedTag()->getInt("Level") >= 100 && ($item->getNamedTag()->getInt("Prestige") < 6)) {
-                    # change lore
-                    /*
-                    $oldLore = $item->getLore();
-                    $newLore = array_merge($oldLore, [
-                        TF::EOL,
-                        TF::BOLD . TF::GREEN . "Eligible for prestige"
-                    ]);
-                    $item->setLore($newLore);*/
-                    # add item
                     $inventory->addItem($item);
                     continue;
                 }
-                if($item->getNamedTag()->getInt("Level") < 100) {
-                    # change lore
-                    /*
-                    $oldLore =  $item->getLore();
-                    $newLore = array_merge($oldLore, [
-                        TF::EOL,
-                        TF::BOLD . TF::GREEN . "Ineligible for prestige"
-                    ]);
-                    $item->setLore($newLore);*/
-                    # add item
-                    $inventory->addItem($item);
-                }
+                if($item->getNamedTag()->getInt("Level") < 100) return;
             }
         }
         $menu->send($player);

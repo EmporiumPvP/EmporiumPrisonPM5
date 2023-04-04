@@ -2,8 +2,11 @@
 
 namespace Emporium\Prison\Menus;
 
+use customiesdevs\customies\item\CustomiesItemFactory;
+
 use Emporium\Prison\library\formapi\SimpleForm;
 use Emporium\Prison\EmporiumPrison;
+use Emporium\Prison\tasks\TeleportTask;
 use Emporium\Prison\Variables;
 
 use EmporiumData\DataManager;
@@ -34,13 +37,15 @@ class Mines extends Menu {
             $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
             # coal mine
             if($itemClicked->getId() === ItemIds::COAL_ORE) {
-                $player->teleport(new Position(-1444.5, 246, -39.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
+                $mine = new Position(-1443.5, 246, -38.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
+                EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
                 $player->broadcastSound(new EndermanTeleportSound(), [$player]);
             }
             # iron mine
             if($itemClicked->getId() === ItemIds::IRON_ORE) {
                 if($playerLevel >= 10) {
-                    $player->teleport(new Position(-1133.5, 245, 281.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
+                    $mine = new Position(-1133.5, 245, 281.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
                     $player->broadcastSound(new EndermanTeleportSound(), [$player]);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
@@ -49,7 +54,8 @@ class Mines extends Menu {
             # lapis mine
             if($itemClicked->getId() === ItemIds::LAPIS_ORE) {
                 if($playerLevel >= 30) {
-                    $player->teleport(new Position(-709.5, 245, -173.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
+                    $mine = new Position(-709.5, 245, -173.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
                     $player->broadcastSound(new EndermanTeleportSound(), [$player]);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
@@ -58,7 +64,8 @@ class Mines extends Menu {
             # redstone mine
             if($itemClicked->getId() === ItemIds::REDSTONE_ORE) {
                 if($playerLevel >= 50) {
-                    $player->teleport(new Position(-390.5, 244, 209.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
+                    $mine = new Position(-390.5, 244, 209.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
                     $player->broadcastSound(new EndermanTeleportSound(), [$player]);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
@@ -67,7 +74,8 @@ class Mines extends Menu {
             # gold mine
             if($itemClicked->getId() === ItemIds::GOLD_ORE) {
                 if($playerLevel >= 70) {
-                    $player->teleport(new Position(7.5, 246, -96.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
+                    $mine = new Position(7.5, 246, -96.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
                     $player->broadcastSound(new EndermanTeleportSound(), [$player]);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
@@ -76,7 +84,8 @@ class Mines extends Menu {
             # diamond mine
             if($itemClicked->getId() === ItemIds::DIAMOND_ORE) {
                 if($playerLevel >= 90) {
-                    $player->teleport(new Position(405.5, 244, 194.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
+                    $mine = new Position(405.5, 244, 194.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
                     $player->broadcastSound(new EndermanTeleportSound(), [$player]);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
@@ -85,31 +94,17 @@ class Mines extends Menu {
             # emerald mine
             if($itemClicked->getId() === ItemIds::EMERALD_ORE) {
                 if($playerLevel >= 100) {
-                    $player->teleport(new Position(1273.5, 245, -176.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
+                    $mine = new Position(1273.5, 245, -176.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
+                    EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
                     $player->broadcastSound(new EndermanTeleportSound(), [$player]);
                 } else {
                     $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                 }
             }
+            $player->removeCurrentWindow();
         }));
         $inventory = $menu->getInventory();
 
-        # fillers
-        $inventory->setItem(0, self::filler());
-        $inventory->setItem(9, self::filler());
-        $inventory->setItem(11, self::filler());
-        $inventory->setItem(13, self::filler());
-        $inventory->setItem(15, self::filler());
-        $inventory->setItem(18, self::filler());
-        $inventory->setItem(19, self::filler());
-        $inventory->setItem(20, self::filler());
-        $inventory->setItem(21, self::filler());
-        $inventory->setItem(23, self::filler());
-        $inventory->setItem(24, self::filler());
-        $inventory->setItem(25, self::filler());
-        $inventory->setItem(8, self::filler());
-        $inventory->setItem(17, self::filler());
-        $inventory->setItem(26, self::filler());
         # information
         $inventory->setItem(22, self::information());
         # mines
@@ -125,13 +120,20 @@ class Mines extends Menu {
         $inventory->setItem(12, self::goldBadlands());
         $inventory->setItem(14, self::ironBadlands());
         $inventory->setItem(16, self::diamondBadlands());
+        # fill empty slots
+        for($i = 0; $i <= 26; $i++) {
+            if($inventory->isSlotEmpty($i)) {
+                $inventory->setItem($i, $this->filler());
+            }
+        }
+
         # send menu to player
         $menu->send($player);
     }
 
     # menu items
     public function filler(): Item {
-        $item = StringToItemParser::getInstance()->parse("invisible_bedrock");
+        $item = CustomiesItemFactory::getInstance()->get("2dglasspanes:pane_lightgrey");
         $item->setCustomName("§r");
         return $item;
     }

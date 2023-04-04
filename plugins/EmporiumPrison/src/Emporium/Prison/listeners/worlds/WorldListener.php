@@ -30,7 +30,7 @@ class WorldListener implements Listener {
         BlockLegacyIds::DIAMOND_BLOCK,
         BlockLegacyIds::EMERALD_ORE,
         BlockLegacyIds::EMERALD_BLOCK,
-        BlockLegacyIds::QUARTZ_ORE
+        BlockLegacyIds::NETHER_QUARTZ_ORE
     ];
 
     private array $buildProtectedWorlds = [

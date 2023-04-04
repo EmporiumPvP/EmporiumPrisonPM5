@@ -3,7 +3,6 @@
 # Namespace
 namespace Tetro\EmporiumEnchants\Core;
 
-
 use Emporium\Prison\EmporiumPrison;
 use pocketmine\block\BlockLegacyIds;
 use pocketmine\event\block\BlockBreakEvent;
@@ -16,7 +15,14 @@ use pocketmine\inventory\{ArmorInventory, CallbackInventoryListener, Inventory, 
 use pocketmine\inventory\transaction\action\SlotChangeAction;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\{Item, ItemIds, VanillaItems};
-use pocketmine\network\mcpe\protocol\{InventoryContentPacket, InventorySlotPacket, InventoryTransactionPacket, MobEquipmentPacket, PlayerAuthInputPacket};
+use pocketmine\network\mcpe\protocol\{InventoryContentPacket,
+    InventorySlotPacket,
+    InventoryTransactionPacket,
+    MobEquipmentPacket,
+    PlayerActionPacket,
+    PlayerAuthInputPacket,
+    types\PlayerAction,
+    types\PlayerBlockActionWithBlockInfo};
 use pocketmine\network\mcpe\protocol\types\inventory\ItemStackWrapper;
 use pocketmine\player\Player;
 
@@ -26,6 +32,7 @@ use pocketmine\world\sound\DoorBumpSound;
 use pocketmine\world\sound\DoorCrashSound;
 use pocketmine\world\sound\TotemUseSound;
 use Tetro\EmporiumEnchants\Core\Types\{ReactiveEnchantment, ToggleableEnchantment};
+use Tetro\EmporiumEnchants\Enchants\Tools\ShatterCE;
 use Tetro\EmporiumEnchants\Utils\Utils;
 
 class EventListener implements Listener {
@@ -45,8 +52,20 @@ class EventListener implements Listener {
                 $action->newItem = new ItemStackWrapper($action->newItem->getStackId(), Utils::filterDisplayedEnchants($action->newItem->getItemStack()));
             }
         }
+        if ($packet instanceof PlayerActionPacket) {
+            if ($packet->action === PlayerAction::START_BREAK || $packet->action === PlayerAction::CREATIVE_PLAYER_DESTROY_BLOCK) {
+                ShatterCE::$lastBreakFace[$event->getOrigin()->getPlayer()->getName()] = $packet->face;
+            }
+        }
         if ($packet instanceof PlayerAuthInputPacket) {
             $blockActions = $packet->getBlockActions();
+            if ($blockActions !== null) {
+                foreach ($blockActions as $blockAction) {
+                    if ($blockAction instanceof PlayerBlockActionWithBlockInfo) {
+                        ShatterCE::$lastBreakFace[$event->getOrigin()->getPlayer()->getName()] = $blockAction->getFace();
+                    }
+                }
+            }
         }
         if ($packet instanceof MobEquipmentPacket) Utils::filterDisplayedEnchants($packet->item->getItemStack());
     }

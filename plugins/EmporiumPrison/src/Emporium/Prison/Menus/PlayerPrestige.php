@@ -2,7 +2,7 @@
 
 namespace Emporium\Prison\Menus;
 
-
+use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\Variables;
 use EmporiumData\DataManager;
 
@@ -39,10 +39,8 @@ class PlayerPrestige {
                     # send confirmations
                     $player->broadcastSound(new XpLevelUpSound(1000), [$player]);
                     $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have prestiged to Prestige " . TF::BOLD . TF::LIGHT_PURPLE . "<" . TF::AQUA . "I" . TF::LIGHT_PURPLE . ">");
-                    # set player data
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.prestige", 1);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.level", 0);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", 0);
+                    # prestige player
+                    EmporiumPrison::getInstance()->getPlayerLevelManager()->prestigePlayer($player);
                 }
                 if($itemClicked->getNamedTag()->getString("prestige1") == "unlocked") {
                     $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have already completed this prestige");
@@ -61,10 +59,8 @@ class PlayerPrestige {
                     # send confirmations
                     $player->broadcastSound(new XpLevelUpSound(1000), [$player]);
                     $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have prestiged to Prestige " . TF::BOLD . TF::LIGHT_PURPLE . "<" . TF::AQUA . "II" . TF::LIGHT_PURPLE . ">");
-                    # set player data
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.prestige", 2);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.level", 0);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", 0);
+                    # prestige player
+                    EmporiumPrison::getInstance()->getPlayerLevelManager()->prestigePlayer($player);
                 }
                 if($itemClicked->getNamedTag()->getString("prestige2") == "unlocked") {
                     $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have already completed this prestige");
@@ -83,10 +79,8 @@ class PlayerPrestige {
                     # send confirmations
                     $player->broadcastSound(new XpLevelUpSound(1000), [$player]);
                     $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have prestiged to Prestige " . TF::BOLD . TF::LIGHT_PURPLE . "<" . TF::AQUA . "III" . TF::LIGHT_PURPLE . ">");
-                    # set player data
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.prestige", 3);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.level", 0);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", 0);
+                    # prestige player
+                    EmporiumPrison::getInstance()->getPlayerLevelManager()->prestigePlayer($player);
                 }
                 if($itemClicked->getNamedTag()->getString("prestige3") == "unlocked") {
                     $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have already completed this prestige");
@@ -105,10 +99,8 @@ class PlayerPrestige {
                     # send confirmations
                     $player->broadcastSound(new XpLevelUpSound(1000), [$player]);
                     $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have prestiged to Prestige " . TF::BOLD . TF::LIGHT_PURPLE . "<" . TF::AQUA . "IV" . TF::LIGHT_PURPLE . ">");
-                    # set player data
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.prestige", 4);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.level", 0);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", 0);
+                    # prestige player
+                    EmporiumPrison::getInstance()->getPlayerLevelManager()->prestigePlayer($player);
                 }
                 if($itemClicked->getNamedTag()->getString("prestige4") == "unlocked") {
                     $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have already completed this prestige");
@@ -127,10 +119,8 @@ class PlayerPrestige {
                     # send confirmations
                     $player->broadcastSound(new XpLevelUpSound(1000), [$player]);
                     $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have prestiged to Prestige " . TF::BOLD . TF::LIGHT_PURPLE . "<" . TF::AQUA . "V" . TF::LIGHT_PURPLE . ">");
-                    # set player data
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.prestige", 5);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.level", 0);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", 0);
+                    # prestige player
+                    EmporiumPrison::getInstance()->getPlayerLevelManager()->prestigePlayer($player);
                 }
                 if($itemClicked->getNamedTag()->getString("prestige5") == "unlocked") {
                     $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have already completed this prestige");
@@ -149,10 +139,8 @@ class PlayerPrestige {
                     # send confirmations
                     $player->broadcastSound(new XpLevelUpSound(1000), [$player]);
                     $player->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have prestiged to Prestige " . TF::BOLD . TF::LIGHT_PURPLE . "<" . TF::AQUA . "VI" . TF::LIGHT_PURPLE . ">");
-                    # set player data
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.prestige", 6);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.level", 0);
-                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", 0);
+                    # prestige player
+                    EmporiumPrison::getInstance()->getPlayerLevelManager()->prestigePlayer($player);
                 }
                 if($itemClicked->getNamedTag()->getString("prestige6") == "unlocked") {
                     $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have already completed this prestige");
