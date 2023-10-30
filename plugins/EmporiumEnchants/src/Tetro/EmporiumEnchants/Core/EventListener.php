@@ -116,7 +116,6 @@ class EventListener implements Listener
     }
 
     /**
-     * @priority HIGHEST
      */
     public function onEffectAdd(EntityEffectAddEvent $event): void
     {
@@ -155,13 +154,13 @@ class EventListener implements Listener
         $player = $event->getPlayer();
         foreach ($player->getInventory()->getContents() as $slot => $content) {
             foreach ($content->getEnchantments() as $enchantmentInstance) {
-                ToggleableEnchantment::attemptToggle($player, $content, $enchantmentInstance, $player->getInventory(), $slot);
+                $this->queueFunction(fn() => ToggleableEnchantment::attemptToggle($player, $content, $enchantmentInstance, $player->getInventory(), $slot));
             }
         }
 
         foreach ($player->getArmorInventory()->getContents() as $slot => $content) {
             foreach ($content->getEnchantments() as $enchantmentInstance) {
-                ToggleableEnchantment::attemptToggle($player, $content, $enchantmentInstance, $player->getArmorInventory(), $slot);
+                $this->queueFunction(fn() => ToggleableEnchantment::attemptToggle($player, $content, $enchantmentInstance, $player->getInventory(), $slot));
             }
         }
 
@@ -191,6 +190,11 @@ class EventListener implements Listener
         $player->getInventory()->getListeners()->add(new CallbackInventoryListener($onSlot, $onContent));
         $player->getArmorInventory()->getListeners()->add(new CallbackInventoryListener($onSlot, $onContent));
     }
+
+    public function queueFunction (callable $fn) {
+        EmporiumEnchants::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask($fn), 5);
+    }
+
 
     /**
      * @priority HIGHEST

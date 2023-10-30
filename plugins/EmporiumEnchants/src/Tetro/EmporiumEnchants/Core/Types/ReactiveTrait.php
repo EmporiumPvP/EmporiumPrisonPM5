@@ -65,7 +65,7 @@ trait ReactiveTrait {
 
     # Attempt Reaction
     public static function attemptReaction(Player $player, Event $event): void {
-        if ($player->getInventory() === null) return;
+        if (!$player->spawned) return;
         $enchantmentStacks = [];
         foreach ($player->getInventory()->getContents() as $slot => $content) {
             foreach (Utils::sortEnchantmentsByPriority($content->getEnchantments()) as $enchantmentInstance) {

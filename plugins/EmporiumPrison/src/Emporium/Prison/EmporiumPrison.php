@@ -110,6 +110,7 @@ class EmporiumPrison extends PluginBase
     private MiningManager $miningManager;
     private PlayerLevelManager $playerLevelManager;
     private AreaManager $areaManager;
+    private NPCManager $npcManager;
 
     # items
     private Boosters $boosters;
@@ -158,6 +159,7 @@ class EmporiumPrison extends PluginBase
         $this->playerLevelManager = new PlayerLevelManager();
         $this->scoreboardManager = new ScoreboardManager($this);
         $this->glowManager = new GlowManager();
+        $this->npcManager = new NPCManager();
 
         # initialise items
         $this->boosters = new Boosters();
@@ -404,6 +406,14 @@ class EmporiumPrison extends PluginBase
     public function getScoreboardManager(): ScoreboardManager
     {
         return $this->scoreboardManager;
+    }
+
+    /**
+     * @return NPCManager
+     */
+    public function getNpcManager(): NPCManager
+    {
+        return $this->npcManager;
     }
 
     /**

@@ -7,14 +7,14 @@ use DialogueUIAPI\Yanoox\DialogueUIAPI\element\DialogueButton;
 
 use Emporium\Prison\EmporiumPrison;
 
+use Emporium\Prison\Entity\NPC\NPC;
 use EmporiumCore\EmporiumCore;
 
 use EmporiumData\DataManager;
 
-use JonyGamesYT9\EntityAPI\entity\types\NPC;
-
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
+use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\Position;
@@ -39,7 +39,7 @@ class NPCListener implements Listener {
 
             switch ($npc->getNameTag()) {
 
-                case "tourguide":
+                case TF::BOLD . TF::YELLOW . "Tour Guide" . TF::GRAY . "\n(Click Me)":
                     $event->cancel();
                     $form = EmporiumPrison::getInstance()->getTourguide();
                     $form->MainForm($player);
@@ -143,6 +143,12 @@ class NPCListener implements Listener {
                     */
                     break;
             }
+        }
+    }
+
+    public function onQuitEvent (PlayerQuitEvent $event) {
+        if (isset(EmporiumPrison::getInstance()->getNpcManager()->deleteHandles[$event->getPlayer()->getName()])) {
+            unset(EmporiumPrison::getInstance()->getNpcManager()->deleteHandles[$event->getPlayer()->getName()]);
         }
     }
 }
