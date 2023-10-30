@@ -51,6 +51,7 @@ use pocketmine\network\mcpe\protocol\UpdateAbilitiesPacket;
 use pocketmine\player\Player;
 use pocketmine\utils\AssumptionFailedError;
 use pocketmine\utils\TextFormat;
+use pocketmine\world\format\io\GlobalItemDataHandlers;
 use pocketmine\world\Position;
 use Ramsey\Uuid\Uuid;
 use ReflectionClass;
@@ -174,7 +175,7 @@ class Boss extends Living
     public array $projectileDelay = [];
     protected Main $plugin;
 
-    public function __construct(Location $location, ?CompoundTag $nbt = null, string $drops)
+    public function __construct(Location $location, string $drops, ?CompoundTag $nbt = null)
     {
         $this->strDrops = $drops;
         parent::__construct($location, $nbt);
@@ -273,7 +274,6 @@ class Boss extends Living
             }
         }
         $this->autoAttack = $this->validateType($data, "autoAttack", "boolean");
-        $this->setImmobile();
         $this->setNameTagAlwaysVisible();
         $this->setNameTagVisible();
         if (isset($data["health"])) {
@@ -429,15 +429,15 @@ class Boss extends Living
                 if ($item === null) {
                     throw new Exception("Unknown ID '$arr[0]'");
                 }
-                if ($item->getId() == ItemIds::DYE) {
-                    $item = VanillaItems::LIGHT_BLUE_DYE();
+                if ($item instanceof Dye) {
+                    $item = VanillaItems::DYE()->setColor(DyeColor::LIGHT_BLUE());
                 }
 
                 if ($item instanceof Durable && isset($arr[1])) {
                     $item->setDamage((int)$arr[1]);
                 }
             } else {
-                $item = ItemFactory::getInstance()->get((int)$arr[0], empty($arr[1]) ? 0 : (int)$arr[1]);
+                $item = GlobalItemDataHandlers::getUpgrader()->upgradeItemTypeDataInt((int)$arr[0], empty($arr[1]) ? 0 : (int)$arr[1], (int)$arr[2], JsonNbtParser::parseJson(str_replace('_', ' ', $arr[3])));
             }
 
             if (!empty($arr[2])) {
@@ -447,7 +447,7 @@ class Boss extends Living
             $nbt = null;
             if (!empty($arr[3])) {
                 if (str_starts_with($arr[3], '{')) {
-                    $nbt = JsonNbtParser::parseJson(str_replace('_', ' ', $arr[3]));
+                    $nbt = JsonNbtParser::parseJson(str_replace('_', ' ', $arr[3])); // {"itemContence" : { "customName": "urmum"}}
                 } else {
                     $nbt = (new LittleEndianNbtSerializer())->read((string)hex2bin($arr[3]))->mustGetCompoundTag();
                 }
@@ -478,7 +478,7 @@ class Boss extends Living
                 throw new AssumptionFailedError("Boss " . $this->getName() . " has no skin");
             }
             $uuid = Uuid::uuid4();
-            $player->getNetworkSession()->sendDataPacket(PlayerListPacket::add([PlayerListEntry::createAdditionEntry($uuid, $this->id, $this->getName(), SkinAdapterSingleton::get()->toSkinData($this->skin))]));
+            $player->getNetworkSession()->sendDataPacket(PlayerListPacket::add([PlayerListEntry::createAdditionEntry($uuid, $this->id, $this->getName(), TypeConverter::getInstance()->getSkinAdapter()->toSkinData($this->skin))]));
 
             $player->getNetworkSession()->sendDataPacket(AddPlayerPacket::create(
                 $uuid,

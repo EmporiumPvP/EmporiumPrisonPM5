@@ -51,7 +51,7 @@ class ServerManager
         $vars = explode(".", $key);
         $base = array_shift($vars);
 
-        if (isset($this->data[$key][$base])) $base = $this->data[$key][$base];
+        if (isset($this->data[$base])) $base = $this->data[$base];
         else return false;
 
         while (count($vars) > 0) {

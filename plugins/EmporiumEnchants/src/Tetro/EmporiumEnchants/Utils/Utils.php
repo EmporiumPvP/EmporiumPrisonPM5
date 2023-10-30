@@ -5,7 +5,7 @@ namespace Tetro\EmporiumEnchants\Utils;
 
 # Pocketmine Packages
 use pocketmine\network\mcpe\protocol\types\inventory\ItemStack;
-use pocketmine\item\{Armor, Axe, Durable, Hoe, Tool, Item, ItemIds, Sword};
+use pocketmine\item\{Armor, Axe, Durable, Hoe, Tool, Item, Sword, VanillaItems};
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\network\mcpe\convert\TypeConverter;
 use pocketmine\inventory\ArmorInventory;

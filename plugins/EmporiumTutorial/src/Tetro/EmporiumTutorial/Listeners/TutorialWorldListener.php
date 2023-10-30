@@ -20,7 +20,6 @@ use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\inventory\transaction\action\DropItemAction;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
-use pocketmine\block\BlockLegacyIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
@@ -54,12 +53,6 @@ class TutorialWorldListener implements Listener {
         $this->miningManager = EmporiumPrison::getInstance()->getMiningManager();
         $this->playerLevelManager = EmporiumPrison::getInstance()->getPlayerLevelManager();
     }
-
-    private array $ores = [
-        BlockLegacyIds::COAL_ORE,
-        BlockLegacyIds::COAL_BLOCK,
-        BlockLegacyIds::QUARTZ_ORE
-    ];
 
     public function onDropItem(PlayerDropItemEvent $event) {
 
@@ -147,7 +140,7 @@ class TutorialWorldListener implements Listener {
         if($world != "TutorialMine") return;
 
         # ore check
-        if(!in_array($blockId, $this->ores)) {
+        if(!in_array($blockId, [VanillaBlocks::COAL()->getTypeId(), VanillaBlocks::COAL_ORE()->getTypeId(), VanillaBlocks::LAPIS_LAZULI_ORE()->getTypeId()])) {
             $event->cancel();
             return;
         }
@@ -232,7 +225,7 @@ class TutorialWorldListener implements Listener {
             # ore regen
             switch($blockId) {
 
-                case BlockLegacyIds::COAL_ORE:
+                case VanillaBlocks::COAL_ORE()->getTypeId():
 
                     if($chance === 1) {
                         # spawn coal block
@@ -257,7 +250,7 @@ class TutorialWorldListener implements Listener {
                     }
                     break;
 
-                case BlockLegacyIds::COAL_BLOCK:
+                case VanillaBlocks::COAL()->getTypeId():
 
                     if($chance === 1) {
                         # spawn coal block
@@ -322,7 +315,7 @@ class TutorialWorldListener implements Listener {
         }
 
         switch($blockId) {
-            case BlockLegacyIds::COAL_ORE:
+            case VanillaBlocks::COAL_ORE()->getTypeId():
 
                 if($chance === 1) {
                     # spawn coal block
@@ -346,7 +339,7 @@ class TutorialWorldListener implements Listener {
                 }
                 break;
 
-            case BlockLegacyIds::COAL_BLOCK:
+            case VanillaBlocks::COAL()->getTypeId():
 
                 if($chance === 1) {
                     # spawn coal block

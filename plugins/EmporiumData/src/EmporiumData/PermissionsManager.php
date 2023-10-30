@@ -77,7 +77,12 @@ class PermissionsManager
     }
 
 
-    public function checkPermission (string $toXuid, string $permission) : bool
+    /**
+     * @param string $toXuid
+     * @param string[] $permissions
+     * @return bool
+     */
+    public function checkPermission (string $toXuid, array $permissions) : bool
     {
         if (!is_null($player = DataManager::getInstance()->getPlayerByXuid($toXuid))) {
             if ($player->hasPermission(DefaultPermissions::ROOT_OPERATOR)) return true;
@@ -85,11 +90,16 @@ class PermissionsManager
 
         $rank = strtolower(DataManager::getInstance()->getPlayerData($toXuid, "profile.rank"));
 
-        if (!in_array($permission, $this->rankPermissions[$rank])) return $this->checkLowerRankPermissions($rank, $permission);
+        if (!in_array($permissions[0], $this->rankPermissions[$rank])) return $this->checkLowerRankPermissions($rank, $permissions[0]);
 
         return true;
     }
 
+    /**
+     * @param string $rank
+     * @param string $permission
+     * @return bool
+     */
     private function checkLowerRankPermissions (string $rank, string $permission) : bool
     {
         if (is_null($this->inheritance[$rank]) || $this->inheritance[$rank] == "") return false;

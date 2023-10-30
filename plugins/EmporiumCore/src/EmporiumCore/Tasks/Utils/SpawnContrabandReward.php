@@ -43,7 +43,7 @@ class SpawnContrabandReward extends Task {
         $itemEntity1->setDespawnDelay($this->despawnDelay);
         $itemEntity1->setHasGravity(false);
         $itemEntity1->spawnToAll();
-        if($this->reward->getId() == ItemIds::PAPER) return;
+        if($this->reward === VanillaItems::PAPER()) return;
         # give player item
         if($this->player->getInventory()->canAddItem($this->reward)) {
             $this->player->getInventory()->addItem($this->reward);

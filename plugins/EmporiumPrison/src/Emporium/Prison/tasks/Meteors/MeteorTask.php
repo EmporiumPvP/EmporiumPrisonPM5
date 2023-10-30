@@ -23,7 +23,7 @@ class MeteorTask extends Task {
     public function onRun(): void {
 
         # spawn block
-        $this->world->setBlockAt($this->x, $this->y + 1, $this->z, VanillaBlocks::NETHER_QUARTZ_ORE());
+        $this->world->setBlockAt($this->x, $this->y, $this->z, VanillaBlocks::NETHER_QUARTZ_ORE());
     }
 
 }

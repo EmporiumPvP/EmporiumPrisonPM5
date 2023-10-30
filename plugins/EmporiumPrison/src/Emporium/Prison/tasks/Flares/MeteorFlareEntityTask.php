@@ -2,6 +2,7 @@
 
 namespace Emporium\Prison\tasks\Flares;
 
+use AllowDynamicProperties;
 use EmporiumData\ServerManager;
 
 use Exception;
@@ -17,7 +18,7 @@ use pocketmine\world\sound\NoteInstrument;
 use pocketmine\world\sound\NoteSound;
 use pocketmine\world\World;
 
-class MeteorFlareEntityTask extends Task
+#[AllowDynamicProperties] class MeteorFlareEntityTask extends Task
 {
 
     private ItemEntity $itemEntity;

@@ -34,10 +34,10 @@ class CustomEnchantsCommand extends BaseCommand
 
     public function prepare(): void
     {
-        $this->registerSubCommand(new EnchantSubCommand($this->plugin, "enchant", "Apply an enchantment on an item"));
-        $this->registerSubCommand(new InfoSubCommand($this->plugin, "info", "Get info on a custom enchant"));
-        $this->registerSubCommand(new ListSubCommand($this->plugin, "list", "Lists all registered custom enchants"));
-        $this->registerSubCommand(new RemoveSubCommand($this->plugin, "remove", "Remove an enchantment from an item"));
+        $this->registerSubCommand(new EnchantSubCommand("enchant", "Apply an enchantment on an item"));
+        $this->registerSubCommand(new InfoSubCommand("info", "Get info on a custom enchant"));
+        $this->registerSubCommand(new ListSubCommand("list", "Lists all registered custom enchants"));
+        $this->registerSubCommand(new RemoveSubCommand("remove", "Remove an enchantment from an item"));
     }
 
     public function getPermission()

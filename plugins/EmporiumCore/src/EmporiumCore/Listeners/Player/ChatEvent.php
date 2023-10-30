@@ -9,6 +9,7 @@ use EmporiumData\Rank\RankManager;
 
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
+use pocketmine\player\chat\LegacyRawChatFormatter;
 use pocketmine\utils\TextFormat as TF;
 
 class ChatEvent implements Listener {
@@ -69,6 +70,6 @@ class ChatEvent implements Listener {
         $playerLevelFormat = TF::GRAY . "[" . TF::WHITE . $playerLevel . TF::GRAY . "] " . TF::RESET;
 
         # set player chat format
-        $event->setFormat($prestigeFormat . TF::RESET . $playerLevelFormat . TF::RESET . TF::BOLD . $playerRankFormat->getFormat() . TF::RESET . " " . $playerTagFormat . TF::RESET . $player->getName() . TF::RESET . ": " . TF::GRAY . $message);
+        $event->setFormatter(new LegacyRawChatFormatter($prestigeFormat . TF::RESET . $playerLevelFormat . TF::RESET . TF::BOLD . $playerRankFormat->getFormat() . TF::RESET . " " . $playerTagFormat . TF::RESET . $player->getName() . TF::RESET . ": " . TF::GRAY . $message));
     }
 }

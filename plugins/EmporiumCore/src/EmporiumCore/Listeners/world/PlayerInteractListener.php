@@ -21,8 +21,9 @@ class PlayerInteractListener extends Menu implements Listener {
         $player = $event->getPlayer();
         $block = $event->getBlock();
 
-        if(!$block->getIdInfo()->getBlockId() == BlockLegacyIds::ENDER_CHEST) return;
+        if(!$block instanceof EnderChest) return;
 
+        # player is not clicking on vault
         if($block->getName() != VanillaBlocks::ENDER_CHEST()->asItem()->getVanillaName()) {
             $event->cancel();
             return;

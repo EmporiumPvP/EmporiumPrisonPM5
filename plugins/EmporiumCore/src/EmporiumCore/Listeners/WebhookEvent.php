@@ -7,7 +7,8 @@ use EmporiumCore\Managers\Misc\Webhooks;
 use EmporiumCore\Variables;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\Listener;
-use pocketmine\event\player\{PlayerCommandPreprocessEvent, PlayerDeathEvent, PlayerJoinEvent, PlayerQuitEvent};
+use pocketmine\event\player\{PlayerDeathEvent, PlayerJoinEvent, PlayerQuitEvent};
+use pocketmine\event\server\CommandEvent;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
@@ -456,11 +457,9 @@ class WebhookEvent implements Listener
         }
 
         // Send Webhook
-        if ($webhook === null) {
-            return;
-        } else {
-            $player->getServer()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
-        }
+        if ($webhook === null) return;
+
+        $player->getServer()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
     }
 
     /////////////////////////////// SERVER EVENTS WEBHOOK ///////////////////////////////
@@ -592,11 +591,10 @@ class WebhookEvent implements Listener
 
     /////////////////////////////// COMMANDS WEBHOOK ///////////////////////////////
 
-    public function onCommand(PlayerCommandPreprocessEvent $event)
+    public function onCommand(CommandEvent $event)
     {
-
         // Remove Discord Pings
-        $message = str_replace(["@everyone", "@here"], '', $event->getMessage());
+        $message = str_replace(["@everyone", "@here"], '', $event->getCommand());
         if ($message === "") {
             return;
         }
