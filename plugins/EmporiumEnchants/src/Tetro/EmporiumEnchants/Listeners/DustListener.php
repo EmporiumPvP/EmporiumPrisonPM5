@@ -2,11 +2,10 @@
 
 namespace Tetro\EmporiumEnchants\Listeners;
 
+use pocketmine\block\BlockTypeIds;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
 use pocketmine\inventory\transaction\action\SlotChangeAction;
-use pocketmine\item\ItemIds;
-use pocketmine\item\VanillaItems;
 use pocketmine\world\sound\XpCollectSound;
 
 use Tetro\EmporiumEnchants\Core\OrbManager;
@@ -32,10 +31,13 @@ class DustListener implements Listener {
 
         if (count($actions) === 2) {
             foreach ($actions as $i => $action) {
-                if ($action instanceof SlotChangeAction && ($otherAction = $actions[($i + 1) % 2]) instanceof SlotChangeAction && ($itemClickedWith = $action->getTargetItem())->getId() === ItemIds::GLOWSTONE_DUST && ($itemClicked = $action->getSourceItem())->getId() !== ItemIds::AIR) {
+
+                $itemClickedWith = $action->getTargetItem();
+                $itemClicked = $action->getSourceItem();
+
+                if ($action instanceof SlotChangeAction && ($otherAction = $actions[($i + 1) % 2]) instanceof SlotChangeAction && $itemClickedWith->getNamedTag()->getTag("EnchantDust") && $itemClicked->getTypeId() !== BlockTypeIds::AIR) {
+
                     # verify dust
-                    if($itemClickedWith->getNamedTag()->getTag("EnchantDust") === null) return;
-                    if($itemClickedWith->getNamedTag()->getTag("Rarity") === null) return;
                     if($itemClickedWith->getNamedTag()->getTag("Boost") === null) return;
 
                     # cancel event
@@ -47,7 +49,7 @@ class DustListener implements Listener {
                     if($itemClicked->getNamedTag()->getTag("Success") === null) return;
 
                     # get dust data
-                    $dustRarity = $itemClickedWith->getNamedTag()->getInt("Rarity");
+                    $dustRarity = $itemClickedWith->getNamedTag()->getInt("EnchantDust");
                     $dustBoost = $itemClickedWith->getNamedTag()->getInt("Boost");
 
                     # get pickaxe enchant orb data
@@ -64,31 +66,38 @@ class DustListener implements Listener {
 
                     # apply dust to orb
                     if($pickaxeOrbSuccess + $dustBoost > 100) {
+
                         # add new data
                         $itemClicked->getNamedTag()->setInt("Success", 100);
+
                         # update orb
                         $updatedOrb = $this->orbManager->updateOrb($itemClicked);
+
                         # remove old orb & give new orb
                         $action->getInventory()->setItem($action->getSlot(), $updatedOrb);
+
                         # remove dust
-                        $otherAction->getInventory()->setItem($otherAction->getSlot(), VanillaItems::AIR());
+                        $otherAction->getInventory()->setItem($otherAction->getSlot(), BlockTypeIds::AIR);
+
                         # play sound
                         $player->broadcastSound(new XpCollectSound(), [$player]);
+
                         return;
                     }
 
 
-
-                    # calculate new data
-                    $newData = $dustBoost + $pickaxeOrbSuccess;
                     # set new data
-                    $itemClicked->getNamedTag()->setInt("Success", $newData);
+                    $itemClicked->getNamedTag()->setInt("Success", $dustBoost + $pickaxeOrbSuccess);
+
                     # update orb
                     $updatedOrb = EmporiumEnchants::getInstance()->getOrbManager()->updateOrb($itemClicked);
+
                     # remove old orb & give new orb
                     $action->getInventory()->setItem($action->getSlot(), $updatedOrb);
+
                     # remove dust
-                    $otherAction->getInventory()->setItem($otherAction->getSlot(), VanillaItems::AIR());
+                    $otherAction->getInventory()->setItem($otherAction->getSlot(), BlockTypeIds::AIR);
+
                     # play sound
                     $player->broadcastSound(new XpCollectSound(), [$player]);
                 }

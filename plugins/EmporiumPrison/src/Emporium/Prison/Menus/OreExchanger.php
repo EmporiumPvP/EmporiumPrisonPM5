@@ -12,7 +12,6 @@ use muqsit\invmenu\type\InvMenuTypeIds;
 
 use pocketmine\block\VanillaBlocks;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
@@ -29,16 +28,17 @@ class OreExchanger {
         $menu->setName("Ore Exchanger");
         $menu->setListener(function (InvMenuTransaction $transaction) use ($player): InvMenuTransactionResult {
             $out = $transaction->getOut();
+            $id = abs($transaction->getOut()->getTypeId());
 
             # coal ore
-            if($out->getId() == ItemIds::COAL_ORE) {
+            if($id == VanillaBlocks::COAL_ORE()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::COAL_ORE()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::COAL_ORE) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::COAL_ORE()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 0.06 * $count;
                             $player->getInventory()->remove($item);
@@ -58,14 +58,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # coal
-            if($out->getId() == ItemIds::COAL) {
+            if($id == VanillaItems::COAL()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaItems::COAL())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::COAL) {
+                        if(abs($item->getTypeId()) == VanillaItems::COAL()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 0.32 * $count;
                             $player->getInventory()->remove($item);
@@ -85,14 +85,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # coal block
-            if($out->getId() == ItemIds::COAL_BLOCK) {
+            if($id == VanillaBlocks::COAL()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::COAL()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::COAL_BLOCK) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::COAL()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 1.21 * $count;
                             $player->getInventory()->remove($item);
@@ -113,14 +113,14 @@ class OreExchanger {
             }
 
             # iron ore
-            if($out->getId() == ItemIds::IRON_ORE) {
+            if($id == VanillaBlocks::IRON_ORE()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::IRON_ORE()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::IRON_ORE) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::IRON_ORE()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 0.20 * $count;
                             $player->getInventory()->remove($item);
@@ -140,14 +140,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # iron
-            if($out->getId() == ItemIds::IRON_INGOT) {
+            if($id == VanillaItems::IRON_INGOT()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaItems::IRON_INGOT())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::IRON_INGOT) {
+                        if(abs($item->getTypeId()) == VanillaItems::IRON_INGOT()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 1.02 * $count;
                             $player->getInventory()->remove($item);
@@ -167,14 +167,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # iron block
-            if($out->getId() == ItemIds::IRON_BLOCK) {
+            if($id == VanillaBlocks::IRON()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::IRON()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::IRON_BLOCK) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::IRON()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 4.08 * $count;
                             $player->getInventory()->remove($item);
@@ -195,14 +195,14 @@ class OreExchanger {
             }
 
             # lapis ore
-            if($out->getId() == ItemIds::LAPIS_ORE) {
+            if($id == VanillaBlocks::LAPIS_LAZULI_ORE()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::LAPIS_LAZULI_ORE()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::LAPIS_ORE) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::LAPIS_LAZULI_ORE()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 0.52 * $count;
                             $player->getInventory()->remove($item);
@@ -222,44 +222,42 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # lapis
-            if($out->getId() == ItemIds::DYE) {
-                if($out->getMeta() == 4) {
-                    $sellPrice = 0;
-                    # get all in inventory
-                    # check if player has that block
-                    if($player->getInventory()->contains(VanillaItems::LAPIS_LAZULI())) {
-                        # calculate sell price
-                        foreach ($player->getInventory()->getContents() as $item) {
-                            if($item->getId() == ItemIds::DYE) {
-                                if($out->getMeta() == 4) {
-                                    $count = $item->getCount();
-                                    $sellPrice = 2.70 * $count;
-                                    $player->getInventory()->remove($item);
-                                }
+            if($id == VanillaItems::LAPIS_LAZULI()->getTypeId()) {
+                $sellPrice = 0;
+                # get all in inventory
+                # check if player has that block
+                if($player->getInventory()->contains(VanillaItems::LAPIS_LAZULI())) {
+                    # calculate sell price
+                    foreach ($player->getInventory()->getContents() as $item) {
+                        if(abs($item->getTypeId()) == VanillaItems::DYE()->getTypeId()) {
+                            if($out->getStateId() == 4) {
+                                $count = $item->getCount();
+                                $sellPrice = 2.70 * $count;
+                                $player->getInventory()->remove($item);
                             }
                         }
-                        # give player money
-                        DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.money") + $sellPrice);
-                        # send confirmation message
-                        $player->sendMessage(TF::GREEN . "+$" . Translator::shortNumber($sellPrice));
-                        # play sound
-                        $player->broadcastSound(new XpCollectSound(), [$player]);
-                    } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You do not have any Lapis in your inventory.");
-                        $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     }
+                    # give player money
+                    DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.money") + $sellPrice);
+                    # send confirmation message
+                    $player->sendMessage(TF::GREEN . "+$" . Translator::shortNumber($sellPrice));
+                    # play sound
+                    $player->broadcastSound(new XpCollectSound(), [$player]);
+                } else {
+                    $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You do not have any Lapis in your inventory.");
+                    $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                 }
                 return $transaction->discard();
             }
             # lapis block
-            if($out->getId() == ItemIds::LAPIS_BLOCK) {
+            if($id == VanillaBlocks::LAPIS_LAZULI()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::LAPIS_LAZULI()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::LAPIS_BLOCK) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::LAPIS_LAZULI()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 10.80 * $count;
                             $player->getInventory()->remove($item);
@@ -280,14 +278,14 @@ class OreExchanger {
             }
 
             # redstone ore
-            if($out->getId() == ItemIds::REDSTONE_ORE) {
+            if($id == VanillaBlocks::REDSTONE_ORE()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::REDSTONE_ORE()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::REDSTONE_ORE) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::REDSTONE_ORE()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 1.57 * $count;
                             $player->getInventory()->remove($item);
@@ -307,14 +305,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # redstone
-            if($out->getId() == ItemIds::REDSTONE) {
+            if($id == VanillaItems::REDSTONE_DUST()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaItems::REDSTONE_DUST())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::REDSTONE) {
+                        if(abs($item->getTypeId()) == VanillaItems::REDSTONE_DUST()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 8.29 * $count;
                             $player->getInventory()->remove($item);
@@ -334,14 +332,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # redstone block
-            if($out->getId() == ItemIds::REDSTONE_BLOCK) {
+            if($id == VanillaBlocks::REDSTONE()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::REDSTONE()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::REDSTONE_BLOCK) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::REDSTONE()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 33.16 * $count;
                             $player->getInventory()->remove($item);
@@ -362,14 +360,14 @@ class OreExchanger {
             }
 
             # gold ore
-            if($out->getId() == ItemIds::GOLD_ORE) {
+            if($id == VanillaBlocks::GOLD_ORE()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::GOLD_ORE()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::GOLD_ORE) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::GOLD_ORE()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 4.86 * $count;
                             $player->getInventory()->remove($item);
@@ -389,14 +387,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # gold
-            if($out->getId() == ItemIds::GOLD_INGOT) {
+            if($id == VanillaItems::GOLD_INGOT()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaItems::GOLD_INGOT())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::GOLD_INGOT) {
+                        if(abs($item->getTypeId()) == VanillaItems::GOLD_INGOT()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 25.76 * $count;
                             $player->getInventory()->remove($item);
@@ -416,14 +414,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # gold block
-            if($out->getId() == ItemIds::GOLD_BLOCK) {
+            if($id == VanillaBlocks::GOLD()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::GOLD()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::GOLD_BLOCK) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::GOLD()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 103.04 * $count;
                             $player->getInventory()->remove($item);
@@ -444,14 +442,14 @@ class OreExchanger {
             }
 
             # diamond ore
-            if($out->getId() == ItemIds::DIAMOND_ORE) {
+            if($id == VanillaBlocks::DIAMOND_ORE()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::DIAMOND_ORE()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::DIAMOND_ORE) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::DIAMOND_ORE()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 7.34 * $count;
                             $player->getInventory()->remove($item);
@@ -471,14 +469,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # diamond
-            if($out->getId() == ItemIds::DIAMOND) {
+            if($id == VanillaItems::DIAMOND()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaItems::DIAMOND())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::DIAMOND) {
+                        if(abs($item->getTypeId()) == VanillaItems::DIAMOND()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 38.85 * $count;
                             $player->getInventory()->remove($item);
@@ -498,14 +496,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # diamond block
-            if($out->getId() == ItemIds::DIAMOND_BLOCK) {
+            if($id == VanillaBlocks::DIAMOND()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::DIAMOND()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::DIAMOND_BLOCK) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::DIAMOND()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 155.40 * $count;
                             $player->getInventory()->remove($item);
@@ -526,14 +524,14 @@ class OreExchanger {
             }
 
             # emerald ore
-            if($out->getId() == ItemIds::EMERALD_ORE) {
+            if($id == VanillaBlocks::EMERALD_ORE()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::EMERALD_ORE()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::EMERALD_ORE) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::EMERALD_ORE()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 27.35 * $count;
                             $player->getInventory()->remove($item);
@@ -553,14 +551,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # emerald
-            if($out->getId() == ItemIds::EMERALD) {
+            if($id == VanillaItems::EMERALD()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaItems::EMERALD())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::EMERALD) {
+                        if(abs($item->getTypeId()) == VanillaItems::EMERALD()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 144.92 * $count;
                             $player->getInventory()->remove($item);
@@ -580,14 +578,14 @@ class OreExchanger {
                 return $transaction->discard();
             }
             # emerald block
-            if($out->getId() == ItemIds::EMERALD_BLOCK) {
+            if($id == VanillaBlocks::EMERALD()->getTypeId()) {
                 $sellPrice = 0;
                 # get all in inventory
                 # check if player has that block
                 if($player->getInventory()->contains(VanillaBlocks::EMERALD()->asItem())) {
                     # calculate sell price
                     foreach ($player->getInventory()->getContents() as $item) {
-                        if($item->getId() == ItemIds::EMERALD_BLOCK) {
+                        if(abs($item->getTypeId()) == VanillaBlocks::EMERALD()->getTypeId()) {
                             $count = $item->getCount();
                             $sellPrice = 579.68 * $count;
                             $player->getInventory()->remove($item);

@@ -14,19 +14,21 @@ use EmporiumData\DataManager;
 
 use JsonException;
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\TextFormat as TF;
 
 class CoalMineListener implements Listener {
 
-    private array $ores = [ItemIds::COAL_ORE, ItemIds::COAL_BLOCK];
+    private array $ores = [
+        BlockTypeIds::COAL_ORE,
+        BlockTypeIds::COAL
+    ];
     private PickaxeManager $pickaxeManager;
     private EnergyManager $energyManager;
     private MiningManager $miningManager;
@@ -44,7 +46,7 @@ class CoalMineListener implements Listener {
 
         # event info
         $player = $event->getPlayer();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $world = $event->getPlayer()->getWorld()->getFolderName();
 
         # world check
@@ -87,7 +89,7 @@ class CoalMineListener implements Listener {
 
         # block info
         $block = $event->getBlock();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $blockPosition = $block->getPosition();
 
         # player boosters data
@@ -109,7 +111,7 @@ class CoalMineListener implements Listener {
             # ore regen
             switch($blockId) {
 
-                case BlockLegacyIds::COAL_ORE:
+                case BlockTypeIds::COAL_ORE:
 
                     if($chance === 1) {
                         # spawn coal block
@@ -134,7 +136,7 @@ class CoalMineListener implements Listener {
                     }
                     break;
 
-                case BlockLegacyIds::COAL_BLOCK:
+                case BlockTypeIds::COAL:
 
                     if($chance === 1) {
                         # spawn coal block
@@ -191,7 +193,7 @@ class CoalMineListener implements Listener {
 
         switch($blockId) {
 
-            case BlockLegacyIds::COAL_ORE:
+            case BlockTypeIds::COAL_ORE:
 
                 if($chance === 1) {
                     # spawn coal block
@@ -216,7 +218,7 @@ class CoalMineListener implements Listener {
                 }
                 break;
 
-            case BlockLegacyIds::COAL_BLOCK:
+            case BlockTypeIds::COAL:
 
                 if($chance === 1) {
                     # spawn coal block
@@ -274,16 +276,17 @@ class CoalMineListener implements Listener {
     }
 
     private function addXpToPlayer(int $xp, Player $player, int $miningBoosterTime, int $miningMultiplier): void {
+        # has booster
         if ($miningBoosterTime >= 1) {
             $player->sendTip("+" . $xp * $miningMultiplier . "xp");
             DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + ($xp * $miningMultiplier));
             DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.total-xp") + ($xp * $miningMultiplier));
+            return;
         }
-        if($miningBoosterTime < 1) {
-            $player->sendTip("+$xp xp");
-            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $xp);
-            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.total-xp") + $xp);
-        }
+        # no booster
+        $player->sendTip("+$xp xp");
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $xp);
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.total-xp") + $xp);
     }
 
 }

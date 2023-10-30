@@ -38,7 +38,7 @@ class MeteorFlareEntityTask extends Task
     public function onRun(): void
     {
         $this->timer--;
-        if ($this->timer <= 5) $this->itemEntity->close();
+        if ($this->timer <= 1) $this->itemEntity->close();
         if ($this->timer <= 0) $this->getHandler()->cancel();
 
         if ($this->timer > 26) {

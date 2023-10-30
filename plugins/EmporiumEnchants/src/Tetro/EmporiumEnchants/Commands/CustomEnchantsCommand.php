@@ -4,8 +4,9 @@ namespace Tetro\EmporiumEnchants\Commands;
 
 use pocketmine\command\CommandSender;
 
-use Tetro\EmporiumEnchants\Utils\Commando\BaseCommand;
-use Tetro\EmporiumEnchants\Utils\Commando\BaseSubCommand;
+use pocketmine\plugin\PluginBase;
+use CortexPE\Commando\BaseCommand;
+use CortexPE\Commando\BaseSubCommand;
 use Tetro\EmporiumEnchants\Commands\subcommands\EnchantSubCommand;
 use Tetro\EmporiumEnchants\Commands\subcommands\InfoSubCommand;
 use Tetro\EmporiumEnchants\Commands\subcommands\ListSubCommand;
@@ -16,6 +17,12 @@ class CustomEnchantsCommand extends BaseCommand
 {
     /** @var EmporiumEnchants */
     protected $plugin;
+
+    public function __construct(PluginBase $plugin, string $name, string $description = "", array $aliases = [])
+    {
+        parent::__construct(EmporiumEnchants::getInstance(), "customenchants", "Manage Custom Enchants", ["ce", "customenchant"]);
+        $this->setPermission("emporiumenchants.command.customenchants");
+    }
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
@@ -31,5 +38,10 @@ class CustomEnchantsCommand extends BaseCommand
         $this->registerSubCommand(new InfoSubCommand($this->plugin, "info", "Get info on a custom enchant"));
         $this->registerSubCommand(new ListSubCommand($this->plugin, "list", "Lists all registered custom enchants"));
         $this->registerSubCommand(new RemoveSubCommand($this->plugin, "remove", "Remove an enchantment from an item"));
+    }
+
+    public function getPermission()
+    {
+        // TODO: Implement getPermission() method.
     }
 }

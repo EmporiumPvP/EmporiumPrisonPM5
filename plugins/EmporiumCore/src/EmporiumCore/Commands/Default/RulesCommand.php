@@ -2,6 +2,7 @@
 
 namespace EmporiumCore\Commands\Default;
 
+use Emporium\Prison\Variables;
 use EmporiumCore\EmporiumCore;
 use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
@@ -25,9 +26,9 @@ class RulesCommand extends Command {
             return false;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.rules");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if (!$permission) {
-            $sender->sendMessage(TextFormat::RED . "No permission");
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 

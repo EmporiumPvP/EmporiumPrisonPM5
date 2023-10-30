@@ -5,10 +5,10 @@ namespace Emporium\Prison\tasks\Ores;
 use pocketmine\block\Block;
 use pocketmine\block\BlockBreakInfo;
 use pocketmine\block\BlockIdentifier;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\block\BlockToolType;
+use pocketmine\block\BlockTypeInfo;
 use pocketmine\block\VanillaBlocks;
-use pocketmine\item\ItemIds;
 use pocketmine\scheduler\Task;
 use pocketmine\world\Position;
 use pocketmine\world\sound\BlockPlaceSound;
@@ -27,45 +27,45 @@ class OreRegenTask extends Task {
 
     public function onRun(): void {
         switch($this->blockId) {
-            case BlockLegacyIds::IRON_ORE:
-            case BlockLegacyIds::LAPIS_ORE:
-            case BlockLegacyIds::REDSTONE_ORE:
-            case BlockLegacyIds::GOLD_ORE:
-            case BlockLegacyIds::DIAMOND_ORE:
-            case BlockLegacyIds::EMERALD_ORE:
-            case BlockLegacyIds::COAL_ORE:
+            case BlockTypeIds::IRON_ORE:
+            case BlockTypeIds::LAPIS_LAZULI_ORE:
+            case BlockTypeIds::REDSTONE_ORE:
+            case BlockTypeIds::GOLD_ORE:
+            case BlockTypeIds::DIAMOND_ORE:
+            case BlockTypeIds::EMERALD_ORE:
+            case BlockTypeIds::COAL_ORE:
                 $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, $this->block);
                 break;
 
-            case BlockLegacyIds::COAL_BLOCK:
+            case BlockTypeIds::COAL:
                 $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, VanillaBlocks::COAL_ORE());
                 break;
 
-            case BlockLegacyIds::IRON_BLOCK:
+            case BlockTypeIds::IRON:
                 $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, VanillaBlocks::IRON_ORE());
                 break;
 
-            case BlockLegacyIds::REDSTONE_BLOCK:
+            case BlockTypeIds::REDSTONE:
                 $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, VanillaBlocks::REDSTONE_ORE());
                 break;
 
-            case BlockLegacyIds::LAPIS_BLOCK:
+            case BlockTypeIds::LAPIS_LAZULI:
                 $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, VanillaBlocks::LAPIS_LAZULI_ORE());
                 break;
 
-            case BlockLegacyIds::GOLD_BLOCK:
+            case BlockTypeIds::GOLD:
                 $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, VanillaBlocks::GOLD_ORE());
                 break;
 
-            case BlockLegacyIds::DIAMOND_BLOCK:
+            case BlockTypeIds::DIAMOND:
                 $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, VanillaBlocks::DIAMOND_ORE());
                 break;
 
-            case BlockLegacyIds::EMERALD_BLOCK:
+            case BlockTypeIds::EMERALD:
                 $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, VanillaBlocks::EMERALD_ORE());
                 break;
         }
 
-        $this->block->getPosition()->getWorld()->addSound($this->blockPosition->asVector3() , new BlockPlaceSound(new Block(new BlockIdentifier(ItemIds::COAL_ORE, 16), "coal_ore", new BlockBreakInfo(10.0, BlockToolType::PICKAXE, 1))));
+        $this->block->getPosition()->getWorld()->addSound($this->blockPosition->asVector3() , new BlockPlaceSound(new Block(new BlockIdentifier(BlockTypeIds::COAL_ORE), "coal_ore", new BlockTypeInfo(new BlockBreakInfo(10.0, BlockToolType::PICKAXE, 1)))));
     }
 }

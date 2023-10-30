@@ -448,6 +448,25 @@ final class LevelSoundEvent{
 	public const TRAPDOOR_CLOSE = 455;
 	public const FENCE_GATE_OPEN = 456;
 	public const FENCE_GATE_CLOSE = 457;
+	public const INSERT = 458;
+	public const PICKUP = 459;
+	public const INSERT_ENCHANTED = 460;
+	public const PICKUP_ENCHANTED = 461;
+	public const BRUSH = 462;
+	public const BRUSH_COMPLETED = 463;
+	public const SHATTER_POT = 464;
+	public const BREAK_POT = 465;
+	public const BLOCK_SNIFFER_EGG_CRACK = 466;
+	public const BLOCK_SNIFFER_EGG_HATCH = 467;
+	public const BLOCK_SIGN_WAXED_INTERACT_FAIL = 468;
+	public const RECORD_RELIC = 469;
+	public const NOTE_BASS = 470;
+	public const PUMPKIN_CARVE = 471;
+	public const MOB_HUSK_CONVERT_TO_ZOMBIE = 472;
+	public const MOB_PIG_DEATH = 473;
+	public const MOB_HOGLIN_CONVERTED_TO_ZOMBIFIED = 474;
+	public const AMBIENT_UNDERWATER_ENTER = 475;
+	public const AMBIENT_UNDERWATER_EXIT = 476;
 
 	//The following aliases are kept for backwards compatibility only
 	public const SCULK_SENSOR_POWER_ON = self::POWER_ON_SCULK_SENSOR;

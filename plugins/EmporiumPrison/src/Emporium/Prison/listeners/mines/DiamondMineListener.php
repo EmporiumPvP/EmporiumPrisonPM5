@@ -14,18 +14,20 @@ use EmporiumData\DataManager;
 
 use JsonException;
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
 class DiamondMineListener implements Listener {
 
-    private array $ores = [ItemIds::DIAMOND_ORE, ItemIds::DIAMOND_BLOCK];
+    private array $ores = [
+        BlockTypeIds::DIAMOND_ORE,
+        BlockTypeIds::DIAMOND
+    ];
 
     private PickaxeManager $pickaxeManager;
     private EnergyManager $energyManager;
@@ -44,7 +46,7 @@ class DiamondMineListener implements Listener {
 
         # event info
         $player = $event->getPlayer();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $world = $event->getPlayer()->getWorld()->getFolderName();
 
         # world check
@@ -87,7 +89,7 @@ class DiamondMineListener implements Listener {
 
         # block info
         $block = $event->getBlock();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $blockPosition = $block->getPosition();
 
         # player boosters data
@@ -109,7 +111,7 @@ class DiamondMineListener implements Listener {
             # ore regen
             switch($blockId) {
 
-                case BlockLegacyIds::DIAMOND_ORE:
+                case BlockTypeIds::DIAMOND_ORE:
 
                     if($chance === 1) {
                         # spawn coal block
@@ -134,7 +136,7 @@ class DiamondMineListener implements Listener {
                     }
                     break;
 
-                case BlockLegacyIds::DIAMOND_BLOCK:
+                case BlockTypeIds::DIAMOND:
 
                     if($chance === 1) {
                         # spawn coal block
@@ -193,7 +195,7 @@ class DiamondMineListener implements Listener {
         # ore regen
         switch($blockId) {
 
-            case BlockLegacyIds::DIAMOND_ORE:
+            case BlockTypeIds::DIAMOND_ORE:
 
                 if($chance === 1) {
                     # spawn coal block
@@ -218,7 +220,7 @@ class DiamondMineListener implements Listener {
                 }
                 break;
 
-            case BlockLegacyIds::DIAMOND_BLOCK:
+            case BlockTypeIds::DIAMOND:
 
                 if($chance === 1) {
                     # spawn coal block

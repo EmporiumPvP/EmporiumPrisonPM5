@@ -28,6 +28,11 @@ use Tetro\EmporiumEnchants\Core\CustomEnchantManager;
 
 class Menu {
 
+    /**
+     * @var true
+     */
+    private bool $levelUpSuccess = false;
+
     public function Inventory(Player $player, Item $item): void {
 
         # Managers
@@ -81,7 +86,7 @@ class Menu {
                     }
                 }
                 switch($enchant) {
-                        # add enchants here
+
                         # vanilla enchants
                         case "efficiency":
                             if(is_numeric($level)) {
@@ -90,13 +95,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(VanillaEnchantments::EFFICIENCY(), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         # custom enchants
@@ -107,13 +115,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::ALCHEMY), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "energy_collector":
@@ -123,13 +134,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::ENERGY_COLLECTOR), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "transfuse":
@@ -139,13 +153,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::TRANSFUSE), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "ore_magnet":
@@ -155,13 +172,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::ORE_MAGNET), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "shard_discoverer":
@@ -171,13 +191,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::SHARD_DISCOVERER), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "super_breaker":
@@ -187,13 +210,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::SUPER_BREAKER), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "miners_sight":
@@ -203,13 +229,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::MINERS_SIGHT), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "jackpot":
@@ -219,13 +248,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::JACKPOT), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "ore_surge":
@@ -235,13 +267,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::ORE_SURGE), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "luck":
@@ -251,13 +286,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::LUCK), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "meteor_hunter":
@@ -267,13 +305,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::METEOR_HUNTER), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "meteor_summoner":
@@ -283,13 +324,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::METEOR_SUMMONER), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
                         case "shatter":
@@ -299,13 +343,16 @@ class Menu {
                                     $player->sendMessage(TF::BOLD . TF::GREEN . "You got " . ucwords($enchantName));
                                     $item->addEnchantment(new EnchantmentInstance(CustomEnchantManager::getEnchantment(CustomEnchantIds::SHATTER), $level));
                                     $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                    $this->levelUpSuccess = true;
                                 } else {
                                     $player->sendMessage(TF::RED . "Enchant Failed!");
                                     $pickaxeManager->addFailedEnchant($player, $item);
+                                    $this->levelUpSuccess = false;
                                 }
                             } else {
                                 $player->sendMessage("Enchant is Max");
                                 $pickaxeManager->addSuccessfulEnchant($player, $item);
+                                $this->levelUpSuccess = true;
                             }
                             break;
 
@@ -318,6 +365,7 @@ class Menu {
                 $player->getInventory()->remove($item);
                 $updatedPickaxe = $pickaxeManager->levelUpPickaxe($item);
                 $player->getInventory()->addItem($updatedPickaxe);
+                $this->levelUpSuccess = true;
             }
             if($tutorialProgress === 4) {
                 DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.tutorial-progress", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.tutorial-progress") + 1);
@@ -325,8 +373,15 @@ class Menu {
                 $tutorialManager->startTutorial($player);
             }
         }));
-        $menu->setInventoryCloseListener(function(Player $player) use ($item): void {
-            $player->getInventory()->addItem($item);
+        $menu->setInventoryCloseListener(function(Player $player) use ($pickaxeManager, $item): void {
+            if(!$this->levelUpSuccess) {
+                $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "You left the Wormhole and your pickaxe has been levelled up with a failed enchant");
+                $pickaxeManager->addFailedEnchant($player, $item);
+                $this->levelUpSuccess = false;
+                $pickaxeManager->levelUpPickaxe($item);
+                $player->getInventory()->addItem($item);
+                $pickaxeManager->levelUpAnimation($player);
+            }
         });
         # set items
         $inventory = $menu->getInventory();

@@ -2,18 +2,18 @@
 
 namespace Tetro\EmporiumEnchants\Items;
 
+use customiesdevs\customies\item\CustomiesItemFactory;
+
 use pocketmine\item\Item;
-use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
 
 class Orbs {
 
     public function Elite($amount): Item {
-        $item = VanillaItems::BLUE_DYE();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:elite_orb");
         $item->setCustomName(TF::BOLD . TF::BLUE . "Elite " . TF::WHITE . "Orb");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("ElitePickaxeEnchantOrb", "elite");
-        $item->getNamedTag()->setString("Rarity", "elite");
+        $item->getNamedTag()->setString("LockedPickaxeEnchantOrb", "elite");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this Orb to receive a random",
             TF::RESET . TF::BLUE . "Elite " . TF::GRAY . "enchantment orb.",
@@ -25,11 +25,10 @@ class Orbs {
     }
 
     public function Ultimate($amount): Item {
-        $item = VanillaItems::YELLOW_DYE();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:ultimate_orb");
         $item->setCustomName(TF::BOLD . TF::YELLOW . "Ultimate " . TF::WHITE . "Orb");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("UltimatePickaxeEnchantOrb", "ultimate");
-        $item->getNamedTag()->setString("Rarity", "ultimate");
+        $item->getNamedTag()->setString("LockedPickaxeEnchantOrb", "ultimate");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this Orb to receive a random",
             TF::RESET . TF::BLUE . "Elite " . TF::GRAY . "enchantment orb.",
@@ -41,11 +40,10 @@ class Orbs {
     }
 
     public function Legendary($amount): Item {
-        $item = VanillaItems::ORANGE_DYE();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:legendary_orb");
         $item->setCustomName(TF::BOLD . TF::GOLD . "Legendary " . TF::WHITE . "Orb");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("LegendaryPickaxeEnchantOrb", "legendary");
-        $item->getNamedTag()->setString("Rarity", "legendary");
+        $item->getNamedTag()->setString("LockedPickaxeEnchantOrb", "legendary");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this Orb to receive a random",
             TF::RESET . TF::BLUE . "Elite " . TF::GRAY . "enchantment orb.",
@@ -57,11 +55,10 @@ class Orbs {
     }
 
     public function Godly($amount): Item {
-        $item = VanillaItems::PINK_DYE();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:godly_orb");
         $item->setCustomName(TF::BOLD . TF::LIGHT_PURPLE . "Godly " . TF::WHITE . "Orb");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("GodlyPickaxeEnchantOrb", "godly");
-        $item->getNamedTag()->setString("Rarity", "godly");
+        $item->getNamedTag()->setString("LockedPickaxeEnchantOrb", "godly");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this Orb to receive a random",
             TF::RESET . TF::BLUE . "Elite " . TF::GRAY . "enchantment orb.",
@@ -73,11 +70,10 @@ class Orbs {
     }
 
     public function Heroic($amount): Item {
-        $item = VanillaItems::RED_DYE();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:heroic_orb");
         $item->setCustomName(TF::BOLD . TF::RED . "Heroic " . TF::WHITE . "Orb");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("HeroicPickaxeEnchantOrb", "heroic");
-        $item->getNamedTag()->setString("Rarity", "heroic");
+        $item->getNamedTag()->setString("LockedPickaxeEnchantOrb", "heroic");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this Orb to receive a random",
             TF::RESET . TF::BLUE . "Elite " . TF::GRAY . "enchantment orb.",

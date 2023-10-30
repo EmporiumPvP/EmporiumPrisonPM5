@@ -20,9 +20,9 @@ use function count;
 class ClientCacheBlobStatusPacket extends DataPacket implements ServerboundPacket{
 	public const NETWORK_ID = ProtocolInfo::CLIENT_CACHE_BLOB_STATUS_PACKET;
 
-	/** @var int[] xxHash64 subchunk Data hashes */
+	/** @var int[] xxHash64 subchunk data hashes */
 	private array $hitHashes = [];
-	/** @var int[] xxHash64 subchunk Data hashes */
+	/** @var int[] xxHash64 subchunk data hashes */
 	private array $missHashes = [];
 
 	/**

@@ -11,7 +11,6 @@ use pocketmine\event\Event;
 use pocketmine\item\Item;
 
 # Used Files
-use Tetro\EmporiumEnchants\Core\Types\ReactiveEnchantment;
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\Utils\Utils;
 
@@ -76,8 +75,8 @@ trait ReactiveTrait {
                     if ($enchantment->getUsageType() === CustomEnchant::TYPE_INVENTORY || $enchantment->getUsageType() === CustomEnchant::TYPE_ANY_INVENTORY || ($enchantment->getUsageType() === CustomEnchant::TYPE_HAND && $player->getInventory()->getHeldItemIndex() === $slot)) {
                         foreach ($enchantment->getReagent() as $reagent) {
                             if ($event instanceof $reagent) {
-                                $enchantmentStacks[$enchantment->getId()] = ($enchantmentStacks[$enchantment->getId()] ?? 0) + $enchantmentInstance->getLevel();
-                                $enchantment->onReaction($player, $content, $player->getInventory(), $slot, $event, $enchantmentInstance->getLevel(), $enchantmentStacks[$enchantment->getId()]);
+                                $enchantmentStacks[$enchantment->getTypeId()] = ($enchantmentStacks[$enchantment->getTypeId()] ?? 0) + $enchantmentInstance->getLevel();
+                                $enchantment->onReaction($player, $content, $player->getInventory(), $slot, $event, $enchantmentInstance->getLevel(), $enchantmentStacks[$enchantment->getTypeId()]);
                             }
                         }
                     }
@@ -99,8 +98,8 @@ trait ReactiveTrait {
                     )) {
                         foreach ($enchantment->getReagent() as $reagent) {
                             if ($event instanceof $reagent) {
-                                $enchantmentStacks[$enchantment->getId()] = ($enchantmentStacks[$enchantment->getId()] ?? 0) + $enchantmentInstance->getLevel();
-                                $enchantment->onReaction($player, $content, $player->getArmorInventory(), $slot, $event, $enchantmentInstance->getLevel(), $enchantmentStacks[$enchantment->getId()]);
+                                $enchantmentStacks[$enchantment->getTypeId()] = ($enchantmentStacks[$enchantment->getTypeId()] ?? 0) + $enchantmentInstance->getLevel();
+                                $enchantment->onReaction($player, $content, $player->getArmorInventory(), $slot, $event, $enchantmentInstance->getLevel(), $enchantmentStacks[$enchantment->getTypeId()]);
                             }
                         }
                     }

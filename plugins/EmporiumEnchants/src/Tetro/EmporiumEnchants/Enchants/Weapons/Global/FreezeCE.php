@@ -59,18 +59,18 @@ class FreezeCE extends ReactiveEnchantment
         }
         // Enchantment Code
         $enemy = $event->getEntity();
-            if (!isset(self::$freeze[$enemy->getId()])) {
+            if (!isset(self::$freeze[$enemy->getTypeId()])) {
                 $endTime = time() + (2 * $level);
-                self::$freeze[$enemy->getId()] = new ClosureTask(function () use ($enemy, $endTime): void {
+                self::$freeze[$enemy->getTypeId()] = new ClosureTask(function () use ($enemy, $endTime): void {
                     if (!$enemy->isAlive() || $enemy->isClosed() || $enemy->isFlaggedForDespawn() || $endTime < time()) {
-                        self::$freeze[$enemy->getId()]->getHandler()->cancel();
-                        unset(self::$freeze[$enemy->getId()]);
+                        self::$freeze[$enemy->getTypeId()]->getHandler()->cancel();
+                        unset(self::$freeze[$enemy->getTypeId()]);
                         $enemy->setImmobile(false);
                         return;
                     }
                     $enemy->setImmobile(true);
                 });
-                $this->plugin->getScheduler()->scheduleRepeatingTask(self::$freeze[$enemy->getId()], 20);
+                $this->plugin->getScheduler()->scheduleRepeatingTask(self::$freeze[$enemy->getTypeId()], 20);
             }
             $enemy->sendTitle(TextFormat::BOLD . TextFormat::AQUA . "Freeze", 20, 20, 20);
             $enemy->sendSubtitle(TextFormat::BOLD . TextFormat::GREEN . "You have been Frozen!", 20, 20, 20);

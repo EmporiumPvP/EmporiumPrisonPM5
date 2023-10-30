@@ -3,6 +3,7 @@
 namespace EmporiumCore\Commands\Default;
 
 use Emporium\Prison\library\formapi\SimpleForm;
+use Emporium\Prison\Variables;
 use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
 use pocketmine\player\Player;
@@ -21,9 +22,9 @@ class VoteShopCommand extends Command {
             return false;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.voteshop");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if (!$permission) {
-            $sender->sendMessage(TF::RED . "No permission");
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 

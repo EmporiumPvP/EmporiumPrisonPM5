@@ -3,14 +3,14 @@
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
 use Emporium\Prison\EmporiumPrison;
-use Emporium\Prison\Managers\PickaxeManager;
-use pocketmine\block\BlockLegacyIds;
+
+use pocketmine\block\BlockTypeIds;
 use pocketmine\item\Item;
 use pocketmine\event\Event;
-use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
 use pocketmine\inventory\Inventory;
 use pocketmine\event\block\BlockBreakEvent;
+
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\Core\Types\ReactiveEnchantment;
 
@@ -32,159 +32,144 @@ class EnergyCollectorCE extends ReactiveEnchantment {
     }
 
     private array $ores = [
-        BlockLegacyIds::COAL_ORE,
-        BlockLegacyIds::COAL_BLOCK,
-        BlockLegacyIds::IRON_ORE,
-        BlockLegacyIds::IRON_BLOCK,
-        BlockLegacyIds::LAPIS_ORE,
-        BlockLegacyIds::LAPIS_BLOCK,
-        BlockLegacyIds::REDSTONE_ORE,
-        BlockLegacyIds::LIT_REDSTONE_ORE,
-        BlockLegacyIds::REDSTONE_BLOCK,
-        BlockLegacyIds::GOLD_ORE,
-        BlockLegacyIds::GOLD_BLOCK,
-        BlockLegacyIds::DIAMOND_ORE,
-        BlockLegacyIds::DIAMOND_BLOCK,
-        BlockLegacyIds::EMERALD_ORE,
-        BlockLegacyIds::EMERALD_BLOCK,
-        BlockLegacyIds::QUARTZ_ORE
-    ];
-
-    private array $blocks = [
-        ItemIds::COAL_ORE, ItemIds::COAL_BLOCK,
-        ItemIds::IRON_ORE, ItemIds::IRON_BLOCK,
-        ItemIds::LAPIS_ORE, ItemIds::LAPIS_BLOCK,
-        ItemIds::REDSTONE_ORE, ItemIds::REDSTONE_BLOCK,
-        ItemIds::GOLD_ORE, ItemIds::GOLD_BLOCK,
-        ItemIds::DIAMOND_ORE, ItemIds::DIAMOND_BLOCK,
-        ItemIds::EMERALD_ORE, ItemIds::EMERALD_BLOCK
+        BlockTypeIds::COAL_ORE, BlockTypeIds::COAL,
+        BlockTypeIds::IRON_ORE, BlockTypeIds::IRON,
+        BlockTypeIds::LAPIS_LAZULI_ORE, BlockTypeIds::LAPIS_LAZULI,
+        BlockTypeIds::REDSTONE_ORE, BlockTypeIds::REDSTONE,
+        BlockTypeIds::GOLD_ORE, BlockTypeIds::GOLD,
+        BlockTypeIds::DIAMOND_ORE, BlockTypeIds::DIAMOND,
+        BlockTypeIds::EMERALD_ORE, BlockTypeIds::EMERALD,
+        BlockTypeIds::NETHER_QUARTZ_ORE, BlockTypeIds::QUARTZ
     ];
 
     # Enchantment
     public function react(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void {
 
-        if($event instanceof BlockBreakEvent) {
+        if(!$event instanceof BlockBreakEvent) return;
 
-            if($event->isCancelled()) return;
+        if($event->isCancelled()) return;
 
-            $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
 
-            if(!in_array($blockId, $this->ores)) {
-                $event->cancel();
-                return;
+        if(!in_array($blockId, $this->ores)) return;
+
+        $item = $event->getPlayer()->getInventory()->getItemInHand();
+        if($item->getNamedTag()->getString("PickaxeType") === null) {
+            return;
+        }
+        if($item->getNamedTag()->getInt("Energy") === null) {
+            return;
+        } else {
+            $pickaxeEnergy = $item->getNamedTag()->getInt("Energy");
+        }
+
+        $pickaxeManager = EmporiumPrison::getInstance()->getPickaxeManager();
+
+        $block = $event->getBlock();
+        $blockId = $block->getTypeId()->Info()->getBlockId();
+
+        if(in_array($blockId, $this->ores)) {
+
+            switch ($blockId) {
+
+                # coal
+                case BlockTypeIds::COAL_ORE:
+                    $amount = (mt_rand(10, 20) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+                case BlockTypeIds::COAL:
+                    $amount = (mt_rand(20, 40) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+
+                # iron
+                case BlockTypeIds::IRON_ORE:
+                    $amount = (mt_rand(20, 30) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+                case BlockTypeIds::IRON:
+                    $amount = (mt_rand(40, 60) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+
+                # lapis
+                case BlockTypeIds::LAPIS_LAZULI_ORE:
+                    $amount = (mt_rand(30, 40) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+                case BlockTypeIds::LAPIS_LAZULI:
+                    $amount = (mt_rand(60, 80) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+
+                # redstone
+                case BlockTypeIds::REDSTONE_ORE:
+                    $amount = (mt_rand(40, 50) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+                case BlockTypeIds::REDSTONE:
+                    $amount = (mt_rand(80, 100) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+
+                # gold
+                case BlockTypeIds::GOLD_ORE:
+                    $amount = (mt_rand(50, 60) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+                case BlockTypeIds::GOLD:
+                    $amount = (mt_rand(100, 120) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+
+                # diamond
+                case BlockTypeIds::DIAMOND_ORE:
+                    $amount = (mt_rand(60, 70) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+                case BlockTypeIds::DIAMOND:
+                    $amount = (mt_rand(120, 140) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+
+                # emerald
+                case BlockTypeIds::EMERALD_ORE:
+                    $amount = (mt_rand(70, 80) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
+                case BlockTypeIds::EMERALD:
+                    $amount = (mt_rand(140, 160) * $level);
+                    $newData = $pickaxeEnergy + $amount;
+                    $item->getNamedTag()->setInt("Energy", $newData);
+                    $pickaxeManager->updatePickaxe($item);
+                    break;
             }
-
-            $item = $event->getPlayer()->getInventory()->getItemInHand();
-            if($item->getNamedTag()->getString("PickaxeType") === null) {
-                return;
-            }
-            if($item->getNamedTag()->getInt("Energy") === null) {
-                return;
-            } else {
-                $pickaxeEnergy = $item->getNamedTag()->getInt("Energy");
-            }
-
-            $pickaxeManager = EmporiumPrison::getInstance()->getPickaxeManager();
-
-            $block = $event->getBlock();
-            $blockId = $block->getIdInfo()->getBlockId();
-
-            if(in_array($blockId, $this->blocks)) {
-                switch ($blockId) {
-                    # coal
-                    case ItemIds::COAL_ORE:
-                        $amount = (mt_rand(10, 20) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    case ItemIds::COAL_BLOCK:
-                        $amount = (mt_rand(20, 40) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    # iron
-                    case ItemIds::IRON_ORE:
-                        $amount = (mt_rand(20, 30) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    case ItemIds::IRON_BLOCK:
-                        $amount = (mt_rand(40, 60) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    # lapis
-                    case ItemIds::LAPIS_ORE:
-                        $amount = (mt_rand(30, 40) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    case ItemIds::LAPIS_BLOCK:
-                        $amount = (mt_rand(60, 80) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    # redstone
-                    case ItemIds::REDSTONE_ORE:
-                        $amount = (mt_rand(40, 50) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    case ItemIds::REDSTONE_BLOCK:
-                        $amount = (mt_rand(80, 100) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    # gold
-                    case ItemIds::GOLD_ORE:
-                        $amount = (mt_rand(50, 60) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    case ItemIds::GOLD_BLOCK:
-                        $amount = (mt_rand(100, 120) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    # diamond
-                    case ItemIds::DIAMOND_ORE:
-                        $amount = (mt_rand(60, 70) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    case ItemIds::DIAMOND_BLOCK:
-                        $amount = (mt_rand(120, 140) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    # emerald
-                    case ItemIds::EMERALD_ORE:
-                        $amount = (mt_rand(70, 80) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                    case ItemIds::EMERALD_BLOCK:
-                        $amount = (mt_rand(140, 160) * $level);
-                        $newData = $pickaxeEnergy + $amount;
-                        $item->getNamedTag()->setInt("Energy", $newData);
-                        $pickaxeManager->updatePickaxe($item);
-                        break;
-                }
-            }
-            $this->setCooldown($player, 1);
         }
     }
 

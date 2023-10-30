@@ -79,9 +79,9 @@ class CustomEnchantIds
     const INSANITY = 229;
     const INVERSION = 230;
     const LIFESTEAL = 231;
-    # const LIGHTNING = 232;
+    const LIGHTNING = 232;
     const MANIAC = 233;
-    # const MOBSLAYER = 234;
+    const GLORY = 234;
     const POISON = 235;
     const RAGE = 236;
     const SILENCE = 237;

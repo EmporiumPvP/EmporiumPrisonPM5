@@ -23,9 +23,9 @@ class SurvivalCommand extends Command {
             return false;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.survival");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), ["emporiumcore.command.survival"]);
         if (!$permission) {
-            $sender->sendMessage(TF::RED . "No permission");
+            $sender->sendMessage(\Emporium\Prison\Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 

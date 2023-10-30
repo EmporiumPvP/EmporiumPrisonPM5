@@ -17,7 +17,6 @@ use muqsit\invmenu\type\InvMenuTypeIds;
 
 use pocketmine\block\VanillaBlocks;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
@@ -34,15 +33,16 @@ class Mines extends Menu {
         $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) {
             $player = $transaction->getPlayer();
             $itemClicked = $transaction->getItemClicked();
+            $itemClickedId = abs($itemClicked->getTypeId());
             $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
             # coal mine
-            if($itemClicked->getId() === ItemIds::COAL_ORE) {
+            if($itemClickedId == VanillaBlocks::COAL_ORE()->getTypeId()) {
                 $mine = new Position(-1443.5, 246, -38.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
                 EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
                 $player->broadcastSound(new EndermanTeleportSound(), [$player]);
             }
             # iron mine
-            if($itemClicked->getId() === ItemIds::IRON_ORE) {
+            if($itemClickedId == VanillaBlocks::IRON()->getTypeId()) {
                 if($playerLevel >= 10) {
                     $mine = new Position(-1133.5, 245, 281.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
                     EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
@@ -52,7 +52,7 @@ class Mines extends Menu {
                 }
             }
             # lapis mine
-            if($itemClicked->getId() === ItemIds::LAPIS_ORE) {
+            if($itemClickedId == VanillaBlocks::LAPIS_LAZULI_ORE()->getTypeId()) {
                 if($playerLevel >= 30) {
                     $mine = new Position(-709.5, 245, -173.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
                     EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
@@ -62,7 +62,7 @@ class Mines extends Menu {
                 }
             }
             # redstone mine
-            if($itemClicked->getId() === ItemIds::REDSTONE_ORE) {
+            if($itemClickedId == VanillaBlocks::REDSTONE_ORE()->getTypeId()) {
                 if($playerLevel >= 50) {
                     $mine = new Position(-390.5, 244, 209.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
                     EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
@@ -72,7 +72,7 @@ class Mines extends Menu {
                 }
             }
             # gold mine
-            if($itemClicked->getId() === ItemIds::GOLD_ORE) {
+            if($itemClickedId == VanillaBlocks::GOLD_ORE()->getTypeId()) {
                 if($playerLevel >= 70) {
                     $mine = new Position(7.5, 246, -96.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
                     EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
@@ -82,7 +82,7 @@ class Mines extends Menu {
                 }
             }
             # diamond mine
-            if($itemClicked->getId() === ItemIds::DIAMOND_ORE) {
+            if($itemClickedId == VanillaBlocks::DIAMOND_ORE()->getTypeId()) {
                 if($playerLevel >= 90) {
                     $mine = new Position(405.5, 244, 194.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
                     EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
@@ -92,7 +92,7 @@ class Mines extends Menu {
                 }
             }
             # emerald mine
-            if($itemClicked->getId() === ItemIds::EMERALD_ORE) {
+            if($itemClickedId == VanillaBlocks::EMERALD_ORE()->getTypeId()) {
                 if($playerLevel >= 100) {
                     $mine = new Position(1273.5, 245, -176.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world"));
                     EmporiumPrison::getInstance()->getScheduler()->scheduleRepeatingTask(new TeleportTask($player, $mine, 10), 20);
@@ -419,10 +419,10 @@ class Mines extends Menu {
         $form = new SimpleForm(function($player, $data) {
 
             $inventory = $player->getInventory();
-            $traineePickaxe = VanillaItems::WOODEN_PICKAXE();
-            $stonePickaxe = VanillaItems::STONE_PICKAXE();
-            $ironPickaxe = VanillaItems::IRON_PICKAXE();
-            $diamondPickaxe = VanillaItems::DIAMOND_PICKAXE();
+            $traineePickaxe = VanillaItems::WOODEN_PICKAXE()->getTypeId();
+            $stonePickaxe = VanillaItems::STONE_PICKAXE()->getTypeId();
+            $ironPickaxe = VanillaItems::IRON_PICKAXE()->getTypeId();
+            $diamondPickaxe = VanillaItems::DIAMOND_PICKAXE()->getTypeId();
 
             $playerLevel = EmporiumPrison::getInstance()->getPlayerLevelManager()->getPlayerLevel($player);
 

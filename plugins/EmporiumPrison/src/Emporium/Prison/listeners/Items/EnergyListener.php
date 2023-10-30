@@ -11,7 +11,6 @@ use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\inventory\transaction\action\SlotChangeAction;
-use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\BlazeShootSound;
@@ -44,7 +43,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Your inventory is full.");
                     }
                     break;
 
@@ -60,7 +59,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Your inventory is full.");
                     }
                     break;
 
@@ -76,7 +75,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Your inventory is full.");
                     }
                     break;
 
@@ -92,7 +91,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Your inventory is full.");
                     }
                     break;
 
@@ -108,7 +107,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Your inventory is full.");
                     }
                     break;
 
@@ -124,7 +123,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Your inventory is full.");
                     }
                     break;
 
@@ -140,7 +139,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Your inventory is full.");
                     }
                     break;
 
@@ -156,7 +155,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Your inventory is full.");
                     }
                     break;
 
@@ -172,7 +171,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Your inventory is full.");
                     }
                     break;
 
@@ -188,7 +187,7 @@ class EnergyListener implements Listener {
                         # play sound
                         $player->broadcastSound(new BlazeShootSound(), [$player]);
                     } else {
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Your inventory is full.");
+                        $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Your inventory is full.");
                     }
                     break;
             }
@@ -200,7 +199,7 @@ class EnergyListener implements Listener {
 
             if ($activeMultiplier > 1) {
                 if (!$multiplier == $activeMultiplier) {
-                    $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "You already have an active Energy Booster.");
+                    $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "You already have an active Energy Booster.");
                 } else {
                     $player->broadcastSound(new BlazeShootSound(), [$player]);
                     $hand->setCount($count - 1);
@@ -244,7 +243,8 @@ class EnergyListener implements Listener {
 
         if (count($actions) === 2) {
             foreach ($actions as $i => $action) {
-                if ($action instanceof SlotChangeAction && ($otherAction = $actions[($i + 1) % 2]) instanceof SlotChangeAction && ($itemClickedWith = $action->getTargetItem())->getId() === ItemIds::DYE && ($itemClicked = $action->getSourceItem())->getId() !== ItemIds::AIR) {
+                if ($action instanceof SlotChangeAction && ($otherAction = $actions[($i + 1) % 2]) instanceof SlotChangeAction && ($itemClickedWith = $action->getTargetItem())->getVanillaName() === "Energy" && ($itemClicked = $action->getSourceItem())->getTypeId() !== VanillaItems::AIR()->getTypeId()) {
+
                     # item clicked with has to be an energy orb
                     if ($itemClickedWith->getNamedTag()->getTag("EnergyOrb") === null) return;
                     # item clicked with has to have energy

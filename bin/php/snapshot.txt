@@ -1,9 +1,9 @@
 This snapshot was automatically generated on
-Thu, 28 Apr 2022 12:13:05 +0000
+Mon, 09 Oct 2023 17:25:59 +0000
 
-Version: 8.0.18
+Version: 8.1.24
 Branch: HEAD
-Build: D:\a\php-build-scripts\php-build-scripts\pocketmine-php-sdk\php-src\x64\Release_TS
+Build: D:\a\PHP-Binaries\PHP-Binaries\pocketmine-php-sdk\php-src\x64\Release_TS
 
 Built-in Extensions
 ===========================
@@ -71,7 +71,7 @@ Module: php_leveldb.dll
 
 Module: php_libdeflate.dll
 ===========================
-	libdeflate.dll
+	deflate.dll
 
 Module: php_openssl.dll
 ===========================
@@ -86,7 +86,7 @@ Module: php_crypto.dll
 ===========================
 	libcrypto-1_1-x64.dll
 
-Module: php_pthreads.dll
+Module: php_pmmpthread.dll
 ===========================
 	pthreadvc3.dll
 

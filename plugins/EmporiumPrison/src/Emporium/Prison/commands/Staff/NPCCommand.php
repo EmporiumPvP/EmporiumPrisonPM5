@@ -8,8 +8,6 @@ use Emporium\Prison\Variables;
 
 use EmporiumData\PermissionsManager;
 
-use JonyGamesYT9\EntityAPI\entity\EntityFactory;
-
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -40,7 +38,6 @@ class NPCCommand extends Command {
     public function __construct() {
         parent::__construct("npc", "Main NPC Command", TF::GRAY . "/npc [update] | [spawn/delete] [entity]");
         $this->setPermission("emporiumprison.command.npc");
-        $this->setPermissionMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "No permission");
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args) {
@@ -49,9 +46,9 @@ class NPCCommand extends Command {
             return;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumprison.command.npc");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if(!$permission) {
-            $sender->sendMessage($this->getPermissionMessage());
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
         }
 
         if(!isset($args[0])) {
@@ -129,69 +126,26 @@ class NPCCommand extends Command {
                     break;
 
                 case "auctioneer":
-                    EntityFactory::getInstance()->create($sender->getLocation(), $sender->getSkin(),"auctioneer", 1);
+                    EmporiumPrison::getInstance()->getNpcManager()->spawnNpc($sender, Auctioneer::class);
                     $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have spawned " . TF::GREEN . "Auctioneer");
                     break;
 
                 case "captain":
-                    EntityFactory::getInstance()->create($sender->getLocation(), $sender->getSkin(),"captain", 1);
+                    EmporiumPrison::getInstance()->getNpcManager()->spawnNpc($sender, ShipCaptain::class);
                     $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have spawned " . TF::LIGHT_PURPLE . "Ship Captain");
                     break;
 
                 case "banker":
-                    EntityFactory::getInstance()->create($sender->getLocation(), $sender->getSkin(),"banker", 1);
+                    EmporiumPrison::getInstance()->getNpcManager()->spawnNpc($sender, Banker::class);
                     $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have spawned " . TF::AQUA . "Banker");
                     break;
             }
         }
 
         if($parameter === "delete") {
-            switch($npc) {
+            $sender->sendMessage("Tap an npc to delete it");
 
-                case "tourguide":
-                    EntityFactory::getInstance()->eliminate("tourguide", $sender->getPosition()->getWorld());
-                    break;
-
-                case "tutorialoreexchanger":
-                    EntityFactory::getInstance()->eliminate("tutorialoreexchanger", $sender->getPosition()->getWorld());
-                    break;
-
-                case "tutorialforger":
-                    EntityFactory::getInstance()->eliminate("tutorialblacksmith", $sender->getPosition()->getWorld());
-                    break;
-
-                case "oreexchanger":
-                    EntityFactory::getInstance()->eliminate("oreexchanger", $sender->getPosition()->getWorld());
-                    break;
-
-                case "forger":
-                    EntityFactory::getInstance()->eliminate("forger", $sender->getPosition()->getWorld());
-                    break;
-
-                case "blacksmith":
-                    EntityFactory::getInstance()->eliminate("blacksmith", $sender->getPosition()->getWorld());
-                    break;
-
-                case "chef":
-                    EntityFactory::getInstance()->eliminate("chef", $sender->getPosition()->getWorld());
-                    break;
-
-                case "auctioneer":
-                    EntityFactory::getInstance()->eliminate("auctioneer", $sender->getPosition()->getWorld());
-                    break;
-
-                case "blackmarket":
-                    EntityFactory::getInstance()->eliminate("blackmarket", $sender->getPosition()->getWorld());
-                    break;
-
-                case "captain":
-                    EntityFactory::getInstance()->eliminate("captain", $sender->getPosition()->getWorld());
-                    break;
-
-                case "banker":
-                    EntityFactory::getInstance()->eliminate("banker", $sender->getPosition()->getWorld());
-                    break;
-            }
+            EmporiumPrison::getInstance()->getNpcManager()->deleteHandles[$sender->getName()] = $sender;
         }
     }
 }

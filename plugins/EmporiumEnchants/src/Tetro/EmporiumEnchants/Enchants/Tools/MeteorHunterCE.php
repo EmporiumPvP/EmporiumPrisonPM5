@@ -2,7 +2,7 @@
 
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\item\Item;
 use pocketmine\event\Event;
 use pocketmine\player\Player;
@@ -19,9 +19,9 @@ class MeteorHunterCE extends ReactiveEnchantment {
     public string $name = "Meteor Hunter";
     public string $description = "Chance of receiving double Contrabands when mining Meteors.";
     public int $rarity = CustomEnchant::RARITY_HEROIC;
-    public int $cooldownDuration = 0;
+    public int $cooldownDuration = 10;
     public int $maxLevel = 5;
-    public int $chance = 1;
+    public int $chance = 2500;
 
     # Compatibility
     public int $usageType = CustomEnchant::TYPE_HAND;
@@ -33,38 +33,40 @@ class MeteorHunterCE extends ReactiveEnchantment {
     }
 
     private array $ores = [
-        BlockLegacyIds::COAL_ORE,
-        BlockLegacyIds::COAL_BLOCK,
-        BlockLegacyIds::IRON_ORE,
-        BlockLegacyIds::IRON_BLOCK,
-        BlockLegacyIds::LAPIS_ORE,
-        BlockLegacyIds::LAPIS_BLOCK,
-        BlockLegacyIds::REDSTONE_ORE,
-        BlockLegacyIds::LIT_REDSTONE_ORE,
-        BlockLegacyIds::REDSTONE_BLOCK,
-        BlockLegacyIds::GOLD_ORE,
-        BlockLegacyIds::GOLD_BLOCK,
-        BlockLegacyIds::DIAMOND_ORE,
-        BlockLegacyIds::DIAMOND_BLOCK,
-        BlockLegacyIds::EMERALD_ORE,
-        BlockLegacyIds::EMERALD_BLOCK,
-        BlockLegacyIds::QUARTZ_ORE
+        BlockTypeIds::COAL_ORE, BlockTypeIds::COAL,
+        BlockTypeIds::IRON_ORE, BlockTypeIds::IRON,
+        BlockTypeIds::LAPIS_LAZULI_ORE, BlockTypeIds::LAPIS_LAZULI,
+        BlockTypeIds::REDSTONE_ORE, BlockTypeIds::REDSTONE,
+        BlockTypeIds::GOLD_ORE, BlockTypeIds::GOLD,
+        BlockTypeIds::DIAMOND_ORE, BlockTypeIds::DIAMOND,
+        BlockTypeIds::EMERALD_ORE, BlockTypeIds::EMERALD,
+        BlockTypeIds::NETHER_QUARTZ_ORE, BlockTypeIds::QUARTZ
     ];
 
     # Enchantment
     public function react(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void {
-        // Chance
-        $chance = floor(2500 / $level);
-        if (mt_rand(1, $chance) !== mt_rand(1, $chance)) {
-            return;
-        }
-        // Enchantment Code
-        if ($event instanceof BlockBreakEvent) {
 
-            # add logic
-            $player->sendMessage(TextFormat::RED . "Meteor Hunter");
-            $this->setCooldown($player, 1);
-        }
+        // Enchantment Code
+        if (!$event instanceof BlockBreakEvent) return;
+
+        if ($event->isCancelled()) return;
+
+        if(!in_array($event->getBlock()->getTypeId(), $this->ores)) return;
+
+        var_dump("Chance: " . $this->chance);
+        var_dump("Level: " . $level);
+        // Chance
+        $chance = floor($this->chance / $level);
+        var_dump("New chance: " . $chance);
+        $number1 = mt_rand(1, $chance);
+        $number2 = mt_rand(1, $chance);
+        var_dump("Number 1: " . $number1);
+        var_dump("Number 2: " . $number2);
+        if ($number1 !== $number2) return;
+
+        # add logic
+        $player->sendMessage(TextFormat::RED . "Meteor Hunter");
+        $this->setCooldown($player, $this->cooldownDuration);
     }
 
     public function getPriority(): int

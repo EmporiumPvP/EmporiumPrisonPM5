@@ -1,7 +1,7 @@
 name: EmporiumPrison
 author: Tetro
 version: 1.0.0
-api: 4.0.0
+api: 5.0.0
 main: Emporium\Prison\EmporiumPrison
 
 depend:
@@ -9,7 +9,7 @@ depend:
   - EmporiumEnchants
 
 permissions:
-    # default commands
+  # default commands
   emporiumprison.command.extract:
     default: true
   emporiumprison.command.prestige:
@@ -28,17 +28,19 @@ permissions:
     default: true
   emporiumprison.command.playerlevel:
     default: true
+  emporiumprison.command.events:
+    default: true
     # rank commands
   emporiumprison.command.oreexchanger:
-    default: false
+    default: true
     # staff commands
   emporiumprison.command.booster:
-    default: false
+    default: true
   emporiumprison.command.energy:
-    default: false
+    default: true
   emporiumprison.command.flare:
-    default: false
+    default: true
   emporiumprison.command.npc:
-    default: false
+    default: true
   emporiumprison.command.randcoord:
     default: true

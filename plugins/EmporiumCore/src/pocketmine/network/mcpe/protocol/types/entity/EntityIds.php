@@ -37,6 +37,7 @@ final class EntityIds{
 	public const BEE = "minecraft:bee";
 	public const BLAZE = "minecraft:blaze";
 	public const BOAT = "minecraft:boat";
+	public const CAMEL = "minecraft:camel";
 	public const CAT = "minecraft:cat";
 	public const CAVE_SPIDER = "minecraft:cave_spider";
 	public const CHEST_BOAT = "minecraft:chest_boat";
@@ -111,6 +112,7 @@ final class EntityIds{
 	public const SKELETON_HORSE = "minecraft:skeleton_horse";
 	public const SLIME = "minecraft:slime";
 	public const SMALL_FIREBALL = "minecraft:small_fireball";
+	public const SNIFFER = "minecraft:sniffer";
 	public const SNOW_GOLEM = "minecraft:snow_golem";
 	public const SNOWBALL = "minecraft:snowball";
 	public const SPIDER = "minecraft:spider";
@@ -122,6 +124,7 @@ final class EntityIds{
 	public const THROWN_TRIDENT = "minecraft:thrown_trident";
 	public const TNT = "minecraft:tnt";
 	public const TNT_MINECART = "minecraft:tnt_minecart";
+	public const TRADER_LLAMA = "minecraft:trader_llama";
 	public const TRIPOD_CAMERA = "minecraft:tripod_camera";
 	public const TROPICALFISH = "minecraft:tropicalfish";
 	public const TURTLE = "minecraft:turtle";

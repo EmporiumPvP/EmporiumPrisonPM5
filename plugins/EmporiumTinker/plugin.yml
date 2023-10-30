@@ -1,7 +1,7 @@
 name: Tinker
 main: Tetro\EmporiumTinker\Tinker
 version: 1.0.0
-api: 4.0.0
+api: 5.0.0
 author: Tetro
 description: Tinker plugin for Tetro
 
@@ -11,4 +11,4 @@ depend:
 
 permissions:
   emporiumtinker.command.tinker:
-    default: false
+    default: true

@@ -2,8 +2,11 @@
 
 namespace EmporiumCore;
 
-# default Commands
 use customiesdevs\customies\item\CustomiesItemFactory;
+
+####################
+# default Commands #
+####################
 use EmporiumCore\Commands\Default\BalanceCommand;
 use EmporiumCore\Commands\Default\BragCommand;
 use EmporiumCore\Commands\Default\CustomEnchantShopCommand;
@@ -19,11 +22,19 @@ use EmporiumCore\Commands\Default\ShopCommand;
 use EmporiumCore\Commands\Default\TagsCommand;
 use EmporiumCore\Commands\Default\TrashCommand;
 use EmporiumCore\Commands\Default\VoteShopCommand;
+
+#################
+# Rank Commands #
+#################
 use EmporiumCore\Commands\Rank\ClearCommand;
 use EmporiumCore\Commands\Rank\FeedCommand;
 use EmporiumCore\Commands\Rank\HealCommand;
 use EmporiumCore\Commands\Rank\MilkCommand;
 use EmporiumCore\Commands\Rank\SellCommand;
+
+##################
+# Staff Commands #
+##################
 use EmporiumCore\Commands\Staff\BanCommand;
 use EmporiumCore\Commands\Staff\BossCommand;
 use EmporiumCore\Commands\Staff\BroadcastCommand;
@@ -41,9 +52,17 @@ use EmporiumCore\Commands\Staff\UnbanCommand;
 use EmporiumCore\Commands\Staff\UnfreezeCommand;
 use EmporiumCore\Commands\Staff\UnmuteCommand;
 use EmporiumCore\Commands\Staff\WarnCommand;
+
+################
+# Custom Items #
+################
 use EmporiumCore\CustomItems\Filler;
 use EmporiumCore\CustomItems\Locked;
 use EmporiumCore\CustomItems\Unlocked;
+
+#############
+# Listeners #
+#############
 use EmporiumCore\Listeners\Events\PrisonBreakListener;
 use EmporiumCore\Listeners\Items\ContrabandListener;
 use EmporiumCore\Listeners\Items\GKitListener;
@@ -54,7 +73,15 @@ use EmporiumCore\Listeners\Player\ChatEvent;
 use EmporiumCore\Listeners\Player\MoveEvent;
 use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Listeners\world\PlayerInteractListener;
+
+############
+# Managers #
+############
 use EmporiumCore\Managers\player\PlayerManager;
+
+#########
+# Menus #
+#########
 use EmporiumCore\Menus\Blacksmith;
 use EmporiumCore\Menus\Chef;
 use EmporiumCore\Menus\CustomEnchantMenu;
@@ -63,10 +90,18 @@ use EmporiumCore\Menus\KitsMenu;
 use EmporiumCore\Menus\RankKitsMenu;
 use EmporiumCore\Menus\RulesMenu;
 use EmporiumCore\Menus\Tags;
+
+#########
+# Tasks #
+#########
 use EmporiumCore\Tasks\AntiCheatTask;
 use EmporiumCore\Tasks\CooldownTask;
 use EmporiumCore\Tasks\CosmeticsTask;
 use EmporiumCore\Tasks\TimerTask;
+
+#########
+# Items #
+#########
 use Items\Crystals;
 use Items\GKits;
 use Items\Lootboxes;
@@ -78,6 +113,7 @@ use Items\RankKitItems\Noble;
 use Items\RankKitItems\President;
 use Items\RankKitItems\Supreme;
 use Items\RankKits;
+
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat as TF;
 
@@ -110,7 +146,10 @@ class EmporiumCore extends PluginBase {
 
     protected function onLoad(): void
     {
-        # items
+        #########
+        # items #
+        #########
+
         $this->crystals = new Crystals();
         $this->gkits = new GKits();
         $this->lootboxes = new Lootboxes();
@@ -122,7 +161,11 @@ class EmporiumCore extends PluginBase {
         $this->supremeItems = new Supreme();
         $this->emperorItems = new Emperor();
         $this->presidentItems = new President();
-        # menus
+
+        #########
+        # menus #
+        #########
+
         $this->chef = new Chef();
         $this->blacksmith = new Blacksmith();
         $this->customEnchantMenu = new CustomEnchantMenu();
@@ -137,10 +180,16 @@ class EmporiumCore extends PluginBase {
 
         self::$instance = $this;
 
-        # set motd
+        ############
+        # set motd #
+        ############
+
         $this->getServer()->getNetwork()->setName(TF::BOLD . TF::AQUA . "Emporium" . TF::LIGHT_PURPLE . "PvP");
 
-        # unregister commands
+        #######################
+        # unregister commands #
+        #######################
+
         $map = $this->getServer()->getCommandMap();
         $commands = [
             "ban",
@@ -184,20 +233,31 @@ class EmporiumCore extends PluginBase {
             $map->unregister($map->getCommand($command));
         }
 
-        # register items
+        ##################
+        # register items #
+        ##################
+
         # ui
         CustomiesItemFactory::getInstance()->registerItem(Locked::class, "customies:locked", "Locked");
         CustomiesItemFactory::getInstance()->registerItem(Unlocked::class, "customies:unlocked", "Unlocked");
         CustomiesItemFactory::getInstance()->registerItem(Filler::class, "customies:filler", "Filler");
 
-        # register listeners
-        # item listeners
+        ######################
+        # register listeners #
+        ######################
+
+        ##################
+        # item listeners #
+        ##################
         $this->getServer()->getPluginManager()->registerEvents(new ContrabandListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new GKitListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new RankKitListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new LootboxListener(), $this);
 
-        # other
+        #########
+        # other #
+        #########
+
         $this->getServer()->getPluginManager()->registerEvents(new MoveEvent(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new AntiCheatEvent($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new PlayerManager(), $this);
@@ -206,8 +266,14 @@ class EmporiumCore extends PluginBase {
         $this->getServer()->getPluginManager()->registerEvents(new PlayerInteractListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new ChatEvent(), $this);
 
-        # register Commands
-        # default commands
+        #####################
+        # register Commands #
+        #####################
+
+        ####################
+        # default commands #
+        ####################
+
         $this->getServer()->getCommandMap()->register("balance", new BalanceCommand($this));
         $this->getServer()->getCommandMap()->register("brag", new BragCommand($this));
         $this->getServer()->getCommandMap()->register("discord", new DiscordCommand());
@@ -223,14 +289,20 @@ class EmporiumCore extends PluginBase {
         $this->getServer()->getCommandMap()->register("trash", new TrashCommand());
         $this->getServer()->getCommandMap()->register("voteshop", new VoteShopCommand());
 
-        # rank commands
+        #################
+        # rank commands #
+        #################
+
         $this->getServer()->getCommandMap()->register("clear", new ClearCommand());
         $this->getServer()->getCommandMap()->register("feed", new FeedCommand());
         $this->getServer()->getCommandMap()->register("heal", new HealCommand());
         $this->getServer()->getCommandMap()->register("milk", new MilkCommand());
         $this->getServer()->getCommandMap()->register("sell", new SellCommand());
 
-        # staff commands
+        ##################
+        # staff commands #
+        ##################
+
         $this->getServer()->getCommandMap()->register("ban", new BanCommand());
         $this->getServer()->getCommandMap()->register("broadcast", new BroadcastCommand());
         $this->getServer()->getCommandMap()->register("clearchat", new ClearChatCommand($this));
@@ -250,7 +322,10 @@ class EmporiumCore extends PluginBase {
         $this->getServer()->getCommandMap()->register("contraband", new ContrabandCommand());
         $this->getServer()->getCommandMap()->register("nbtdump", new NBTDumpCommand());
 
-        # register tasks
+        ##################
+        # register tasks #
+        ##################
+
         $this->getScheduler()->scheduleRepeatingTask(new AntiCheatTask($this), 20);
         $this->getScheduler()->scheduleRepeatingTask(new CooldownTask($this), 20);
         $this->getScheduler()->scheduleRepeatingTask(new CosmeticsTask($this), 1);

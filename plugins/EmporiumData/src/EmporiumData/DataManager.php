@@ -63,7 +63,8 @@ class DataManager
             "profile.tag" => "tag",
             "profile.cexp" => 0,
             "profile.prestige" => 0,
-            "profile.online_time" => 27,
+            "profile.online_time" => 0,
+            "profile.bosskills" => 0,
             "anticheat.anti_auto" => 0,
             "anticheat.anti_nuke" => 0,
             "anticheat.auto_warn" => 0,
@@ -102,6 +103,12 @@ class DataManager
             "cooldown.rank_kit_majesty" => 0,
             "cooldown.rank_kit_emperor" => 0,
             "cooldown.rank_kit_president" => 0,
+            "cooldown.command.spawn" => 0,
+            "cooldown.command.shop" => 0,
+            "cooldown.command.clear" => 0,
+            "cooldown.command.feed" => 0,
+            "cooldown.command.heal" => 0,
+            "cooldown.command.milk" => 0,
         ];
 
         foreach ($defaults as $key => $value) $this->setPlayerData($player->getXuid(), $key, $value);

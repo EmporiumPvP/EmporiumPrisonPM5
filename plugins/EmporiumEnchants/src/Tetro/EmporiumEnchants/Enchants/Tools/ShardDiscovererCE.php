@@ -3,7 +3,7 @@
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\item\Item;
 use pocketmine\event\Event;
 use pocketmine\player\Player;
@@ -21,9 +21,9 @@ class ShardDiscovererCE extends ReactiveEnchantment {
     public string $name = "Shard Discoverer";
     public string $description = "Higher chance to find shards.";
     public int $rarity = CustomEnchant::RARITY_ELITE;
-    public int $cooldownDuration = 0;
+    public int $cooldownDuration = 60;
     public int $maxLevel = 5;
-    public int $chance = 1;
+    public int $chance = 600;
 
     # Compatibility
     public int $usageType = CustomEnchant::TYPE_HAND;
@@ -35,106 +35,101 @@ class ShardDiscovererCE extends ReactiveEnchantment {
     }
 
     private array $ores = [
-        BlockLegacyIds::COAL_ORE,
-        BlockLegacyIds::COAL_BLOCK,
-        BlockLegacyIds::IRON_ORE,
-        BlockLegacyIds::IRON_BLOCK,
-        BlockLegacyIds::LAPIS_ORE,
-        BlockLegacyIds::LAPIS_BLOCK,
-        BlockLegacyIds::REDSTONE_ORE,
-        BlockLegacyIds::LIT_REDSTONE_ORE,
-        BlockLegacyIds::REDSTONE_BLOCK,
-        BlockLegacyIds::GOLD_ORE,
-        BlockLegacyIds::GOLD_BLOCK,
-        BlockLegacyIds::DIAMOND_ORE,
-        BlockLegacyIds::DIAMOND_BLOCK,
-        BlockLegacyIds::EMERALD_ORE,
-        BlockLegacyIds::EMERALD_BLOCK,
-        BlockLegacyIds::QUARTZ_ORE
+        BlockTypeIds::COAL_ORE, BlockTypeIds::COAL,
+        BlockTypeIds::IRON_ORE, BlockTypeIds::IRON,
+        BlockTypeIds::LAPIS_LAZULI_ORE, BlockTypeIds::LAPIS_LAZULI,
+        BlockTypeIds::REDSTONE_ORE, BlockTypeIds::REDSTONE,
+        BlockTypeIds::GOLD_ORE, BlockTypeIds::GOLD,
+        BlockTypeIds::DIAMOND_ORE, BlockTypeIds::DIAMOND,
+        BlockTypeIds::EMERALD_ORE, BlockTypeIds::EMERALD,
+        BlockTypeIds::NETHER_QUARTZ_ORE, BlockTypeIds::QUARTZ
     ];
 
     # Enchantment
     public function react(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void {
+
+        if(!$event instanceof BlockBreakEvent) return;
+
+        if ($event->isCancelled()) return;
+
+        if(!in_array($event->getBlock()->getTypeId(), $this->ores)) return;
+
+
         // Chance
-        $chance = floor(600 / $level);
-        if (mt_rand(1, $chance) !== mt_rand(1, $chance)) {
-            return;
-        }
-        // Enchantment Code
-        if ($event instanceof BlockBreakEvent) {
+        $chance = floor($this->chance / $level);
+        if (mt_rand(1, $chance) !== mt_rand(1, $chance)) return;
 
-            switch($level) {
+        switch($level) {
 
-                case 1:
+            case 1:
+                $player->broadcastSound(new BlazeShootSound());
+                $player->sendTitle(TF::BOLD . TF::WHITE . "Simple" . TF::DARK_GRAY . " Shard Discovered");
+                break;
+
+            case 2:
+                $type = mt_rand(1, 2);
+                if($type === 1) {
                     $player->broadcastSound(new BlazeShootSound());
                     $player->sendTitle(TF::BOLD . TF::WHITE . "Simple" . TF::DARK_GRAY . " Shard Discovered");
-                    break;
+                } elseif($type === 2) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::GREEN . "Uncommon" . TF::DARK_GRAY . " Shard Discovered");
+                }
+                break;
 
-                case 2:
-                    $type = mt_rand(1, 2);
-                    if($type === 1) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::WHITE . "Simple" . TF::DARK_GRAY . " Shard Discovered");
-                    } elseif($type === 2) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::GREEN . "Uncommon" . TF::DARK_GRAY . " Shard Discovered");
-                    }
-                    break;
+            case 3:
+                $type = mt_rand(1, 3);
+                if($type === 1) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::WHITE . "Simple" . TF::DARK_GRAY . " Shard Discovered");
+                } elseif($type === 2) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::GREEN . "Uncommon" . TF::DARK_GRAY . " Shard Discovered");
+                } elseif($type === 3) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::BLUE . "Elite" . TF::DARK_GRAY . " Shard Discovered");
+                }
+                break;
 
-                case 3:
-                    $type = mt_rand(1, 3);
-                    if($type === 1) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::WHITE . "Simple" . TF::DARK_GRAY . " Shard Discovered");
-                    } elseif($type === 2) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::GREEN . "Uncommon" . TF::DARK_GRAY . " Shard Discovered");
-                    } elseif($type === 3) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::BLUE . "Elite" . TF::DARK_GRAY . " Shard Discovered");
-                    }
-                    break;
+            case 4:
+                $type = mt_rand(1, 4);
+                if($type === 1) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::WHITE . "Simple" . TF::DARK_GRAY . " Shard Discovered");
+                } elseif($type === 2) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::GREEN . "Uncommon" . TF::DARK_GRAY . " Shard Discovered");
+                } elseif($type === 3) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::BLUE . "Elite" . TF::DARK_GRAY . " Shard Discovered");
+                } elseif($type === 4) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::YELLOW . "Ultimate" . TF::DARK_GRAY . " Shard Discovered");
+                }
+                break;
 
-                case 4:
-                    $type = mt_rand(1, 4);
-                    if($type === 1) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::WHITE . "Simple" . TF::DARK_GRAY . " Shard Discovered");
-                    } elseif($type === 2) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::GREEN . "Uncommon" . TF::DARK_GRAY . " Shard Discovered");
-                    } elseif($type === 3) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::BLUE . "Elite" . TF::DARK_GRAY . " Shard Discovered");
-                    } elseif($type === 4) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::YELLOW . "Ultimate" . TF::DARK_GRAY . " Shard Discovered");
-                    }
-                    break;
-
-                case 5:
-                    $type = mt_rand(1, 5);
-                    if($type === 1) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::WHITE . "Simple" . TF::DARK_GRAY . " Shard Discovered");
-                    } elseif($type === 2) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::GREEN . "Uncommon" . TF::DARK_GRAY . " Shard Discovered");
-                    } elseif($type === 3) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::BLUE . "Elite" . TF::DARK_GRAY . " Shard Discovered");
-                    } elseif($type === 4) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::YELLOW . "Ultimate" . TF::DARK_GRAY . " Shard Discovered");
-                    } elseif($type === 5) {
-                        $player->broadcastSound(new BlazeShootSound());
-                        $player->sendTitle(TF::BOLD . TF::YELLOW . "Legendary" . TF::DARK_GRAY . " Shard Discovered");
-                    }
-                    break;
-            }
-            $player->sendMessage(TF::RED . "Shard Discoverer");
-            $this->setCooldown($player, 1);
+            case 5:
+                $type = mt_rand(1, 5);
+                if($type === 1) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::WHITE . "Simple" . TF::DARK_GRAY . " Shard Discovered");
+                } elseif($type === 2) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::GREEN . "Uncommon" . TF::DARK_GRAY . " Shard Discovered");
+                } elseif($type === 3) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::BLUE . "Elite" . TF::DARK_GRAY . " Shard Discovered");
+                } elseif($type === 4) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::YELLOW . "Ultimate" . TF::DARK_GRAY . " Shard Discovered");
+                } elseif($type === 5) {
+                    $player->broadcastSound(new BlazeShootSound());
+                    $player->sendTitle(TF::BOLD . TF::YELLOW . "Legendary" . TF::DARK_GRAY . " Shard Discovered");
+                }
+                break;
         }
+        $player->sendMessage(TF::RED . "Shard Discoverer");
+        $this->setCooldown($player, $this->cooldownDuration);
     }
 
     public function getPriority(): int

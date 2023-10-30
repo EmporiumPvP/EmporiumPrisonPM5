@@ -16,6 +16,7 @@ class ContrabandCommand extends Command {
     public function __construct() {
         parent::__construct("contraband", "Main contraband command");
         $this->setUsage("/contraband [rarity] | [player]");
+        $this->setPermission("emporiumcore.command.contraband");
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args) {
@@ -24,7 +25,7 @@ class ContrabandCommand extends Command {
             return;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.contraband");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), ["emporiumcore.command.contraband"]);
         if(!$permission) {
             $sender->sendMessage(TextFormat::RED . "No permission");
             return;

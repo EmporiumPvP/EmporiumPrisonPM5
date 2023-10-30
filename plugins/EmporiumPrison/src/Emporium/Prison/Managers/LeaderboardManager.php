@@ -18,6 +18,8 @@ class LeaderboardManager {
     private const LEADERBOARD_LEVEL = "leaderboardlevel";
     private const LEADERBOARD_MONEY = "leaderboardmoney";
     private const LEADERBOARD_PRISON = "leaderboardprison";
+    private const LEADERBOARD_BOSS_KILLS = "leaderboardbosskills";
+
     private const WORMHOLE_TEXT = "wormholetext";
     private const TUTORIAL_WELCOME_TEXT = "tutorialwelcometext";
     private const SHOPS_TEXT = "shopstext";
@@ -30,9 +32,10 @@ class LeaderboardManager {
 
     public static function registerLeaderboards(): void {
         # leaderboards
-        WFT::getInstance()->getTextManager()->registerText(self::LEADERBOARD_LEVEL, self::getTopLevelLeaderboard(), new Position(-1577.5, 175, -298.5, EmporiumCore::getInstance()->getServer()->getWorldManager()->getWorldByName("world")), true, false);
+        WFT::getInstance()->getTextManager()->registerText(self::LEADERBOARD_LEVEL, self::getTopLevelLeaderboardText(), new Position(-1577.5, 175, -298.5, EmporiumCore::getInstance()->getServer()->getWorldManager()->getWorldByName("world")), true, false);
         WFT::getInstance()->getTextManager()->registerText(self::LEADERBOARD_MONEY, self::getTopMoneyLeaderboardText(), new Position(-1581.5, 175, -298.5, EmporiumCore::getInstance()->getServer()->getWorldManager()->getWorldByName("world")), true, false);
         WFT::getInstance()->getTextManager()->registerText(self::LEADERBOARD_PRISON, self::getTopPrisonLeaderboardText(), new Position(-1585.5, 175, -298.5, EmporiumCore::getInstance()->getServer()->getWorldManager()->getWorldByName("world")), true, false);
+        WFT::getInstance()->getTextManager()->registerText(self::LEADERBOARD_BOSS_KILLS, self::getTopBossLeaderboardText(), new Position(-1589.5, 175, -298.5, EmporiumCore::getInstance()->getServer()->getWorldManager()->getWorldByName("world")), true, false);
     }
 
     public static function registerTexts(): void {
@@ -45,12 +48,14 @@ class LeaderboardManager {
 
     public static function update () : void {
         WFT::getInstance()->getTextManager()->getTextById(self::LEADERBOARD_LEVEL)->setText(self::getTopMoneyLeaderboardText());
-        WFT::getInstance()->getTextManager()->getTextById(self::LEADERBOARD_MONEY)->setText(self::getTopLevelLeaderboard());
+        WFT::getInstance()->getTextManager()->getTextById(self::LEADERBOARD_MONEY)->setText(self::getTopLevelLeaderboardText());
         WFT::getInstance()->getTextManager()->getTextById(self::LEADERBOARD_PRISON)->setText(self::getTopPrisonLeaderboardText());
+        WFT::getInstance()->getTextManager()->getTextById(self::LEADERBOARD_BOSS_KILLS)->setText(self::getTopBossLeaderboardText());
 
         WFT::getInstance()->getTextManager()->getActions()->respawnToAll(self::LEADERBOARD_LEVEL);
         WFT::getInstance()->getTextManager()->getActions()->respawnToAll(self::LEADERBOARD_MONEY);
         WFT::getInstance()->getTextManager()->getActions()->respawnToAll(self::LEADERBOARD_PRISON);
+        WFT::getInstance()->getTextManager()->getActions()->respawnToAll(self::LEADERBOARD_BOSS_KILLS);
     }
 
     /**
@@ -107,7 +112,7 @@ class LeaderboardManager {
         return $message;
     }
 
-    private static function getTopLevelLeaderboard(): string {
+    private static function getTopLevelLeaderboardText(): string {
         $playerLevelConfig = self::getLevelData();
 
         arsort($playerLevelConfig);
@@ -129,10 +134,35 @@ class LeaderboardManager {
         return $message;
     }
 
+    private static function getTopBossLeaderboardText(): string {
+        $bossKillsConfig = self::getBossKillsData();
+
+        arsort($bossKillsConfig);
+
+        $message = TF::BOLD . TF::GREEN . "Top Boss Killers" . "#";
+        $message .= "#";
+
+        $bossKillsData = [];
+        foreach ($bossKillsConfig as $playerData => $kills) $bossKillsData[] = [$playerData, $kills];
+
+        for ($i = 1; $i <= 10; $i++)
+        {
+            if (isset($bossKillsData[$i - 1]))
+                $message .= TF::GRAY . "[" . TF::WHITE . "$i" . TF::GRAY . "] " . TF::AQUA . $bossKillsData[$i - 1][0] . TF::GRAY . " - " . TF::WHITE . Translator::shortNumber((int)$bossKillsData[$i - 1][1]) . "#";
+            else $message .= TF::GRAY . "[" . TF::WHITE . $i . TF::GRAY . "] --- #";
+        }
+
+        return $message;
+    }
+
+    /*
+     * TODO
+     *
+     * move these to a different class
+     */
     private static function getTutorialWormholeText(): string {
         return TF::GOLD . "Welcome to the " . TF::BOLD . TF::GOLD . "Wormhole!" . TF::RESET . TF::EOL . TF::AQUA . "When your pickaxe has reached 100% " . TF::BOLD . "Energy" . TF::RESET . TF::EOL . TF::AQUA . "You may throw it into the " . TF::BOLD . TF::GOLD . "Wormhole " . TF::RESET . TF::AQUA . "to forge it!" . TF::EOL . TF::GRAY . "(Yes, really, drop your pickaxe while at the wormhole)";
     }
-
     private static function getTutorialWelcomeText(): string {
         $message = TF::AQUA . "Welcome to " . TF::BOLD . TF::GOLD . "Emporium Prison" . "#";
         $message .= "#";
@@ -145,7 +175,6 @@ class LeaderboardManager {
 
         return $message;
     }
-
     private static function getShopsText(): string {
         return TF::RED . "Shops This Way";
     }
@@ -194,4 +223,17 @@ class LeaderboardManager {
         return [];
     }
 
+    private static function getBossKillsData(): array {
+
+        $playerBossKills = [];
+
+        # get all player money data
+        foreach(DataManager::getInstance()->getPlayerNames() as $player) {
+            $bossKills = DataManager::getInstance()->getPlayerData($player, "profile.bosskills");
+
+            $playerBossKills[DataManager::getInstance()->getPlayerName($player)] = $bossKills;
+        }
+
+        return $playerBossKills;
+    }
 }

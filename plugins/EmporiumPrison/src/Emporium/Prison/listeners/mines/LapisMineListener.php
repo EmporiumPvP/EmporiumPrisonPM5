@@ -14,18 +14,19 @@ use EmporiumData\DataManager;
 
 use JsonException;
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
 class LapisMineListener implements Listener {
 
-    private array $ores = [ItemIds::LAPIS_ORE, ItemIds::LAPIS_BLOCK];
+    private array $ores = [
+        BlockTypeIds::LAPIS_LAZULI_ORE, BlockTypeIds::LAPIS_LAZULI
+    ];
 
     private PickaxeManager $pickaxeManager;
     private EnergyManager $energyManager;
@@ -44,7 +45,7 @@ class LapisMineListener implements Listener {
 
         # event info
         $player = $event->getPlayer();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $world = $event->getPlayer()->getWorld()->getFolderName();
 
         # world check
@@ -87,7 +88,7 @@ class LapisMineListener implements Listener {
 
         # block info
         $block = $event->getBlock();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $blockPosition = $block->getPosition();
 
         # player boosters data
@@ -109,7 +110,7 @@ class LapisMineListener implements Listener {
             # ore regen
             switch($blockId) {
 
-                case BlockLegacyIds::LAPIS_ORE:
+                case BlockTypeIds::LAPIS_LAZULI_ORE:
 
                     if($chance === 1) {
                         # spawn coal block
@@ -134,7 +135,7 @@ class LapisMineListener implements Listener {
                     }
                     break;
 
-                case BlockLegacyIds::LAPIS_BLOCK:
+                case BlockTypeIds::LAPIS_LAZULI:
 
                     if($chance === 1) {
                         # spawn coal block
@@ -192,7 +193,7 @@ class LapisMineListener implements Listener {
         # ore regen
         switch($blockId) {
 
-            case BlockLegacyIds::LAPIS_ORE:
+            case BlockTypeIds::LAPIS_LAZULI_ORE:
 
                 if($chance === 1) {
                     # spawn coal block
@@ -217,7 +218,7 @@ class LapisMineListener implements Listener {
                 }
                 break;
 
-            case BlockLegacyIds::LAPIS_BLOCK:
+            case BlockTypeIds::LAPIS_LAZULI:
 
                 if($chance === 1) {
                     # spawn coal block

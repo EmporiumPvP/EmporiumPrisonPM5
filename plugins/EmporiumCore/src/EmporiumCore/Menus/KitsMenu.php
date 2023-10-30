@@ -4,15 +4,18 @@ namespace EmporiumCore\Menus;
 
 use Emporium\Prison\library\formapi\SimpleForm;
 use Emporium\Prison\Managers\misc\Translator;
+
 use EmporiumCore\EmporiumCore;
+
 use EmporiumData\DataManager;
 use EmporiumData\PermissionsManager;
+
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
+
 use pocketmine\block\VanillaBlocks;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
@@ -70,7 +73,7 @@ class KitsMenu extends Menu {
 
                 case 0:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_noble");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.noble");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.noble"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That GKit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -91,7 +94,7 @@ class KitsMenu extends Menu {
 
                 case 1:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_imperial");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.imperial");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.imperial"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That GKit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -112,7 +115,7 @@ class KitsMenu extends Menu {
 
                 case 2:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_supreme");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.supreme");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.supreme"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That GKit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -133,7 +136,7 @@ class KitsMenu extends Menu {
 
                 case 3:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_majesty");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.majesty");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.majesty"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That GKit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -154,7 +157,7 @@ class KitsMenu extends Menu {
 
                 case 4:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_emperor");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.emperor");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.emperor"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That GKit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -175,7 +178,7 @@ class KitsMenu extends Menu {
 
                 case 5:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_president");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.president");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.president"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That GKit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -202,7 +205,7 @@ class KitsMenu extends Menu {
         });
         $form->setTitle(TF::BOLD . "Rank Kits");
         $form->setContent("Click a kit to claim it");
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.noble")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.noble"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_noble") > 0) {
                 $form->addButton(TF::BOLD . "Noble\n" . TF::RED . "On Cooldown");
             } else {
@@ -211,7 +214,7 @@ class KitsMenu extends Menu {
         } else {
             $form->addButton(TF::BOLD . "Noble\n" . TF::RED . "Locked");
         }
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.imperial")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.imperial"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_imperial") > 0) {
                 $form->addButton(TF::BOLD . "Imperial\n" . TF::RED . "On Cooldown");
             } else {
@@ -220,7 +223,7 @@ class KitsMenu extends Menu {
         } else {
             $form->addButton(TF::BOLD . "Imperial\n" . TF::RED . "Locked");
         }
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.supreme")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.supreme"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_supreme") > 0) {
                 $form->addButton(TF::BOLD . "Supreme\n" . TF::RED . "On Cooldown");
             } else {
@@ -229,7 +232,7 @@ class KitsMenu extends Menu {
         } else {
             $form->addButton(TF::BOLD . "Supreme\n" . TF::RED . "Locked");
         }
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.majesty")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.majesty"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_majesty") > 0) {
                 $form->addButton(TF::BOLD . "Majesty\n" . TF::RED . "On Cooldown");
             } else {
@@ -238,7 +241,7 @@ class KitsMenu extends Menu {
         } else {
             $form->addButton(TF::BOLD . "Majesty\n" . TF::RED . "Locked");
         }
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.emperor")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.emperor"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_emperor") > 0) {
                 $form->addButton(TF::BOLD . "Emperor\n" . TF::RED . "On Cooldown");
             } else {
@@ -247,7 +250,7 @@ class KitsMenu extends Menu {
         } else {
             $form->addButton(TF::BOLD . "Emperor\n" . TF::RED . "Locked");
         }
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.president")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.president"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_president") > 0) {
                 $form->addButton(TF::BOLD . "President\n" . TF::RED . "On Cooldown");
             } else {
@@ -269,7 +272,7 @@ class KitsMenu extends Menu {
 
                 case 0:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit1");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige1");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige1"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That Prestige Kit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -290,7 +293,7 @@ class KitsMenu extends Menu {
 
                 case 1:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit2");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige2");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige2"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That Prestige Kit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -311,7 +314,7 @@ class KitsMenu extends Menu {
 
                 case 2:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit3");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige3");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige3"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That Prestige Kit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -332,7 +335,7 @@ class KitsMenu extends Menu {
 
                 case 3:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "PrestigeKit4");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige4");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige4"]);
                     if($permission) {
                         if(DataManager::getInstance()->getPlayerData($player->getXuid(), "PrestigeKit4") > 0) {
                             $player->sendMessage(TF::RED . "That Prestige Kit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -353,7 +356,7 @@ class KitsMenu extends Menu {
 
                 case 4:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit5");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige5");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige5"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That Prestige Kit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -374,7 +377,7 @@ class KitsMenu extends Menu {
 
                 case 5:
                     $cooldown = DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit6");
-                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige6");
+                    $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige6"]);
                     if($permission) {
                         if($cooldown > 0) {
                             $player->sendMessage(TF::RED . "That Prestige Kit is on Cooldown, Time remaining: " . Translator::timeConvert($cooldown));
@@ -401,7 +404,7 @@ class KitsMenu extends Menu {
         });
         $form->setTitle(TF::BOLD . "Prestige Kits");
         $form->setContent("Click a kit to claim it");
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige1")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige1"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit1") > 0) {
                 $form->addButton(TF::BOLD . "Prestige 1\n" . TF::RED . "On Cooldown");
             } else {
@@ -410,7 +413,7 @@ class KitsMenu extends Menu {
         } else {
             $form->addButton(TF::BOLD . "Prestige 1\n" . TF::RED . "Locked");
         }
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige2")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige2"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit2") > 0) {
                 $form->addButton(TF::BOLD . "Prestige 2\n" . TF::RED . "On Cooldown");
             } else {
@@ -419,7 +422,7 @@ class KitsMenu extends Menu {
         } else {
             $form->addButton(TF::BOLD . "Prestige 2\n" . TF::RED . "Locked");
         }
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige3")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige3"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit3") > 0) {
                 $form->addButton(TF::BOLD . "Prestige 3\n" . TF::RED . "On Cooldown");
             } else {
@@ -428,7 +431,7 @@ class KitsMenu extends Menu {
         } else {
             $form->addButton(TF::BOLD . "Prestige 3\n" . TF::RED . "Locked");
         }
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige4")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige4"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit4") > 0) {
                 $form->addButton(TF::BOLD . "Prestige 4\n" . TF::RED . "On Cooldown");
             } else {
@@ -437,7 +440,7 @@ class KitsMenu extends Menu {
         } else {
             $form->addButton(TF::BOLD . "Prestige 4\n" . TF::RED . "Locked");
         }
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige5")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige5"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit5") > 0) {
                 $form->addButton(TF::BOLD . "Prestige 5\n" . TF::RED . "On Cooldown");
             } else {
@@ -446,7 +449,7 @@ class KitsMenu extends Menu {
         } else {
             $form->addButton(TF::BOLD . "Prestige 5\n" . TF::RED . "Locked");
         }
-        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore_prestigekit_prestige6")) {
+        if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore_prestigekit_prestige6"])) {
             if(DataManager::getInstance()->getPlayerData($player->getXuid(), "prestige_kit6") > 0) {
                 $form->addButton(TF::BOLD . "Prestige 6\n" . TF::RED . "On Cooldown");
             } else {
@@ -467,26 +470,27 @@ class KitsMenu extends Menu {
             $itemClicked = $transaction->getItemClicked();
             $player = $transaction->getPlayer();
 
-            switch($itemClicked->getId()) {
+            switch($itemClicked->getTypeId()) {
+
                 # rank kits
-                case ItemIds::DIAMOND_SWORD:
+                case VanillaItems::DIAMOND_SWORD()->getTypeId():
                     $player->broadcastSound(new EnderChestOpenSound(), [$player]);
                     $menu = EmporiumCore::getInstance()->getRankKitsMenu();
                     $menu->Inventory($player);
                     break;
                     # god kits
-                case ItemIds::ENDER_CHEST:
+                case VanillaBlocks::ENDER_CHEST()->getTypeId():
                     $player->broadcastSound(new EnderChestOpenSound(), [$player]);
                     $menu = EmporiumCore::getInstance()->getGkitsMenu();
                     $menu->Inventory($player);
                     break;
                     # quest kits
-                case ItemIds::WRITABLE_BOOK:
+                case VanillaItems::WRITABLE_BOOK()->getTypeId():
                     $player->broadcastSound(new EnderChestOpenSound(), [$player]);
                     $player->sendMessage(TF::GRAY . "Coming soon");
                     break;
                     # prestige kits
-                case ItemIds::ENDER_PEARL:
+                case VanillaItems::ENDER_PEARL()->getTypeId():
                     $player->broadcastSound(new EnderChestOpenSound(), [$player]);
                     break;
             }

@@ -2,18 +2,18 @@
 
 namespace Tetro\EmporiumEnchants\Items;
 
+use customiesdevs\customies\item\CustomiesItemFactory;
+
 use pocketmine\item\Item;
-use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
 
 class Books {
 
     public function Elite($amount): Item {
-        $item = VanillaItems::BOOK();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:elite_book");
         $item->setCustomName(TF::BOLD .  TF::BLUE . "Elite " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("EliteCustomEnchantBook", "elite");
-        $item->getNamedTag()->setString("Rarity", "elite");
+        $item->getNamedTag()->setString("LockedCustomEnchantBook", "elite");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::BLUE . "Elite " . TF::GRAY . "enchantment book.",
@@ -25,11 +25,10 @@ class Books {
     }
 
     public function Ultimate($amount): Item {
-        $item = VanillaItems::BOOK();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:ultimate_book");
         $item->setCustomName(TF::BOLD .  TF::YELLOW . "Ultimate " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("UltimateCustomEnchantBook", "ultimate");
-        $item->getNamedTag()->setString("Rarity", "ultimate");
+        $item->getNamedTag()->setString("LockedCustomEnchantBook", "ultimate");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::YELLOW . "Ultimate " . TF::GRAY . "enchantment book.",
@@ -41,11 +40,10 @@ class Books {
     }
 
     public function Legendary($amount): Item {
-        $item = VanillaItems::BOOK();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:legendary_book");
         $item->setCustomName(TF::BOLD .  TF::GOLD . "Legendary " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("LegendaryCustomEnchantBook", "legendary");
-        $item->getNamedTag()->setString("Rarity", "legendary");
+        $item->getNamedTag()->setString("LockedCustomEnchantBook", "legendary");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::GOLD . "Legendary " . TF::GRAY . "enchantment book.",
@@ -57,11 +55,10 @@ class Books {
     }
 
     public function Godly($amount): Item {
-        $item = VanillaItems::BOOK();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:godly_book");
         $item->setCustomName(TF::BOLD .  TF::LIGHT_PURPLE . "Godly " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("GodlyCustomEnchantBook", "godly");
-        $item->getNamedTag()->setString("Rarity", "godly");
+        $item->getNamedTag()->setString("LockedCustomEnchantBook", "godly");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::LIGHT_PURPLE . "Godly " . TF::GRAY . "enchantment book.",
@@ -73,11 +70,10 @@ class Books {
     }
 
     public function Heroic($amount): Item {
-        $item = VanillaItems::BOOK();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:heroic_book");
         $item->setCustomName(TF::BOLD .  TF::RED . "Heroic " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("HeroicCustomEnchantBook", "heroic");
-        $item->getNamedTag()->setString("Rarity", "heroic");
+        $item->getNamedTag()->setString("LockedCustomEnchantBook", "heroic");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::RED . "Heroic " . TF::GRAY . "enchantment book.",
@@ -89,11 +85,10 @@ class Books {
     }
 
     public function Executive($amount): Item {
-        $item = VanillaItems::BOOK();
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:executive_book");
         $item->setCustomName(TF::BOLD .  TF::BLACK . "Executive " . TF::WHITE . "Book");
         $item->setCount($amount);
-        $item->getNamedTag()->setString("ExecutiveCustomEnchantBook", "executive");
-        $item->getNamedTag()->setString("Rarity", "executive");
+        $item->getNamedTag()->setString("LockedCustomEnchantBook", "executive");
         $lore = [
             TF::RESET . TF::GRAY . "Examine this book to receive a random",
             TF::RESET . TF::BLACK . "Executive " . TF::GRAY . "enchantment book.",

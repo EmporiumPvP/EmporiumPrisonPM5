@@ -2,6 +2,7 @@
 
 namespace EmporiumCore\Commands\Default;
 
+use Emporium\Prison\Variables;
 use EmporiumCore\EmporiumCore;
 
 use EmporiumData\DataManager;
@@ -40,9 +41,9 @@ class RanksCommand extends Command {
 
     public function execute(CommandSender $sender, string $commandLabel, array $args) {
         if ($sender instanceof Player) {
-            $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.ranks");
+            $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
             if(!$permission) {
-                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
+                $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
                 return;
             }
         }
@@ -57,34 +58,34 @@ class RanksCommand extends Command {
         $parameter = strtolower($args[0]);
 
         if(!$parameter == "set") {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Invalid usage");
+            $sender->sendMessage(Variables::PREFIX . "Invalid usage");
             $sender->sendMessage($this->getUsage());
             return;
         }
 
         # player
         if(!isset($args[1])) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Invalid usage");
+            $sender->sendMessage(Variables::PREFIX . "Invalid usage");
             $sender->sendMessage($this->getUsage());
             return;
         }
         $target = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[1]);
 
         if(!$target instanceof Player) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That player is not online");
+            $sender->sendMessage(Variables::PREFIX . "That player is not online");
             return;
         }
 
         # rank to set
         if(!isset($args[2])) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Invalid usage");
+            $sender->sendMessage(Variables::PREFIX . "Invalid usage");
             $sender->sendMessage($this->getUsage());
             return;
         }
         $rank = strtolower($args[2]);
 
         if(!in_array($rank, $this->ranks)) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That rank does not exist!");
+            $sender->sendMessage(Variables::PREFIX . "That rank does not exist!");
             $this->sendRankList($sender);
         }
 

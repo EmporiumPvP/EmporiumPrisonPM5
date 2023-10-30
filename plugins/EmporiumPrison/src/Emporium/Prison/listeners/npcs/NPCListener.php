@@ -20,7 +20,6 @@ use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\Position;
 use pocketmine\world\sound\EndermanTeleportSound;
 
-use Tetro\EmporiumTinker\menus\TinkerMenu;
 use Tetro\EmporiumTinker\Tinker;
 
 class NPCListener implements Listener {
@@ -32,7 +31,13 @@ class NPCListener implements Listener {
 
         if ($player instanceof Player && $npc instanceof NPC) {
 
-            switch ($npc->getIdName()) {
+            if (isset(EmporiumPrison::getInstance()->getNpcManager()->deleteHandles[$player->getName()])) {
+                $npc->close();
+                unset(EmporiumPrison::getInstance()->getNpcManager()->deleteHandles[$player->getName()]);
+                return;
+            }
+
+            switch ($npc->getNameTag()) {
 
                 case "tourguide":
                     $event->cancel();
@@ -41,28 +46,28 @@ class NPCListener implements Listener {
                     break;
 
                     # sell ores
-                case "oreexchanger":
+                case TF::BOLD . TF::GOLD . "Ore Exchanger" . TF::GRAY . "\n(Click Me)":
                     $event->cancel();
                     $menu = EmporiumPrison::getInstance()->getOreExchanger();
                     $menu->Inventory($player);
                     break;
 
                 # purchase equipment
-                case "blacksmith":
+                case TF::BOLD . TF::GOLD . "Blacksmith" . TF::GRAY . "\n(Click Me)":
                     $event->cancel();
                     $menu = EmporiumCore::getInstance()->getBlacksmith();
                     $menu->open($player);
                     break;
 
                 # purchase food
-                case "chef":
+                case TF::BOLD . TF::GOLD . "Chef" . TF::GRAY . "\n(Click Me)":
                     $event->cancel();
                     $menu = EmporiumCore::getInstance()->getChef();
                     $menu->open($player);
                     break;
 
                 # ship captain
-                case "captain":
+                case TF::BOLD . TF::LIGHT_PURPLE . "Ship Captain" . TF::GRAY . "\n(Click Me)":
                     $event->cancel();
                     if(DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.tutorial-complete") === true && DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.tutorial-progress") == 5) {
                         $dialogue = DialogueAPI::create(
@@ -90,17 +95,19 @@ class NPCListener implements Listener {
                                     $dialogue->displayTo([$player]);
                                 })]);
                         $dialogue->displayTo([$player]);
+                    } else {
+                        $player->sendMessage(TF::RED . "You must complete the tutorial first to do that, please complete the active quest to continue");
                     }
                     break;
 
                 # buy enchants
-                case "enchanter":
+                case TF::BOLD . TF::DARK_PURPLE . "Enchanter" . TF::GRAY . "\n(Click Me)":
                     $event->cancel();
                     $menu = EmporiumCore::getInstance()->getCustomEnchantMenu();
                     $menu->open($player);
                     break;
 
-                case "banker":
+                case TF::BOLD . TF::AQUA . "Banker" . TF::GRAY . "\n(Click Me)":
                     $event->cancel();
                     $player->sendMessage(TF::BOLD . TF::YELLOW . "Banker " . TF::GRAY . "The Emporium Bank will be open soon.");
                     /*
@@ -109,22 +116,31 @@ class NPCListener implements Listener {
                     */
                     break;
 
-                case "tinkerer":
+                case TF::BOLD . TF::DARK_AQUA . "Tinker" . TF::GRAY . "\n(Click Me)":
                     $event->cancel();
                     $menu = Tinker::getInstance()->getTinkerMenu();
                     $menu->Menu($player);
                     break;
 
-                case "pickaxe_prestige":
+                case TF::BOLD . TF::AQUA . "Pickaxe Prestige" . TF::GRAY . "\n(Click Me)":
                     $event->cancel();
                     $menu = EmporiumPrison::getInstance()->getPickaxePrestige();
                     $menu->Inventory($player);
                     break;
 
-                case "player_prestige":
+                case TF::BOLD . TF::RED . "Player Prestige" . TF::GRAY . "\n(Click Me)":
                     $event->cancel();
                     $menu = EmporiumPrison::getInstance()->getPlayerPrestigeMenu();
                     $menu->Inventory($player);
+                    break;
+
+                case TF::GREEN . "Auctioneer" . TF::GRAY . "\n(Click Me)":
+                    $event->cancel();
+                    $player->sendMessage(TF::BOLD . TF::GREEN . "Auctioneer " . TF::GRAY . "This feature is still under development.");
+                    /*
+                    $bank = new Bank();
+                    $bank->Form($player);
+                    */
                     break;
             }
         }

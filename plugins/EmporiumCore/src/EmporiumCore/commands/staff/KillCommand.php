@@ -26,7 +26,7 @@ class KillCommand extends Command {
 
         $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.kill");
         if (!$permission) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
+            $sender->sendMessage(\Emporium\Prison\Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 

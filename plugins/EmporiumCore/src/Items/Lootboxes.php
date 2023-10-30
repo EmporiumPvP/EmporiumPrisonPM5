@@ -3,15 +3,15 @@
 namespace Items;
 
 use Emporium\Prison\Managers\misc\GlowManager;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\item\Item;
-use pocketmine\item\StringToItemParser;
 use pocketmine\utils\TextFormat as TF;
 
 class Lootboxes {
 
     public function MysteryGKit(int $amount): Item {
 
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::LIGHT_PURPLE . "Mystery GKit" . TF::WHITE . " Lootbox");
         $item->getNamedTag()->setByte("GKitLootbox", 1);
         $item->setCount($amount);
@@ -42,7 +42,7 @@ class Lootboxes {
 
     public function LegendaryMysteryGKit(int $amount): Item {
 
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::LIGHT_PURPLE . "Legendary Mystery GKit" . TF::WHITE . " Lootbox");
         $item->getNamedTag()->setByte("LegendaryGKitLootbox", 1);
         $item->setCount($amount);
@@ -73,7 +73,7 @@ class Lootboxes {
 
     public function MysteryRankKit(int $amount): Item {
 
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::LIGHT_PURPLE . "MysteryRank Kit" . TF::WHITE . " Lootbox");
         $item->getNamedTag()->setByte("MysteryRankKitLootbox", 1);
         $item->setCount($amount);
@@ -94,7 +94,7 @@ class Lootboxes {
 
     public function PrestigeKit(int $amount): Item {
 
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::LIGHT_PURPLE . "Prestige Kit" . TF::WHITE . " Lootbox");
         $item->getNamedTag()->setByte("PrestigeKitLootbox", 1);
         $item->setCount($amount);

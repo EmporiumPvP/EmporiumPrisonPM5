@@ -5,8 +5,8 @@ namespace EmporiumCore\Listeners\Player;
 use Emporium\Prison\Managers\misc\Translator;
 
 use EmporiumData\DataManager;
-
 use EmporiumData\Rank\RankManager;
+
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\utils\TextFormat as TF;

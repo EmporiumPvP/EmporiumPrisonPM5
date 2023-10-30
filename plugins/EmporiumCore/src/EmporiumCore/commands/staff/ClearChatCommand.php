@@ -27,7 +27,7 @@ class ClearChatCommand extends Command {
             return false;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.clearchat");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), ["emporiumcore.command.clearchat"]);
         if (!$permission) {
             $sender->sendMessage(TextFormat::RED . "No permission");
             return false;

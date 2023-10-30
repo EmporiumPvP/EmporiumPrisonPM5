@@ -5,6 +5,7 @@ namespace EmporiumCore\Tasks;
 use EmporiumCore\EmporiumCore;
 use EmporiumCore\Variables;
 use EmporiumData\DataManager;
+
 use pocketmine\scheduler\Task;
 use pocketmine\utils\TextFormat;
 
@@ -28,13 +29,11 @@ class CooldownTask extends Task {
 
         // For all Files
         foreach (DataManager::getInstance()->getPlayerNames() as $player) {
-            # Variables
 
-            $antispam = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.anti_spam");
             $ban = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.ban");
             $freeze = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.freeze");
             $mute = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.mute");
-            # RankKits
+
             # Set Punishments
             DataManager::getInstance()->setPlayerData($player, "anticheat.anti_auto", 0);
 
@@ -46,8 +45,15 @@ class CooldownTask extends Task {
                 DataManager::getInstance()->setPlayerData($player, "profile.muted", false);
             }
 
+            # none command cooldowns
             foreach (DataManager::getInstance()->getPlayerData($player, "cooldown") as $cooldownStr => $value) {
+                if($cooldownStr == "command") continue;
                 if ($value > 0) DataManager::getInstance()->setPlayerData($player, "cooldown." . $cooldownStr, $value - 1);
+            }
+
+            # command cooldowns
+            foreach (DataManager::getInstance()->getPlayerData($player, "cooldown.command") as $cooldownStr => $value) {
+                if ($value > 0) DataManager::getInstance()->setPlayerData($player, "cooldown.command." . $cooldownStr, $value - 1);
             }
 
         }
@@ -56,6 +62,8 @@ class CooldownTask extends Task {
         foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
 
             # Variables
+            $antispam = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.anti_spam");
+
             // Combat
             $apples = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.apples");
             $pearls = (int) DataManager::getInstance()->getPlayerData($player,  "cooldown.pearls");

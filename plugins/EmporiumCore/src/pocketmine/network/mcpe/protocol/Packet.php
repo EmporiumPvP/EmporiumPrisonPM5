@@ -42,7 +42,7 @@ interface Packet{
 	 * for examples how to implement this.
 	 *
 	 * @return bool true if the packet was handled successfully, false if not.
-	 * @throws PacketDecodeException if broken Data was found in the packet
+	 * @throws PacketDecodeException if broken data was found in the packet
 	 */
 	public function handle(PacketHandlerInterface $handler) : bool;
 }

@@ -2,6 +2,7 @@
 
 namespace EmporiumCore\Commands\Default;
 
+use Emporium\Prison\Variables;
 use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -17,13 +18,11 @@ class DiscordCommand extends Command {
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
 
-        if(!$sender instanceof Player) {
-            return false;
-        }
+        if(!$sender instanceof Player) return false;
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.discord");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if (!$permission) {
-            $sender->sendMessage(TF::RED . "No permission");
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 

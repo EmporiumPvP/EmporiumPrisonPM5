@@ -11,3 +11,6 @@ rarity-colors:
 enchants:
   position: "lore" # Options: name, lore
   roman-numerals: true # Options: true, false
+
+world-damage:
+  lightning: false

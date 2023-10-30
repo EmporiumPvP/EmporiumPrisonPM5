@@ -7,41 +7,24 @@ class Translator {
     public static function timeConvert($seconds): string {
 
         $d = floor(($seconds%2592000)/86400);
+        if($d == 0) {
+            return gmdate("H:i:s", $seconds);
+        }
 
         return "$d " . ($d > 1 ? "days" : "day") . ", " . gmdate("H:i:s", $seconds);
     }
 
+    public static function numberFormat($number): string {
+        return number_format($number);
+    }
+
     # Short Number Converter
-    public static function shortNumber(float $n, $precision = 2): string
-    {
-        if ($n < 900) {
-            $n_format = number_format($n, $precision);
-        } else if ($n < 900000) {
-            $n_format = number_format($n, $precision);
-        } else if ($n < 900000000) {
-            $n_format = number_format($n, $precision);
-        } else if ($n < 900000000000) {
-            $n_format = number_format($n, $precision);
-        } else if ($n < 900000000000000){
-            $n_format = number_format($n, $precision);
-        } else if ($n < 900000000000000000){
-            $n_format = number_format($n, $precision);
-        } else if ($n < 900000000000000000000){
-            $n_format = number_format($n, $precision);
-        } else if ($n < 900000000000000000000000){
-            $n_format = number_format($n, $precision);
-        } else if ($n < 900000000000000000000000000){
-            $n_format = number_format($n, $precision);
-        } else if ($n < 900000000000000000000000000000){
-            $n_format = number_format($n, $precision);
-        } else {
-            $n_format = number_format($n, $precision);
+    public static function shortNumber($num): string {
+        $units = ['', 'K', 'M', 'B', 'T'];
+        for ($i = 0; $num >= 1000; $i++) {
+            $num /= 1000;
         }
-        if ($precision > 0) {
-            $dotzero = '.' . str_repeat( '0', $precision );
-            $n_format = str_replace( $dotzero, '', $n_format );
-        }
-        return $n_format;
+        return round($num, 1) . $units[$i];
     }
 
     # Roman Numeral Converter

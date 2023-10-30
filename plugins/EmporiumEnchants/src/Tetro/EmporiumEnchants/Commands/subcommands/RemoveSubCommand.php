@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Tetro\EmporiumEnchants\Commands\subcommands;
 
-use Tetro\EmporiumEnchants\Utils\Commando\args\RawStringArgument;
-use Tetro\EmporiumEnchants\Utils\Commando\BaseSubCommand;
-use Tetro\EmporiumEnchants\Utils\Commando\exception\ArgumentOrderException;
+use CortexPE\Commando\args\RawStringArgument;
+use CortexPE\Commando\BaseSubCommand;
+use CortexPE\Commando\exception\ArgumentOrderException;
 use Tetro\EmporiumEnchants\Core\CustomEnchantManager;
 use Tetro\EmporiumEnchants\EmporiumEnchants;
-use Tetro\EmporiumEnchants\Utils\Utils;
+
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
-use pocketmine\Utils\TextFormat;
 
 class RemoveSubCommand extends BaseSubCommand
 {
@@ -25,7 +24,8 @@ class RemoveSubCommand extends BaseSubCommand
             $sender->sendMessage("§l§8(§c!§8) §r§7Usage: /ce remove <enchantment> <player>");
             return;
         }
-        $target = empty($args["player"]) ? $sender : $this->plugin->getServer()->getPlayerByPrefix($args["player"]);
+        $target = empty($args["player"]) ? $sender : $this->plugin->getServer()->getPlayerExact($args["player"]);
+        #$target = empty($args["player"]) ? $sender : $this->plugin->getServer()->getPlayerByPrefix($args["player"]);
         if (!$target instanceof Player) {
             $sender->sendMessage("§l§8(§c!§8) §r§7Invalid player.");
             return;
@@ -53,5 +53,10 @@ class RemoveSubCommand extends BaseSubCommand
         $this->setPermission("emporiumenchants.command.remove");
         $this->registerArgument(0, new RawStringArgument("enchantment", true));
         $this->registerArgument(1, new RawStringArgument("player", true));
+    }
+
+    public function getPermission()
+    {
+        // TODO: Implement getPermission() method.
     }
 }

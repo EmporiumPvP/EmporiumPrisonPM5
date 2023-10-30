@@ -12,7 +12,7 @@ use pocketmine\network\mcpe\protocol\types\ActorEvent;
 class FireworkParticleAnimation implements Animation
 {
 	/** @var FireworksRocket */
-	private $firework;
+	private FireworksRocket $firework;
 
 	public function __construct(FireworksRocket $firework)
 	{

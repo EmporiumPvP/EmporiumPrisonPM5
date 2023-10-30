@@ -2,6 +2,7 @@
 
 namespace EmporiumCore\Commands\Default;
 
+use Emporium\Prison\Variables;
 use EmporiumCore\EmporiumCore;
 use EmporiumData\PermissionsManager;
 use pocketmine\command\{Command, CommandSender};
@@ -18,16 +19,11 @@ class CustomEnchantShopCommand extends Command {
     # Command Code
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
 
-        // Check Player
-        if (!$sender instanceof Player) {
-            $sender->sendMessage("§cYou may only run this command in-game!");
-            return false;
-        }
+        if (!$sender instanceof Player) return false;
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.ceshop");
-        // Check for Permissions
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if (!$permission) {
-            $sender->sendMessage("§cYou do not have permission to use this command.");
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 

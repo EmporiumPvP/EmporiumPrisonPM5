@@ -5,14 +5,19 @@ namespace EmporiumCore\Menus;
 use Emporium\Prison\library\formapi\SimpleForm;
 use Emporium\Prison\Managers\misc\GlowManager;
 use Emporium\Prison\Managers\misc\Translator;
+
+use Emporium\Prison\Variables;
 use EmporiumCore\EmporiumCore;
+
 use EmporiumData\DataManager;
 use EmporiumData\PermissionsManager;
+
 use Items\GKits;
+
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
-use pocketmine\inventory\Inventory;
+
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use pocketmine\player\Player;
@@ -23,20 +28,91 @@ use pocketmine\world\sound\ItemFrameAddItemSound;
 
 class GKitsMenu extends Menu {
 
+    private array $gkits = [
+        "heroic_vulkarion", "heroic_zenith", "heroic_colossus", "heroic_warlock",
+        "heroic_slaughter", "heroic_enchanter", "heroic_atheos", "heroic_iapetus",
+        "heroic_broteas", "heroic_ares", "heroic_grim_reaper", "heroic_executioner",
+        "blacksmith", "hero", "cyborg", "crucible", "hunter"
+    ];
+
     public function Form(Player $player): void {
 
         $form = new SimpleForm(function (Player $player, $data) {
-            $result = $data;
-            if($result === null) {
+            if($data === null || $data == "exit") {
                 $player->broadcastSound(new EnderChestCloseSound());
-                return true;
+                return;
             }
-            return true;
+
+            # Is kit locked check
+            if($data === "locked") {
+                $player->sendMessage(Variables::PREFIX . "That kit is locked");
+                return;
+            }
+
+            // Cooldown check
+            if (DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.gkit_$data") > 0) {
+                $player->sendMessage("That kit is on Cooldown");
+                return;
+            }
+
+            $kit = $this->getKit($data);
+
+            // Players inventory is full check
+            if (!$player->getInventory()->canAddItem($kit)) {
+                $player->getWorld()->dropItem($player->getPosition(), $kit);
+                return;
+            }
+
+            // Give the player the kit
+            $player->getInventory()->addItem($kit);
         });
         $form->setTitle("GKits");
         $form->setContent("§7Select a kit to use it.");
-        $form->addButton("§cEXIT");
+        foreach ($this->gkits as $gkit) {
+            $buttonName = TF::BOLD . TF::DARK_GRAY . $this->format(str_replace("_", " ", $gkit));
+            if(!PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.$gkit"])) {
+                $form->addButton($buttonName . TF::EOL . TF::RED . "LOCKED", -1, "", "locked");
+            } else {
+                if(DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldowns.gkit_$gkit") > 0) {
+                    $form->addButton($buttonName . TF::EOL . TF::RED . "On Cooldown " . Translator::timeConvert(DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldowns.gkit_$gkit")),-1, "", $gkit);
+                } else {
+                    $form->addButton($buttonName . TF::EOL . TF::GREEN . "Available",  -1, "", $gkit);
+                }
+            }
+        }
+        $form->addButton("§cEXIT", -1, "", "exit");
         $player->sendForm($form);
+    }
+
+    public function format (string $name) : string
+    {
+        $words = explode(" ", $name);
+        foreach ($words as $index => $word) $words[$index] = ucwords($word);
+        return implode(" ", $words);
+    }
+
+    public function getKit (string $name, int $amount = 1) : Item
+    {
+        $gkits = new GKits();
+        return match ($name) {
+            "heroic_vulkarion" => $gkits->heroicVulkarion($amount),
+            "heroic_zenith" => $gkits->heroicZenith($amount),
+            "heroic_colossus" => $gkits->heroicColossus($amount),
+            "heroic_warlock" => $gkits->heroicWarlock($amount),
+            "heroic_slaughter" => $gkits->heroicSlaughter($amount),
+            "heroic_enchanter" => $gkits->heroicEnchanter($amount),
+            "heroic_atheos" => $gkits->heroicAtheos($amount),
+            "heroic_iapetus" => $gkits->heroicIapetus($amount),
+            "heroic_broteas" => $gkits->heroicBroteas($amount),
+            "heroic_ares" => $gkits->heroicAres($amount),
+            "heroic_grim_reaper" => $gkits->heroicGrimReaper($amount),
+            "heroic_executioner" => $gkits->heroicExecutioner($amount),
+            "blacksmith" => $gkits->Blacksmith($amount),
+            "hero" => $gkits->Hero($amount),
+            "cyborg" => $gkits->Cyborg($amount),
+            "crucible" => $gkits->Crucible($amount),
+            "hunter" => $gkits->Hunter($amount),
+        };
     }
 
     public function Inventory($player): void {
@@ -401,7 +477,7 @@ class GKitsMenu extends Menu {
             $this->evaluateItems($menu, $player);
         });
 
-        $menu->setInventoryCloseListener(function (Player $player, Inventory $inventory) use ($task) {
+        $menu->setInventoryCloseListener(function () use ($task) {
             $task->getHandler()->cancel();
         });
 
@@ -436,7 +512,7 @@ class GKitsMenu extends Menu {
     public function heroicVulkarionItem($player): Item {
 
         $heroicVulkarionCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_vulkarion");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicvulkarion");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroicvulkarion"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_RED . "Heroic Vulkarion " . TF::RESET . TF::DARK_RED . "GKit");
@@ -475,7 +551,7 @@ class GKitsMenu extends Menu {
     public function heroicZenithItem($player): Item {
 
         $heroicZenithCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_zenith");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroiczenith");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroiczenith"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::GOLD . "Heroic Zenith " . TF::RESET . TF::GOLD . "GKit");
@@ -513,7 +589,7 @@ class GKitsMenu extends Menu {
     public function heroicColossusItem($player): Item {
 
         $heroicColossusCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_colossus");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroiccolossus");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroiccolossus"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::WHITE . "Heroic Colossus " . TF::RESET . TF::WHITE . "GKit");
@@ -552,7 +628,7 @@ class GKitsMenu extends Menu {
     public function heroicWarlockItem($player): Item {
 
         $heroicWarlockCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_warlock");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicwarlock");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroicwarlock"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_PURPLE . "Heroic Warlock " . TF::RESET . TF::DARK_PURPLE . "GKit");
@@ -590,7 +666,7 @@ class GKitsMenu extends Menu {
     public function heroicSlaughterItem($player): Item {
 
         $heroicSlaughterCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_slaughter");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicslaughter");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroicslaughter"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::RED . "Heroic Slaughter " . TF::RESET . TF::RED . "GKit");
@@ -629,7 +705,7 @@ class GKitsMenu extends Menu {
     public function heroicEnchanterItem($player): Item {
 
         $heroicEnchanterCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_enchanter");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicenchanter");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroicenchanter"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::AQUA . "Heroic Enchanter " . TF::RESET . TF::AQUA . "GKit");
@@ -668,7 +744,7 @@ class GKitsMenu extends Menu {
     public function heroicAtheosItem($player): Item {
 
         $heroicAtheosCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_atheos");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicatheos");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroicatheos"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::GRAY . "Heroic Atheos " . TF::RESET . TF::GRAY . "GKit");
@@ -707,7 +783,7 @@ class GKitsMenu extends Menu {
     public function heroicIapetusItem($player): Item {
 
         $heroicIapetusCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_iapetus");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroiciapetus");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroiciapetus"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::BLUE . "Heroic Iapetus " . TF::RESET . TF::BLUE . "GKit");
@@ -746,7 +822,7 @@ class GKitsMenu extends Menu {
     public function heroicBroteasItem($player): Item {
 
         $heroicBroteasCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_broteas");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicbroteas");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroicbroteas"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::GREEN . "Heroic Broteas " . TF::RESET . TF::GREEN . "GKit");
@@ -785,7 +861,7 @@ class GKitsMenu extends Menu {
     public function heroicAresItem($player): Item {
 
         $heroicAresCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_ares");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicares");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroicares"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::GOLD . "Heroic Ares " . TF::RESET . TF::GOLD . "GKit");
@@ -823,8 +899,8 @@ class GKitsMenu extends Menu {
     # heroic grim reaper
     public function heroicGrimReaperItem($player): Item {
 
-        $heroicGrimReaperCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_grim_Reaper");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicgrimreaper");
+        $heroicGrimReaperCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_grim_reaper");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroicgrimreaper"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::RED . "Heroic Grim Reaper " . TF::RESET . TF::RED . "GKit");
@@ -863,7 +939,7 @@ class GKitsMenu extends Menu {
     public function heroicExecutionerItem($player): Item {
 
         $heroicExecutionerCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_heroic_executioner");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.heroicexecutioner");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.heroicexecutioner"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_RED . "Heroic Executioner " . TF::RESET . TF::DARK_RED . "GKit");
@@ -902,7 +978,7 @@ class GKitsMenu extends Menu {
     public function blacksmithItem($player): Item {
 
         $blacksmithCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_blacksmith");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.blacksmith");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.blacksmith"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_GRAY . "Blacksmith " . TF::RESET . TF::DARK_GRAY . "GKit");
@@ -941,7 +1017,7 @@ class GKitsMenu extends Menu {
     public function heroItem($player): Item {
 
         $heroCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_hero");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.hero");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.hero"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::WHITE . "Hero " . TF::RESET . TF::WHITE . "GKit");
@@ -980,7 +1056,7 @@ class GKitsMenu extends Menu {
     public function cyborgItem($player): Item {
 
         $cyborgCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_cyborg");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.hero");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.hero"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_AQUA . "Cyborg " . TF::RESET . TF::DARK_AQUA . "GKit");
@@ -1019,7 +1095,7 @@ class GKitsMenu extends Menu {
     public function crucibleItem($player): Item {
 
         $crucibleCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_crucible");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.crucible");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.crucible"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::YELLOW . "Crucible " . TF::RESET . TF::YELLOW . "GKit");
@@ -1058,7 +1134,7 @@ class GKitsMenu extends Menu {
     public function hunterItem($player): Item {
 
         $hunterCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(),"cooldown.gkit_hunter");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.gkit.hunter");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.gkit.hunter"]);
 
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::AQUA . "Hunter " . TF::RESET . TF::AQUA . "GKit");

@@ -29,4 +29,16 @@ class Fireball extends Projectile
     {
         return new EntitySizeInfo(1, 1);
     }
+
+    protected function getInitialDragMultiplier(): float
+    {
+        // TODO: Implement getInitialDragMultiplier() method.
+        return 1.0;
+    }
+
+    protected function getInitialGravity(): float
+    {
+        // TODO: Implement getInitialGravity() method.
+        return 1.0;
+    }
 }

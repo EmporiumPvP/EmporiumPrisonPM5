@@ -64,7 +64,7 @@ final class ActorEvent{
 	public const BABY_ANIMAL_FEED = 60; //green particles, like bonemeal on crops
 	public const DEATH_SMOKE_CLOUD = 61;
 	public const COMPLETE_TRADE = 62;
-	public const REMOVE_LEASH = 63; //Data 1 = cut leash
+	public const REMOVE_LEASH = 63; //data 1 = cut leash
 	public const CARAVAN_UPDATED = 64;
 	public const CONSUME_TOTEM = 65;
 	public const PLAYER_CHECK_TREASURE_HUNTER_ACHIEVEMENT = 66; //mojang...
@@ -75,7 +75,7 @@ final class ActorEvent{
 	public const BALLOON_POP = 71;
 	public const TREASURE_HUNT = 72;
 	public const AGENT_SUMMON = 73;
-	public const CHARGED_CROSSBOW = 74;
+	public const CHARGED_ITEM = 74;
 	public const FALL = 75;
 	public const GROW_UP = 76;
 	public const VIBRATION_DETECTED = 77;

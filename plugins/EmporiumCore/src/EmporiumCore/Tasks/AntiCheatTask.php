@@ -70,7 +70,7 @@ class AntiCheatTask extends Task {
                     "username" => "Emporium | WardenAC"
                 ];
                 // Send Webhook
-                $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($player->getName(), $webhook, serialize($curlopts)));
+                $this->plugin->getServer()->getAsyncPool()->submitTask(new Webhooks($webhook, serialize($curlopts)));
             }
             DataManager::getInstance()->setPlayerData($player->getXuid(), "anticheat.anti_nuke", 0);
         }

@@ -3,10 +3,11 @@
 namespace EmporiumCore\Tasks\Utils;
 
 use EmporiumCore\EmporiumCore;
+
 use pocketmine\entity\Location;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
+use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\scheduler\Task;
 use pocketmine\world\sound\DoorBumpSound;

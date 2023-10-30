@@ -1,12 +1,12 @@
 {
     "profile": {
-        "level": 9,
-        "xp": 4,
-        "total-xp": 1368,
+        "level": 10,
+        "xp": 164,
+        "total-xp": 1840,
         "tutorial-complete": true,
-        "tutorial-progress": 6,
-        "tutorial-blocks-mined": 16,
-        "money": 884435,
+        "tutorial-progress": 5,
+        "tutorial-blocks-mined": 159,
+        "money": 549964.49,
         "banned": false,
         "muted": false,
         "frozen": false,
@@ -14,8 +14,8 @@
         "tag": "tag",
         "cexp": 0,
         "prestige": 0,
-        "online_time": 45638,
-        "nuke_warn": 1
+        "online_time": 20490,
+        "bosskills": 0
     },
     "anticheat": {
         "anti_auto": 0,
@@ -32,7 +32,7 @@
         "energy-booster-multiplier": 1
     },
     "cooldown": {
-        "gkit_heroic_vulkarion": 228098,
+        "gkit_heroic_vulkarion": 0,
         "gkit_heroic_zenith": 0,
         "gkit_heroic_colossus": 0,
         "gkit_heroic_warlock": 0,
@@ -46,24 +46,28 @@
         "gkit_heroic_heroic_executioner": 0,
         "gkit_blacksmith": 0,
         "gkit_hero": 0,
-        "gkit_cyborg": 249710,
-        "gkit_crucible": 249711,
-        "gkit_hunter": 249713,
+        "gkit_cyborg": 0,
+        "gkit_crucible": 0,
+        "gkit_hunter": 0,
         "prestige_kit1": 0,
         "prestige_kit2": 0,
         "prestige_kit3": 0,
         "prestige_kit4": 0,
         "prestige_kit5": 0,
-        "rank_kit_noble": 227054,
-        "rank_kit_imperial": 227814,
+        "rank_kit_noble": 0,
+        "rank_kit_imperial": 0,
         "rank_kit_supreme": 0,
         "rank_kit_majesty": 0,
-        "rank_kit_emperor": 227436,
+        "rank_kit_emperor": 0,
         "rank_kit_president": 0,
+        "command": {
+            "spawn": 0,
+            "shop": 0,
+            "clear": 0,
+            "feed": 0,
+            "heal": 0,
+            "milk": 0
+        },
         "anti-spam": 0
-    },
-    "permissions": [],
-    "gkit_hunter-timer": 259200,
-    "gkit_heroic_vulkarion-timer": 259200,
-    "gkit_heroic_zenith-timer": 259200
+    }
 }

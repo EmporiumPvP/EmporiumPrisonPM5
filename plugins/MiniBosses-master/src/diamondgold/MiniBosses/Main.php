@@ -3,16 +3,16 @@
 namespace diamondgold\MiniBosses;
 
 use EmporiumData\Provider\JsonProvider;
+use JsonException;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\console\ConsoleCommandSender;
+use pocketmine\data\bedrock\item\upgrade\LegacyItemIdToStringIdMap;
 use pocketmine\data\bedrock\LegacyEntityIdToStringIdMap;
-use pocketmine\data\bedrock\LegacyItemIdToStringIdMap;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Location;
 use pocketmine\event\Listener;
-use pocketmine\event\world\ChunkLoadEvent;
 use pocketmine\item\Item;
 use pocketmine\nbt\LittleEndianNbtSerializer;
 use pocketmine\nbt\tag\CompoundTag;
@@ -25,163 +25,19 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\AssumptionFailedError;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
-use pocketmine\world\Position;
 use pocketmine\world\World;
 use ReflectionClass;
 
 class Main extends PluginBase implements Listener
 {
+    private static self $instance;
     public Config $data;
     /** @var string[][][] */
     private array $chunkLoadCache = [];
-    private static self $instance;
 
-    protected function onLoad(): void
-    {
-        self::$instance = $this;
-    }
-
-    public static function getInstance () : self
-    {
-        return self::$instance;
-    }
-
-    protected function onEnable(): void
-    {
-        EntityFactory::getInstance()->register(Boss::class, function (World $world, CompoundTag $tag): Boss {
-            return new Boss(EntityDataHelper::parseLocation($tag, $world), $tag, "");
-        }, ["Boss"]);
-
-        EntityFactory::getInstance()->register(BossProjectile::class, function (World $world, CompoundTag $tag): BossProjectile {
-            return new BossProjectile(EntityDataHelper::parseLocation($tag, $world), null, $tag);
-        }, ["BossProjectile"]);
-
-        $this->getLogger()->debug("Checking config...");
-        $this->data = new Config($this->getDataFolder() . "Bosses.yml", Config::YAML);
-        /**
-         * @var string $name
-         * @var mixed[] $bossData
-         */
-        foreach ($this->data->getAll() as $name => $bossData) {
-            if (!($bossData["enabled"] ?? true)) {
-                continue;
-            }
-            $idTag = isset($bossData["network-id"]) ? "network-id" : "networkId";
-            if (isset($bossData[$idTag])) {
-                if (is_int($bossData[$idTag])) {
-                    $networkId = LegacyEntityIdToStringIdMap::getInstance()->getLegacyToStringMap()[$bossData[$idTag]] ?? ($bossData[$idTag] === 63 ? EntityIds::PLAYER : null);
-                    if ($networkId === null) {
-                        $this->getLogger()->error("Failed to auto convert legacy int network id " . $bossData[$idTag] . ", please manually update to string id for boss $name");
-                        $bossData['networkId'] = $bossData[$idTag];
-                        unset($bossData['network-id']);
-                        $bossData['enabled'] = false;
-                        $this->getLogger()->warning("Disabled boss $name, set \"enabled\" to true to enable");
-                    } else {
-                        $this->getLogger()->info("Converted legacy int network id for boss $name, " . $bossData[$idTag] . " => $networkId");
-                        $bossData['networkId'] = $networkId;
-                        unset($bossData['network-id']);
-                        $this->data->set($name, $bossData);
-                    }
-                } elseif (is_string($bossData[$idTag])) {
-                    if (!str_starts_with($bossData["networkId"], "minecraft:") && !str_contains($bossData["networkId"], ":")) {
-                        $this->getLogger()->info("Updated networkId of boss $name " . $bossData["networkId"] . " => minecraft:" . $bossData["networkId"]);
-                        $bossData["networkId"] = "minecraft:" . $bossData["networkId"];
-                        $this->data->set($name, $bossData);
-                    }
-                    $constants = (new ReflectionClass(EntityIds::class))->getConstants();
-                    if (str_starts_with($bossData["networkId"], "minecraft:") && !in_array($bossData["networkId"], $constants, true)) {
-                        $this->getLogger()->error("Unknown networkId " . $bossData["networkId"] . " for boss $name");
-                        $bossData['enabled'] = false;
-                        $this->data->set($name, $bossData);
-                        $this->getLogger()->warning("Disabled boss $name, set \"enabled\" to true to enable");
-                    }
-                }
-            }
-            if (isset($bossData["level"])) {
-                $bossData['world'] = $bossData['level'];
-                unset($bossData['level']);
-                $this->data->set($name, $bossData);
-                $this->getLogger()->info("Renamed level to world in config for boss $name");
-            }
-            if (isset($bossData["minions"])) {
-                foreach ($bossData["minions"] as $id => $minion) {
-                    if (!$this->data->exists($minion["name"])) {
-                        $this->getLogger()->error("Boss minion $id of boss $name has non existent boss name \"" . $minion["name"] . "\" set");
-                        $bossData['enabled'] = false;
-                        $this->data->set($name, $bossData);
-                        $this->getLogger()->warning("Disabled boss $name, set \"enabled\" to true to enable");
-                    }
-                }
-            }
-            if (isset($bossData['projectile'])) {
-                $bossData['projectiles'] = [$bossData['projectile']];
-                unset($bossData['projectile']);
-                $this->data->set($name, $bossData);
-                $this->getLogger()->info("Renamed projectile to projectiles in config for boss $name");
-            }
-        }
-
-        $this->getLogger()->debug("Testing all bosses...");
-        $tested = 0;
-        $world = $this->getServer()->getWorldManager()->getDefaultWorld();
-        if ($world === null) {
-            throw new AssumptionFailedError("Default world is null");
-        }
-        $loc = Location::fromObject($world->getSpawnLocation(), $world);
-        /**
-         * @var string $name
-         */
-        foreach ($this->data->getAll() as $name => $data) {
-            if ($data["enabled"] ?? true) {
-                $tested++;
-                $drops = file_get_contents(JsonProvider::$SERVER_FOLDER . "boss/drops_" . str_replace(" ", "-", strtolower($name)) . ".txt");
-                $boss = (new Boss($loc, CompoundTag::create()->setString("CustomName", $name), $drops));
-                if (!$boss->isFlaggedForDespawn()) {
-                    foreach ($boss->projectileOptions as $options) {
-                        if (!empty($options["networkId"]) || !empty($options["particle"])) {
-                            $projectile = (new BossProjectile($loc, $boss));
-                            $projectile->setData($options);
-                            if ($projectile->isFlaggedForDespawn()) {
-                                $boss->flagForDespawn();
-                            }
-                            $projectile->flagForDespawn();
-                        }
-                    }
-                    foreach ($boss->minionOptions as $id => $option) {
-                        $minion = $boss->spawnMinion($id, $option);
-                        if (!$minion) {
-                            $boss->flagForDespawn();
-                        }
-                    }
-                }
-                if ($boss->isFlaggedForDespawn()) {
-                    $data['enabled'] = false;
-                    $this->data->set($name, $data);
-                    $this->getLogger()->warning("Disabled boss $name, set \"enabled\" to true to enable");
-                }
-                $boss->flagForDespawn();
-            }
-        }
-        if ($this->data->hasChanged()) {
-            copy($this->data->getPath(), $this->data->getPath() . ".bak");
-            $this->getLogger()->info("Old config saved to " . $this->data->getPath() . ".bak");
-            $this->data->save();
-        }
-        $this->getLogger()->debug("Done! Tested $tested/" . count($this->data->getAll()) . " bosses");
-        $this->getServer()->getPluginManager()->registerEvents($this, $this);
-    }
-
-    protected function onDisable(): void
-    {
-        foreach ($this->getServer()->getWorldManager()->getWorlds() as $world) {
-            foreach ($world->getEntities() as $entity) {
-                if ($entity instanceof Boss || $entity instanceof BossProjectile) {
-                    $entity->flagForDespawn();
-                }
-            }
-        }
-    }
-
+    /**
+     * @throws JsonException
+     */
     public function onCommand(CommandSender $sender, Command $cmd, string $label, array $args): bool
     {
         $argsCount = count($args);
@@ -196,7 +52,7 @@ class Main extends PluginBase implements Listener
                         if (is_numeric($networkId)) {
                             $sender->sendMessage("Legacy int network id may not be supported in the future, please use string id instead");
                             $networkId = (int)$networkId;
-                            if (!in_array($networkId, LegacyEntityIdToStringIdMap::getInstance()->getStringToLegacyMap(), true)) {
+                            if (!in_array($networkId, LegacyEntityIdToStringIdMap::getInstance()->getLegacyToStringMap(), true)) {
                                 $sender->sendMessage(TF::RED . "Unrecognised Network ID or Entity type $networkId");
                                 return true;
                             }
@@ -218,11 +74,11 @@ class Main extends PluginBase implements Listener
                             "networkId" => $networkId,
                             "x" => $pos->x, "y" => $pos->y, "z" => $pos->z, "world" => $pos->getWorld()->getFolderName(),
 
-                            "heldItem" => ((LegacyItemIdToStringIdMap::getInstance()->legacyToString($heldItem->getId()) ?? "air") . ";" . $heldItem->getMeta() . ";" . $heldItem->getCount() . ";" . bin2hex((new LittleEndianNbtSerializer())->write(new TreeRoot($heldItem->getNamedTag())))),
-                            "offhandItem" => ((LegacyItemIdToStringIdMap::getInstance()->legacyToString($offhandItem->getId()) ?? "air") . ";" . $offhandItem->getMeta() . ";" . $offhandItem->getCount() . ";" . bin2hex((new LittleEndianNbtSerializer())->write(new TreeRoot($offhandItem->getNamedTag())))),
+                            "heldItem" => ((LegacyItemIdToStringIdMap::getInstance()->legacyToString($heldItem->getTypeId()) ?? "air") . ";" . $heldItem->getStateId() . ";" . $heldItem->getCount() . ";" . bin2hex((new LittleEndianNbtSerializer())->write(new TreeRoot($heldItem->getNamedTag())))),
+                            "offhandItem" => ((LegacyItemIdToStringIdMap::getInstance()->legacyToString($offhandItem->getTypeId()) ?? "air") . ";" . $offhandItem->getStateId() . ";" . $offhandItem->getCount() . ";" . bin2hex((new LittleEndianNbtSerializer())->write(new TreeRoot($offhandItem->getNamedTag())))),
                             "projectiles" => [],
                             "armor" => array_map(function (Item $i): string {
-                                return (LegacyItemIdToStringIdMap::getInstance()->legacyToString($i->getId()) ?? "air") . ";" . $i->getMeta() . ";" . $i->getCount() . ";" . bin2hex((new LittleEndianNbtSerializer())->write(new TreeRoot($i->getNamedTag())));
+                                return (LegacyItemIdToStringIdMap::getInstance()->legacyToString($i->getTypeId()) ?? "air") . ";" . $i->getMeta() . ";" . $i->getCount() . ";" . bin2hex((new LittleEndianNbtSerializer())->write(new TreeRoot($i->getNamedTag())));
                             }, $sender->getArmorInventory()->getContents(true)),
                             "minions" => []
                         ]);
@@ -374,7 +230,8 @@ class Main extends PluginBase implements Listener
         if ($pos->getWorld()->loadChunk(intval($pos->x) >> 4, intval($pos->z) >> 4) === null) {
             return "Failed to load chunk at " . $pos . " (is it generated yet?)";
         }
-        $ent = new Boss($pos, CompoundTag::create()->setString("CustomName", $name), $drops);
+        $ent = new Boss($pos, $drops, CompoundTag::create()->setString("CustomName", $name));
+        $ent->teleport($pos);
         $ent->spawnToAll();
         return $ent;
     }
@@ -431,6 +288,155 @@ class Main extends PluginBase implements Listener
             $this->getServer()->dispatchCommand($sender, $command);
             if (isset($runAsOp) && $runAsOp && isset($op) && !$op) {
                 $p?->setBasePermission(DefaultPermissions::ROOT_OPERATOR, false);
+            }
+        }
+    }
+
+    protected function onLoad(): void
+    {
+        self::$instance = $this;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    protected function onEnable(): void
+    {
+        EntityFactory::getInstance()->register(Boss::class, function (World $world, CompoundTag $tag): Boss {
+            return new Boss(EntityDataHelper::parseLocation($tag, $world), $tag, $tag);
+        }, ["Boss"]);
+
+        EntityFactory::getInstance()->register(BossProjectile::class, function (World $world, CompoundTag $tag): BossProjectile {
+            return new BossProjectile(EntityDataHelper::parseLocation($tag, $world), null, $tag);
+        }, ["BossProjectile"]);
+
+        $this->getLogger()->debug("Checking config...");
+        $this->data = new Config($this->getDataFolder() . "Bosses.yml", Config::YAML);
+        /**
+         * @var string $name
+         * @var mixed[] $bossData
+         */
+        foreach ($this->data->getAll() as $name => $bossData) {
+            if (!($bossData["enabled"] ?? true)) {
+                continue;
+            }
+            $idTag = isset($bossData["network-id"]) ? "network-id" : "networkId";
+            if (isset($bossData[$idTag])) {
+                if (is_int($bossData[$idTag])) {
+                    $networkId = LegacyEntityIdToStringIdMap::getInstance()->getLegacyToStringMap()[$bossData[$idTag]] ?? ($bossData[$idTag] === 63 ? EntityIds::PLAYER : null);
+                    if ($networkId === null) {
+                        $this->getLogger()->error("Failed to auto convert legacy int network id " . $bossData[$idTag] . ", please manually update to string id for boss $name");
+                        $bossData['networkId'] = $bossData[$idTag];
+                        unset($bossData['network-id']);
+                        $bossData['enabled'] = false;
+                        $this->getLogger()->warning("Disabled boss $name, set \"enabled\" to true to enable");
+                    } else {
+                        $this->getLogger()->info("Converted legacy int network id for boss $name, " . $bossData[$idTag] . " => $networkId");
+                        $bossData['networkId'] = $networkId;
+                        unset($bossData['network-id']);
+                        $this->data->set($name, $bossData);
+                    }
+                } elseif (is_string($bossData[$idTag])) {
+                    if (!str_starts_with($bossData["networkId"], "minecraft:") && !str_contains($bossData["networkId"], ":")) {
+                        $this->getLogger()->info("Updated networkId of boss $name " . $bossData["networkId"] . " => minecraft:" . $bossData["networkId"]);
+                        $bossData["networkId"] = "minecraft:" . $bossData["networkId"];
+                        $this->data->set($name, $bossData);
+                    }
+                    $constants = (new ReflectionClass(EntityIds::class))->getConstants();
+                    if (str_starts_with($bossData["networkId"], "minecraft:") && !in_array($bossData["networkId"], $constants, true)) {
+                        $this->getLogger()->error("Unknown networkId " . $bossData["networkId"] . " for boss $name");
+                        $bossData['enabled'] = false;
+                        $this->data->set($name, $bossData);
+                        $this->getLogger()->warning("Disabled boss $name, set \"enabled\" to true to enable");
+                    }
+                }
+            }
+            if (isset($bossData["level"])) {
+                $bossData['world'] = $bossData['level'];
+                unset($bossData['level']);
+                $this->data->set($name, $bossData);
+                $this->getLogger()->info("Renamed level to world in config for boss $name");
+            }
+            if (isset($bossData["minions"])) {
+                foreach ($bossData["minions"] as $id => $minion) {
+                    if (!$this->data->exists($minion["name"])) {
+                        $this->getLogger()->error("Boss minion $id of boss $name has non existent boss name \"" . $minion["name"] . "\" set");
+                        $bossData['enabled'] = false;
+                        $this->data->set($name, $bossData);
+                        $this->getLogger()->warning("Disabled boss $name, set \"enabled\" to true to enable");
+                    }
+                }
+            }
+            if (isset($bossData['projectile'])) {
+                $bossData['projectiles'] = [$bossData['projectile']];
+                unset($bossData['projectile']);
+                $this->data->set($name, $bossData);
+                $this->getLogger()->info("Renamed projectile to projectiles in config for boss $name");
+            }
+        }
+
+        $this->getLogger()->debug("Testing all bosses...");
+        $tested = 0;
+        $world = $this->getServer()->getWorldManager()->getDefaultWorld();
+        if ($world === null) {
+            throw new AssumptionFailedError("Default world is null");
+        }
+        $loc = Location::fromObject($world->getSpawnLocation(), $world);
+        /**
+         * @var string $name
+         */
+        foreach ($this->data->getAll() as $name => $data) {
+            if ($data["enabled"] ?? true) {
+                $tested++;
+                $drops = file_get_contents(JsonProvider::$SERVER_FOLDER . "boss/drops_" . str_replace(" ", "-", strtolower($name)) . ".txt");
+                $boss = (new Boss($loc, $drops, CompoundTag::create()->setString("CustomName", $name)));
+                if (!$boss->isFlaggedForDespawn()) {
+                    foreach ($boss->projectileOptions as $options) {
+                        if (!empty($options["networkId"]) || !empty($options["particle"])) {
+                            $projectile = (new BossProjectile($loc, $boss));
+                            $projectile->setData($options);
+                            if ($projectile->isFlaggedForDespawn()) {
+                                $boss->flagForDespawn();
+                            }
+                            $projectile->flagForDespawn();
+                        }
+                    }
+                    foreach ($boss->minionOptions as $id => $option) {
+                        $minion = $boss->spawnMinion($id, $option);
+                        if (!$minion) {
+                            $boss->flagForDespawn();
+                        }
+                    }
+                }
+                if ($boss->isFlaggedForDespawn()) {
+                    $data['enabled'] = false;
+                    $this->data->set($name, $data);
+                    $this->getLogger()->warning("Disabled boss $name, set \"enabled\" to true to enable");
+                }
+                $boss->flagForDespawn();
+            }
+        }
+        if ($this->data->hasChanged()) {
+            copy($this->data->getPath(), $this->data->getPath() . ".bak");
+            $this->getLogger()->info("Old config saved to " . $this->data->getPath() . ".bak");
+            $this->data->save();
+        }
+        $this->getLogger()->debug("Done! Tested $tested/" . count($this->data->getAll()) . " bosses");
+        $this->getServer()->getPluginManager()->registerEvents($this, $this);
+    }
+
+    public static function getInstance(): self
+    {
+        return self::$instance;
+    }
+
+    protected function onDisable(): void
+    {
+        foreach ($this->getServer()->getWorldManager()->getWorlds() as $world) {
+            foreach ($world->getEntities() as $entity) {
+                if ($entity instanceof Boss || $entity instanceof BossProjectile) {
+                    $entity->flagForDespawn();
+                }
             }
         }
     }

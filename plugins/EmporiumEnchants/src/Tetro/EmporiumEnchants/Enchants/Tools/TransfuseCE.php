@@ -2,11 +2,10 @@
 
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\event\Event;
 
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\item\StringToItemParser;
 
 use pocketmine\player\Player;
@@ -27,9 +26,9 @@ class TransfuseCE extends ReactiveEnchantment {
     public string $name = "Transfuse";
     public string $description = "Chance to upgrade mined materials .";
     public int $rarity = CustomEnchant::RARITY_ELITE;
-    public int $cooldownDuration = 0;
+    public int $cooldownDuration = 30;
     public int $maxLevel = 3;
-    public int $chance = 1;
+    public int $chance = 200;
 
     # Compatibility
     public int $usageType = CustomEnchant::TYPE_HAND;
@@ -41,101 +40,94 @@ class TransfuseCE extends ReactiveEnchantment {
     }
 
     private array $upgradableBlocks = [
-        ItemIds::COAL_ORE, ItemIds::COAL_BLOCK,
-        ItemIds::IRON_ORE, ItemIds::IRON_BLOCK,
-        ItemIds::LAPIS_ORE, ItemIds::LAPIS_BLOCK,
-        ItemIds::REDSTONE_ORE, ItemIds::REDSTONE_BLOCK,
-        ItemIds::GOLD_ORE, ItemIds::GOLD_BLOCK,
-        ItemIds::DIAMOND_ORE, ItemIds::DIAMOND_BLOCK,
-        ItemIds::EMERALD_ORE, ItemIds::EMERALD_BLOCK
+        BlockTypeIds::COAL_ORE, BlockTypeIds::COAL,
+        BlockTypeIds::IRON_ORE, BlockTypeIds::IRON,
+        BlockTypeIds::LAPIS_LAZULI_ORE, BlockTypeIds::LAPIS_LAZULI,
+        BlockTypeIds::REDSTONE_ORE, BlockTypeIds::REDSTONE,
+        BlockTypeIds::GOLD_ORE, BlockTypeIds::GOLD,
+        BlockTypeIds::DIAMOND_ORE, BlockTypeIds::DIAMOND,
+        BlockTypeIds::EMERALD_ORE, BlockTypeIds::EMERALD,
     ];
 
     private array $ores = [
-        BlockLegacyIds::COAL_ORE,
-        BlockLegacyIds::COAL_BLOCK,
-        BlockLegacyIds::IRON_ORE,
-        BlockLegacyIds::IRON_BLOCK,
-        BlockLegacyIds::LAPIS_ORE,
-        BlockLegacyIds::LAPIS_BLOCK,
-        BlockLegacyIds::REDSTONE_ORE,
-        BlockLegacyIds::LIT_REDSTONE_ORE,
-        BlockLegacyIds::REDSTONE_BLOCK,
-        BlockLegacyIds::GOLD_ORE,
-        BlockLegacyIds::GOLD_BLOCK,
-        BlockLegacyIds::DIAMOND_ORE,
-        BlockLegacyIds::DIAMOND_BLOCK,
-        BlockLegacyIds::EMERALD_ORE,
-        BlockLegacyIds::EMERALD_BLOCK,
-        BlockLegacyIds::QUARTZ_ORE
+        BlockTypeIds::COAL_ORE, BlockTypeIds::COAL,
+        BlockTypeIds::IRON_ORE, BlockTypeIds::IRON,
+        BlockTypeIds::LAPIS_LAZULI_ORE, BlockTypeIds::LAPIS_LAZULI,
+        BlockTypeIds::REDSTONE_ORE, BlockTypeIds::REDSTONE,
+        BlockTypeIds::GOLD_ORE, BlockTypeIds::GOLD,
+        BlockTypeIds::DIAMOND_ORE, BlockTypeIds::DIAMOND,
+        BlockTypeIds::EMERALD_ORE, BlockTypeIds::EMERALD,
+        BlockTypeIds::NETHER_QUARTZ_ORE, BlockTypeIds::QUARTZ
     ];
 
     # Enchantment
     public function react(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void {
-        // Chance
-        $chance = floor(200 / $level);
-        if (mt_rand(1, $chance) !== mt_rand(1, $chance)) {
-            return;
-        }
-        // Enchantment Code
-        if ($event instanceof BlockBreakEvent) {
 
-            $block = $event->getBlock()->getIdInfo()->getBlockId();
-            if(in_array($block, $this->upgradableBlocks)) {
-                switch($block) {
+        if(!$event instanceof BlockBreakEvent) return;
 
-                    case ItemIds::COAL_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("iron_ore"));
-                        break;
+        if ($event->isCancelled()) return;
 
-                    case ItemIds::COAL_BLOCK:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("iron_block"));
-                        break;
+        if(!in_array($event->getBlock()->getTypeId(), $this->ores)) return;
 
-                    case ItemIds::IRON_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("lapis_ore"));
-                        break;
+        $chance = floor($this->chance / $level);
+        if (mt_rand(1, $chance) !== mt_rand(1, $chance)) return;
 
-                    case ItemIds::IRON_BLOCK:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("lapis_block"));
-                        break;
+        $block = $event->getBlock()->getTypeId();
+        if(in_array($block, $this->upgradableBlocks)) {
+            switch($block) {
 
-                    case ItemIds::LAPIS_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("redstone_ore"));
-                        break;
+                case BlockTypeIds::COAL_ORE:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("iron_ore"));
+                    break;
 
-                    case ItemIds::LAPIS_BLOCK:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("redstone_block"));
-                        break;
+                case BlockTypeIds::COAL:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("iron_block"));
+                    break;
 
-                    case ItemIds::REDSTONE_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("gold_ore"));
-                        break;
+                case BlockTypeIds::IRON_ORE:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("lapis_ore"));
+                    break;
 
-                    case ItemIds::REDSTONE_BLOCK:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("gold_block"));
-                        break;
+                case BlockTypeIds::IRON:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("lapis_block"));
+                    break;
 
-                    case ItemIds::GOLD_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("diamond_ore"));
-                        break;
+                case BlockTypeIds::LAPIS_LAZULI_ORE:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("redstone_ore"));
+                    break;
 
-                    case ItemIds::GOLD_BLOCK:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("diamond_block"));
-                        break;
+                case BlockTypeIds::LAPIS_LAZULI:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("redstone_block"));
+                    break;
 
-                    case ItemIds::DIAMOND_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("emerald_ore"));
-                        break;
+                case BlockTypeIds::REDSTONE_ORE:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("gold_ore"));
+                    break;
 
-                    case ItemIds::DIAMOND_BLOCK:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("emerald_block"));
-                        break;
-                }
-                $player->broadcastSound(new FizzSound(), [$player]);
-                $player->sendMessage(TextFormat::RED . "Transfusion");
+                case BlockTypeIds::REDSTONE:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("gold_block"));
+                    break;
+
+                case BlockTypeIds::GOLD_ORE:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("diamond_ore"));
+                    break;
+
+                case BlockTypeIds::GOLD:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("diamond_block"));
+                    break;
+
+                case BlockTypeIds::DIAMOND_ORE:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("emerald_ore"));
+                    break;
+
+                case BlockTypeIds::DIAMOND:
+                    $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("emerald_block"));
+                    break;
             }
-            $this->setCooldown($player, 1);
+            $player->broadcastSound(new FizzSound(), [$player]);
+            $player->sendMessage(TextFormat::RED . "Transfusion");
         }
+        $this->setCooldown($player, $this->cooldownDuration);
     }
 
     public function getPriority(): int

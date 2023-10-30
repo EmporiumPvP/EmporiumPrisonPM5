@@ -24,12 +24,8 @@ class BoosterCommand extends Command {
     public function __construct() {
         parent::__construct("booster", "Main boosters command", TF::GRAY . "/booster <stop> | <give> <type> <player> <multiplier>");
         $this->setPermission("emporiumprison.command.booster");
-        $this->setPermissionMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
     }
 
-    /**
-     * @throws JsonException
-     */
     public function execute(CommandSender $sender, string $commandLabel, array $args) {
 
         if(!$sender instanceof Player) {
@@ -37,9 +33,9 @@ class BoosterCommand extends Command {
         }
 
         # permission check
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumprison.command.booster");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if(!$permission) {
-            $sender->sendMessage($this->getPermissionMessage());
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
         }
 
         # parameter

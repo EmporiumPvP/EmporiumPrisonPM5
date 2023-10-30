@@ -38,11 +38,11 @@ poly-points-limit: 16
 
 # Maximum limit for blocks copied to clipboard (//copy, //cut)
 # Set to -1 to disable the limit
-clipboard-limit: 250000
+clipboard-limit: -1
 
 # Maximum limit of blocks filled. This does not apply to shapes (//cube, sphere, ...)
 # Set to -1 to disable the limit
-fill-limit: 1000000
+fill-limit: -1
 
 # There is possible to change wand items names:
 wand-axe-name: "§r§fWand Axe\n§7§oBreak for first pos\n§7§oTouch for second pos"

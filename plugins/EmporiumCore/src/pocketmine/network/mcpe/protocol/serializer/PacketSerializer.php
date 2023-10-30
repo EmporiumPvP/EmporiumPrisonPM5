@@ -40,6 +40,7 @@ use pocketmine\network\mcpe\protocol\types\FloatGameRule;
 use pocketmine\network\mcpe\protocol\types\GameRule;
 use pocketmine\network\mcpe\protocol\types\IntGameRule;
 use pocketmine\network\mcpe\protocol\types\inventory\ItemStack;
+use pocketmine\network\mcpe\protocol\types\recipe\ComplexAliasItemDescriptor;
 use pocketmine\network\mcpe\protocol\types\recipe\IntIdMetaItemDescriptor;
 use pocketmine\network\mcpe\protocol\types\recipe\ItemDescriptorType;
 use pocketmine\network\mcpe\protocol\types\recipe\MolangItemDescriptor;
@@ -161,6 +162,7 @@ class PacketSerializer extends BinaryStream{
 		$persona = $this->getBool();
 		$capeOnClassic = $this->getBool();
 		$isPrimaryUser = $this->getBool();
+		$override = $this->getBool();
 
 		return new SkinData(
 			$skinId,
@@ -183,6 +185,7 @@ class PacketSerializer extends BinaryStream{
 			$persona,
 			$capeOnClassic,
 			$isPrimaryUser,
+			$override,
 		);
 	}
 
@@ -226,6 +229,7 @@ class PacketSerializer extends BinaryStream{
 		$this->putBool($skin->isPersona());
 		$this->putBool($skin->isPersonaCapeOnClassic());
 		$this->putBool($skin->isPrimaryUser());
+		$this->putBool($skin->isOverride());
 	}
 
 	private function getSkinImage() : SkinImage{
@@ -288,18 +292,18 @@ class PacketSerializer extends BinaryStream{
 			if($nbtLen === 0xffff){
 				$nbtDataVersion = $extraData->getByte();
 				if($nbtDataVersion !== 1){
-					throw new PacketDecodeException("Unexpected nbt Data version $nbtDataVersion");
+					throw new PacketDecodeException("Unexpected NBT data version $nbtDataVersion");
 				}
 				$offset = $extraData->getOffset();
 				try{
 					$compound = (new LittleEndianNbtSerializer())->read($extraData->getBuffer(), $offset, 512)->mustGetCompoundTag();
 				}catch(NbtDataException $e){
-					throw PacketDecodeException::wrap($e, "Failed decoding nbt root");
+					throw PacketDecodeException::wrap($e, "Failed decoding NBT root");
 				}finally{
 					$extraData->setOffset($offset);
 				}
 			}elseif($nbtLen !== 0){
-				throw new PacketDecodeException("Unexpected fake nbt length $nbtLen");
+				throw new PacketDecodeException("Unexpected fake NBT length $nbtLen");
 			}
 
 			$canPlaceOn = [];
@@ -349,7 +353,7 @@ class PacketSerializer extends BinaryStream{
 			$nbt = $item->getNbt();
 			if($nbt !== null){
 				$extraData->putLShort(0xffff);
-				$extraData->putByte(1); //TODO: nbt Data version (?)
+				$extraData->putByte(1); //TODO: NBT data version (?)
 				$extraData->put((new LittleEndianNbtSerializer())->write(new TreeRoot($nbt)));
 			}else{
 				$extraData->putLShort(0);
@@ -381,6 +385,7 @@ class PacketSerializer extends BinaryStream{
 			ItemDescriptorType::STRING_ID_META => StringIdMetaItemDescriptor::read($this),
 			ItemDescriptorType::TAG => TagItemDescriptor::read($this),
 			ItemDescriptorType::MOLANG => MolangItemDescriptor::read($this),
+			ItemDescriptorType::COMPLEX_ALIAS => ComplexAliasItemDescriptor::read($this),
 			default => null
 		};
 		$count = $this->getVarInt();
@@ -760,7 +765,7 @@ class PacketSerializer extends BinaryStream{
 
 		$result->structureBlockType = $this->getVarInt();
 		$result->structureSettings = $this->getStructureSettings();
-		$result->structureRedstoneSaveMove = $this->getVarInt();
+		$result->structureRedstoneSaveMode = $this->getVarInt();
 
 		return $result;
 	}
@@ -774,7 +779,7 @@ class PacketSerializer extends BinaryStream{
 
 		$this->putVarInt($structureEditorData->structureBlockType);
 		$this->putStructureSettings($structureEditorData->structureSettings);
-		$this->putVarInt($structureEditorData->structureRedstoneSaveMove);
+		$this->putVarInt($structureEditorData->structureRedstoneSaveMode);
 	}
 
 	public function getNbtRoot() : TreeRoot{
@@ -782,7 +787,7 @@ class PacketSerializer extends BinaryStream{
 		try{
 			return (new NetworkNbtSerializer())->read($this->getBuffer(), $offset, 512);
 		}catch(NbtDataException $e){
-			throw PacketDecodeException::wrap($e, "Failed decoding nbt root");
+			throw PacketDecodeException::wrap($e, "Failed decoding NBT root");
 		}finally{
 			$this->setOffset($offset);
 		}
@@ -792,7 +797,7 @@ class PacketSerializer extends BinaryStream{
 		try{
 			return $this->getNbtRoot()->mustGetCompoundTag();
 		}catch(NbtDataException $e){
-			throw PacketDecodeException::wrap($e, "Expected TAG_Compound nbt root");
+			throw PacketDecodeException::wrap($e, "Expected TAG_Compound NBT root");
 		}
 	}
 

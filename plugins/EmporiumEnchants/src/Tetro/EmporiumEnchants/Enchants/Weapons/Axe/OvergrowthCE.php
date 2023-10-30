@@ -4,12 +4,18 @@
 namespace Tetro\EmporiumEnchants\Enchants\Weapons\Axe;
 
 # Pocketmine API
+use pocketmine\block\VanillaBlocks;
+
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Event;
+
 use pocketmine\inventory\Inventory;
+
 use pocketmine\item\Item;
-use pocketmine\item\ItemFactory;
+use pocketmine\item\VanillaItems;
+
 use pocketmine\player\Player;
+
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\Core\Types\ReactiveEnchantment;
 
@@ -21,7 +27,7 @@ class OvergrowthCE extends ReactiveEnchantment
 
     # Register Enchantment
     public string $name = "Overgrowth";
-    public string $description = "Increases the amount of crops droped when harvesting.";
+    public string $description = "Increases the amount of crops dropped when harvesting.";
     public int $rarity = CustomEnchant::RARITY_EXECUTIVE;
     public int $cooldownDuration = 0;
     public int $maxLevel = 10;
@@ -43,35 +49,35 @@ class OvergrowthCE extends ReactiveEnchantment
         // Enchantment Code
         if ($event instanceof BlockBreakEvent) {
             // World Check
-            $block = $event->getBlock()->getId();
-            $world = $player->getWorld()->getFolderName();
-            if ($world === "Lobby" || $world === "Warzone") {
+            $blockId = $event->getBlock()->getTypeId();
+            $worldName = $player->getWorld()->getFolderName();
+            if ($worldName === "Lobby" || $worldName === "Warzone") {
                 return;
             }
             // Not Wilderness
-            if ($world !== "Wilderness") {
+            if ($worldName !== "Wilderness") {
                 // Public Mine
-                if ($world === "PublicMine") {
-                    if ($block !== 14) {
-                        if ($block !== 16) {
+                if ($worldName === "PublicMine") {
+                    if ($blockId !== 14) {
+                        if ($blockId !== 16) {
                             return;
                         }
                     }
                 }
                 // Ranked Mine
-                if ($world === "RankedMine") {
-                    if ($block !== 57) {
-                        if ($block !== 133) {
+                if ($worldName === "RankedMine") {
+                    if ($blockId !== 57) {
+                        if ($blockId !== 133) {
                             return;
                         }
                     }
                 }
                 // PvP Mine
-                if ($world === "PvPMine") {
-                    if ($block !== 153) {
-                        if ($block !== 129) {
-                            if ($block !== 56) {
-                                if ($block !== 155) {
+                if ($worldName === "PvPMine") {
+                    if ($blockId !== 153) {
+                        if ($blockId !== 129) {
+                            if ($blockId !== 56) {
+                                if ($blockId !== 155) {
                         			return;
                                 }
                             }
@@ -79,105 +85,158 @@ class OvergrowthCE extends ReactiveEnchantment
                     }
                 }
                 // Prestige Mine
-                if ($world === "PrestigeMine") {
-                    if ($block !== 224) {
+                if ($worldName === "PrestigeMine") {
+                    if ($blockId !== 224) {
                         return;
                     }
                 }
             }
-            if ($block === 338) {
+
+            # sugar cane
+            if ($blockId === VanillaBlocks::SUGARCANE()->getTypeId()) {
+
                 $random = mt_rand(1, 50);
                 $chance = $level * 2;
+
                 if ($chance >= $random) {
                     $amount = mt_rand(10 , 20);
-                    $item = ItemFactory::getInstance()->get(338, 0, $amount);
+                    $item = VanillaBlocks::SUGARCANE()->asItem()->setCount($amount);
                     foreach ($player->getInventory()->addItem($item) as $invfull) {
                         $player->getWorld()->dropItem($player->getPosition(), $invfull);
                     }
                     $player->sendTip("§r§aYou have be blessed with +" . $amount . "!");
                 }
             }
-            if ($block === 296) {
+
+            # wheat
+            if ($blockId === VanillaItems::WHEAT()->getTypeId()) {
+
                 $random = mt_rand(1, 50);
                 $chance = $level * 2;
+
                 if ($chance >= $random) {
+
                     $amount = mt_rand(10 , 20);
-                    $item = ItemFactory::getInstance()->get(296, 4, $amount);
+                    $item = VanillaItems::WHEAT()->setCount($amount);
+
                     foreach ($player->getInventory()->addItem($item) as $invfull) {
                         $player->getWorld()->dropItem($player->getPosition(), $invfull);
                     }
+
                     $player->sendTip("§r§aYou have be blessed with +" . $amount . "!");
                 }
             }
-            if ($block === 457) {
+
+            # beetroot
+            if ($blockId === VanillaItems::BEETROOT()->getTypeId()) {
+
                 $random = mt_rand(1, 50);
                 $chance = $level * 2;
+
                 if ($chance >= $random) {
+
                     $amount = mt_rand(10 , 20);
-                    $item = ItemFactory::getInstance()->get(457, 4, $amount);
+                    $item = VanillaItems::BEETROOT()->setCount($amount);
+
                     foreach ($player->getInventory()->addItem($item) as $invfull) {
                         $player->getWorld()->dropItem($player->getPosition(), $invfull);
                     }
+
                     $player->sendTip("§r§aYou have be blessed with +" . $amount . "!");
                 }
             }
-            if ($block === 392) {
+
+            # potato
+            if ($blockId === VanillaItems::POTATO()->getTypeId()) {
+
                 $random = mt_rand(1, 50);
                 $chance = $level * 2;
+
                 if ($chance >= $random) {
+
                     $amount = mt_rand(10 , 20);
-                    $item = ItemFactory::getInstance()->get(392, 4, $amount);
+                    $item = VanillaItems::POTATO()->setCount($amount);
+
                     foreach ($player->getInventory()->addItem($item) as $invfull) {
                         $player->getWorld()->dropItem($player->getPosition(), $invfull);
                     }
+
                     $player->sendTip("§r§aYou have be blessed with +" . $amount . "!");
                 }
             }
-            if ($block === 391) {
+
+            # carrot
+            if ($blockId === VanillaItems::CARROT()->getTypeId()) {
+
                 $random = mt_rand(1, 50);
                 $chance = $level * 2;
+
                 if ($chance >= $random) {
+
                     $amount = mt_rand(10 , 20);
-                    $item = ItemFactory::getInstance()->get(391, 4, $amount);
+                    $item = VanillaItems::CARROT()->setCount($amount);
+
                     foreach ($player->getInventory()->addItem($item) as $invfull) {
                         $player->getWorld()->dropItem($player->getPosition(), $invfull);
                     }
+
                     $player->sendTip("§r§aYou have be blessed with +" . $amount . "!");
                 }
             }
-            if ($block === 86) {
+
+            # pumpkin
+            if ($blockId === VanillaBlocks::PUMPKIN()->getTypeId()) {
+
                 $random = mt_rand(1, 50);
                 $chance = $level * 2;
+
                 if ($chance >= $random) {
+
                     $amount = mt_rand(10 , 20);
-                    $item = ItemFactory::getInstance()->get(86, 4, $amount);
+                    $item = VanillaBlocks::PUMPKIN()->asItem()->setCount($amount);
+
                     foreach ($player->getInventory()->addItem($item) as $invfull) {
                         $player->getWorld()->dropItem($player->getPosition(), $invfull);
                     }
+
                     $player->sendTip("§r§aYou have be blessed with +" . $amount . "!");
                 }
             }
-            if ($block === 103) {
+
+            # melon
+            if ($blockId === VanillaBlocks::MELON()->getTypeId()) {
+
                 $random = mt_rand(1, 50);
                 $chance = $level * 2;
+
                 if ($chance >= $random) {
+
                     $amount = mt_rand(10 , 20);
-                    $item = ItemFactory::getInstance()->get(103, 4, $amount);
+                    $item = VanillaBlocks::MELON()->asItem()->setCount($amount);
+
                     foreach ($player->getInventory()->addItem($item) as $invfull) {
                         $player->getWorld()->dropItem($player->getPosition(), $invfull);
                     }
+
                     $player->sendTip("§r§aYou have be blessed with +" . $amount . "!");
                 }
             }
-            if ($block === 360) {
+
+            # melon slice
+            if ($blockId === VanillaItems::MELON()->getTypeId()) {
+
                 $random = mt_rand(1, 50);
                 $chance = $level * 2;
+
                 if ($chance >= $random) {
+
                     $amount = mt_rand(10 , 20);
-                    $item = ItemFactory::getInstance()->get(360, 4, $amount);
+                    $item = VanillaItems::MELON()->setCount($amount);
+
                     foreach ($player->getInventory()->addItem($item) as $invfull) {
                         $player->getWorld()->dropItem($player->getPosition(), $invfull);
                     }
+
                     $player->sendTip("§r§aYou have be blessed with +" . $amount . "!");
                 }
             }

@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace Tetro\EmporiumEnchants\Commands\subcommands;
 
-use Tetro\EmporiumEnchants\Utils\Commando\args\IntegerArgument;
-use Tetro\EmporiumEnchants\Utils\Commando\args\RawStringArgument;
-use Tetro\EmporiumEnchants\Utils\Commando\BaseSubCommand;
-use Tetro\EmporiumEnchants\Utils\Commando\exception\ArgumentOrderException;
+use pocketmine\item\Book;
+use pocketmine\item\EnchantedBook;
+use CortexPE\Commando\args\IntegerArgument;
+use CortexPE\Commando\args\RawStringArgument;
+use CortexPE\Commando\BaseSubCommand;
+use CortexPE\Commando\exception\ArgumentOrderException;
 use Tetro\EmporiumEnchants\Core\CustomEnchantManager;
 use Tetro\EmporiumEnchants\EmporiumEnchants;
 use Tetro\EmporiumEnchants\Utils\Utils;
+
 use pocketmine\command\CommandSender;
 use pocketmine\item\enchantment\EnchantmentInstance;
-use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
-use pocketmine\Utils\TextFormat;
+
 use Ramsey\Uuid\Uuid;
 
 class EnchantSubCommand extends BaseSubCommand
@@ -34,7 +36,8 @@ class EnchantSubCommand extends BaseSubCommand
             $sender->sendMessage("§l§8(§c!§8) §r§7Enchantment level must be an integer.");
             return;
         }
-        $target = empty($args["player"]) ? $sender : $this->plugin->getServer()->getPlayerByPrefix($args["player"]);
+        $target = empty($args["player"]) ? $sender : $this->plugin->getServer()->getPlayerExact($args["player"]);
+        #$target = empty($args["player"]) ? $sender : $this->plugin->getServer()->getPlayerByPrefix($args["player"]);
         if (!$target instanceof Player) {
             $sender->sendMessage("§l§8(§c!§8) §r§7Invalid player.");
             return;
@@ -63,7 +66,8 @@ class EnchantSubCommand extends BaseSubCommand
                 return;
             }
         }
-        if ($item->getId() === ItemIds::ENCHANTED_BOOK || $item->getId() === ItemIds::BOOK) {
+
+        if ($item instanceof EnchantedBook || $item instanceof Book) {
             $item->getNamedTag()->setString("PiggyCEBookUUID", Uuid::uuid4()->toString());
         }
         $item->addEnchantment(new EnchantmentInstance($enchant, $args["level"]));
@@ -80,5 +84,10 @@ class EnchantSubCommand extends BaseSubCommand
         $this->registerArgument(0, new RawStringArgument("enchantment", true));
         $this->registerArgument(1, new IntegerArgument("level", true));
         $this->registerArgument(2, new RawStringArgument("player", true));
+    }
+
+    public function getPermission()
+    {
+        // TODO: Implement getPermission() method.
     }
 }

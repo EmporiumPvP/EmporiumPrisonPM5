@@ -2,6 +2,7 @@
 
 namespace Items;
 
+use pocketmine\block\VanillaBlocks;
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use pocketmine\utils\TextFormat as TF;
@@ -9,7 +10,7 @@ use pocketmine\utils\TextFormat as TF;
 class RankKits {
 
     public function noble(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::DARK_GRAY . "Noble " . TF::RESET . TF::DARK_GRAY . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitNoble", 1);
         $item->setCount($amount);
@@ -32,7 +33,7 @@ class RankKits {
     }
 
     public function imperial(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::LIGHT_PURPLE . "Imperial " . TF::RESET . TF::LIGHT_PURPLE . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitImperial", 1);
         $item->setCount($amount);
@@ -56,7 +57,7 @@ class RankKits {
     }
 
     public function supreme(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::DARK_AQUA . "Supreme " . TF::RESET . TF::DARK_AQUA . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitSupreme", 1);
         $item->setCount($amount);
@@ -80,7 +81,7 @@ class RankKits {
     }
 
     public function majesty(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::BLUE . "Majesty " . TF::RESET . TF::BLUE . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitMajesty", 1);
         $item->setCount($amount);
@@ -104,7 +105,7 @@ class RankKits {
     }
 
     public function emperor(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::AQUA . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitEmperor", 1);
         $item->setCount($amount);
@@ -128,7 +129,7 @@ class RankKits {
     }
 
     public function president(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::RED . "President " . TF::RESET . TF::RED . "Rank Kit");
         $item->getNamedTag()->setByte("RankKitPresident", 1);
         $item->setCount($amount);

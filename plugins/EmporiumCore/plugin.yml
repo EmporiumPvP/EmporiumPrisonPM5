@@ -2,7 +2,7 @@ name: EmporiumCore
 author: Tetro
 version: 1.0.0
 main: EmporiumCore\EmporiumCore
-api: 4.0.0
+api: 5.0.0
 
 permissions:
   # default commands
@@ -40,43 +40,47 @@ permissions:
     default: true
   # rank commands
   emporiumcore.command.sell:
-    default: false
+    default: true
   emporiumcore.command.clear:
-    default: false
+    default: true
   emporiumcore.command.feed:
-    default: false
+    default: true
   emporiumcore.command.heal:
-    default: false
+    default: true
   emporiumcore.command.milk:
-    default: false
+    default: true
   # staff commands
   emporiumcore.command.ban:
-    default: false
+    default: true
   emporiumcore.command.broadcast:
-    default: false
+    default: true
+  emporiumcore.command.boss:
+    default: true
+  emporiumcore.command.contraband:
+    default: true
   emporiumcore.command.clearchat:
-    default: false
+    default: true
   emporiumcore.command.creative:
-    default: false
+    default: true
   emporiumcore.command.freeze:
-    default: false
+    default: true
   emporiumcore.command.kick:
-    default: false
+    default: true
   emporiumcore.command.kill:
-    default: false
+    default: true
   emporiumcore.command.mute:
-    default: false
+    default: true
   emporiumcore.command.survival:
-    default: false
+    default: true
   emporiumcore.command.teleport:
-    default: false
+    default: true
   emporiumcore.command.unban:
-    default: false
+    default: true
   emporiumcore.command.unfreeze:
-    default: false
+    default: true
   emporiumcore.command.unmute:
-    default: false
+    default: true
   emporiumcore.command.warn:
-    default: false
+    default: true
   nbtdump.command:
     default: op

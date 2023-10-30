@@ -4,14 +4,14 @@
 namespace Tetro\EmporiumEnchants\Enchants\Weapons\Global;
 
 # Pocketmine API
-use pocketmine\block\{BlockFactory, BlockLegacyIds};
+use pocketmine\block\RuntimeBlockStateRegistry;
+use pocketmine\network\mcpe\convert\BlockTranslator;
 use pocketmine\block\tile\{Sign, Tile};
 use pocketmine\block\VanillaBlocks;
 use pocketmine\event\Event;
 use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\convert\RuntimeBlockMapping;
 use pocketmine\network\mcpe\protocol\{BlockActorDataPacket, UpdateBlockPacket};
 use pocketmine\network\mcpe\protocol\serializer\NetworkNbtSerializer;
 use pocketmine\network\mcpe\protocol\types\{BlockPosition, CacheableNbt};
@@ -62,7 +62,7 @@ class HallucinationCE extends ReactiveEnchantment
                             $block = VanillaBlocks::BEDROCK();
                             if ($position->equals($originalPosition)) $block = VanillaBlocks::LAVA();
                             if ($position->equals($originalPosition->add(0, 1, 0))) {
-                                $block = BlockFactory::getInstance()->get(BlockLegacyIds::WALL_SIGN, 2);
+                                $block = VanillaBlocks::OAK_WALL_SIGN();
                                 if ($this->nbtWriter === null) $this->nbtWriter = new NetworkNbtSerializer();
                                 $packets[] = BlockActorDataPacket::create(BlockPosition::fromVector3($position->floor()), new CacheableNbt(
                                     CompoundTag::create()->
@@ -73,7 +73,7 @@ class HallucinationCE extends ReactiveEnchantment
                                     setString(Sign::TAG_TEXT_BLOB, implode("\n", ["§cYou seem to be", "§challucinating..."])
                                     )));
                             }
-                            $packets[] = UpdateBlockPacket::create(BlockPosition::fromVector3($position->floor()), RuntimeBlockMapping::getInstance()->toRuntimeId($block->getFullId()), UpdateBlockPacket::FLAG_NETWORK, UpdateBlockPacket::DATA_LAYER_NORMAL);
+                            $packets[] = UpdateBlockPacket::create(BlockPosition::fromVector3($position->floor()), $block->getTypeId(), UpdateBlockPacket::FLAG_NETWORK, UpdateBlockPacket::DATA_LAYER_NORMAL);
                         }
                     }
                 }

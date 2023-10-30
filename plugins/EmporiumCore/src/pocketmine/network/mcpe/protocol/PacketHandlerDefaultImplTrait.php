@@ -266,7 +266,7 @@ trait PacketHandlerDefaultImplTrait{
 		return false;
 	}
 
-	public function handleEvent(EventPacket $packet) : bool{
+	public function handleLegacyTelemetryEvent(LegacyTelemetryEventPacket $packet) : bool{
 		return false;
 	}
 
@@ -467,10 +467,6 @@ trait PacketHandlerDefaultImplTrait{
 	}
 
 	public function handleNetworkStackLatency(NetworkStackLatencyPacket $packet) : bool{
-		return false;
-	}
-
-	public function handleScriptCustomEvent(ScriptCustomEventPacket $packet) : bool{
 		return false;
 	}
 
@@ -686,10 +682,6 @@ trait PacketHandlerDefaultImplTrait{
 		return false;
 	}
 
-	public function handlePhotoInfoRequest(PhotoInfoRequestPacket $packet) : bool{
-		return false;
-	}
-
 	public function handleSubChunk(SubChunkPacket $packet) : bool{
 		return false;
 	}
@@ -779,6 +771,38 @@ trait PacketHandlerDefaultImplTrait{
 	}
 
 	public function handleUpdateClientInputLocks(UpdateClientInputLocksPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleCameraPresets(CameraPresetsPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleUnlockedRecipes(UnlockedRecipesPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleCameraInstruction(CameraInstructionPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleCompressedBiomeDefinitionList(CompressedBiomeDefinitionListPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleTrimData(TrimDataPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleOpenSign(OpenSignPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleAgentAnimation(AgentAnimationPacket $packet) : bool{
+		return false;
+	}
+
+	public function handleRefreshEntitlements(RefreshEntitlementsPacket $packet) : bool{
 		return false;
 	}
 }

@@ -2,12 +2,17 @@
 
 namespace EmporiumCore\Menus;
 
+use customiesdevs\customies\item\CustomiesItemFactory;
+
 use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\library\formapi\CustomForm;
 use Emporium\Prison\library\formapi\SimpleForm;
 use Emporium\Prison\Managers\misc\Translator;
 
 use EmporiumCore\Variables;
+
+use Tetro\EmporiumEnchants\EmporiumEnchants;
+use Tetro\EmporiumEnchants\Items\Books;
 
 use EmporiumData\DataManager;
 
@@ -16,15 +21,11 @@ use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
 
 use pocketmine\item\Item;
-use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\ClickSound;
 use pocketmine\world\sound\DoorBumpSound;
 use pocketmine\world\sound\XpCollectSound;
-
-use Tetro\EmporiumEnchants\EmporiumEnchants;
-use Tetro\EmporiumEnchants\Items\Books;
 
 class CustomEnchantMenu extends Menu {
 
@@ -585,8 +586,8 @@ class CustomEnchantMenu extends Menu {
         $menu->send($player);
     }
 
-    public function generateEliteBookItem(Int $count): Item {
-        $item = VanillaItems::BOOK();
+    public function generateEliteBookItem(int $count): Item {
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:elite_book");
         $item->setCustomName(TF::BOLD . TF::BLUE . "Mystery Elite Enchant");
         $item->getNamedTag()->setInt("EliteCustomEnchantBook", 2);
         $lore = [
@@ -602,8 +603,8 @@ class CustomEnchantMenu extends Menu {
         $item->setLore($lore);
         return $item;
     }
-    public function generateUltimateBookItem(Int $count): Item {
-        $item = VanillaItems::BOOK();
+    public function generateUltimateBookItem(int $count): Item {
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:ultimate_book");
         $item->setCustomName(TF::BOLD . TF::YELLOW . "Mystery Ultimate Enchant");
         $item->getNamedTag()->setInt("UltimateCustomEnchantBook", 2);
         $lore = [
@@ -619,8 +620,8 @@ class CustomEnchantMenu extends Menu {
         $item->setLore($lore);
         return $item;
     }
-    public function generateLegendaryBookItem(Int $count): Item {
-        $item = VanillaItems::BOOK();
+    public function generateLegendaryBookItem(int $count): Item {
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:legendary_book");
         $item->setCustomName(TF::BOLD . TF::GOLD . "Mystery Legendary Enchant");
         $item->getNamedTag()->setInt("LegendaryCustomEnchantBook", 2);
         $lore = [
@@ -636,8 +637,8 @@ class CustomEnchantMenu extends Menu {
         $item->setLore($lore);
         return $item;
     }
-    public function generateGodlyBookItem(Int $count): Item {
-        $item = VanillaItems::BOOK();
+    public function generateGodlyBookItem(int $count): Item {
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:godly_book");
         $item->setCustomName(TF::BOLD . TF::LIGHT_PURPLE . "Mystery Godly Enchant");
         $item->getNamedTag()->setInt("GodlyCustomEnchantBook", 2);
         $lore = [
@@ -653,8 +654,8 @@ class CustomEnchantMenu extends Menu {
         $item->setLore($lore);
         return $item;
     }
-    public function generateHeroicBookItem(Int $count): Item {
-        $item = VanillaItems::BOOK();
+    public function generateHeroicBookItem(int $count): Item {
+        $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:heroic_book");
         $item->setCustomName(TF::BOLD . TF::RED . "Mystery Heroic Enchant");
         $item->getNamedTag()->setInt("HeroicCustomEnchantBook", 2);
         $lore = [

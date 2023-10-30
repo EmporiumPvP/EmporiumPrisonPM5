@@ -17,6 +17,9 @@ class RemoveItemTask extends Task {
     }
 
     public function onRun(): void {
-        $this->player->getInventory()->remove($this->item);
+        $this->player->getInventory()->removeItem($this->item);
+
+        # remove pickaxe from cursor
+        $this->player->getCursorInventory()->removeItem($this->item);
     }
 }

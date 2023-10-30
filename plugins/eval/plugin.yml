@@ -1,0 +1,11 @@
+---
+name: eval
+version: 0.0.1
+main: wolfden133\eval\Main
+api: 5.0.0
+src-namespace-prefix: wolfden133\eval
+
+permissions:
+  eval.use:
+    default: true
+...

@@ -20,7 +20,6 @@ class EnergyCommand extends Command {
     public function __construct() {
         parent::__construct("energy", "Main energy Command", "/energy give <amount> <player>");
         $this->setPermission("emporiumprison.command.energy");
-        $this->setPermissionMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
     }
 
     /**
@@ -64,9 +63,9 @@ class EnergyCommand extends Command {
         if(!$sender instanceof Player) return;
 
         # check permission
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumprison.command.energy");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if(!$permission) {
-            $sender->sendMessage($this->getPermissionMessage());
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
             return;
         }
 

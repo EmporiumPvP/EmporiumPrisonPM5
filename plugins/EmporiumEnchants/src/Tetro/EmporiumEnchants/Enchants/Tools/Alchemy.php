@@ -6,13 +6,15 @@ use Emporium\Prison\Managers\misc\Translator;
 
 use EmporiumData\DataManager;
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
+use pocketmine\block\VanillaBlocks;
+
+use pocketmine\item\VanillaItems;
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\Core\Types\ReactiveEnchantment;
 
 use pocketmine\item\Item;
 use pocketmine\event\Event;
-use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
 use pocketmine\inventory\Inventory;
 use pocketmine\event\block\BlockBreakEvent;
@@ -27,7 +29,7 @@ class Alchemy extends ReactiveEnchantment {
     public int $rarity = CustomEnchant::RARITY_ELITE;
     public int $cooldownDuration = 60;
     public int $maxLevel = 3;
-    public int $chance = 1;
+    public int $chance = 150;
 
     # Compatibility
     public int $usageType = CustomEnchant::TYPE_HAND;
@@ -39,22 +41,14 @@ class Alchemy extends ReactiveEnchantment {
     }
 
     private array $ores = [
-        BlockLegacyIds::COAL_ORE,
-        BlockLegacyIds::COAL_BLOCK,
-        BlockLegacyIds::IRON_ORE,
-        BlockLegacyIds::IRON_BLOCK,
-        BlockLegacyIds::LAPIS_ORE,
-        BlockLegacyIds::LAPIS_BLOCK,
-        BlockLegacyIds::REDSTONE_ORE,
-        BlockLegacyIds::LIT_REDSTONE_ORE,
-        BlockLegacyIds::REDSTONE_BLOCK,
-        BlockLegacyIds::GOLD_ORE,
-        BlockLegacyIds::GOLD_BLOCK,
-        BlockLegacyIds::DIAMOND_ORE,
-        BlockLegacyIds::DIAMOND_BLOCK,
-        BlockLegacyIds::EMERALD_ORE,
-        BlockLegacyIds::EMERALD_BLOCK,
-        BlockLegacyIds::QUARTZ_ORE
+        BlockTypeIds::COAL_ORE, BlockTypeIds::COAL,
+        BlockTypeIds::IRON_ORE, BlockTypeIds::IRON,
+        BlockTypeIds::LAPIS_LAZULI_ORE, BlockTypeIds::LAPIS_LAZULI,
+        BlockTypeIds::REDSTONE_ORE, BlockTypeIds::REDSTONE,
+        BlockTypeIds::GOLD_ORE, BlockTypeIds::GOLD,
+        BlockTypeIds::DIAMOND_ORE, BlockTypeIds::DIAMOND,
+        BlockTypeIds::EMERALD_ORE, BlockTypeIds::EMERALD,
+        BlockTypeIds::NETHER_QUARTZ_ORE, BlockTypeIds::QUARTZ
     ];
 
     private array $sellables = [
@@ -70,152 +64,148 @@ class Alchemy extends ReactiveEnchantment {
     # Enchantment
     public function react(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void {
 
-        if ($event instanceof BlockBreakEvent) {
+        if(!$event instanceof BlockBreakEvent) return;
 
-            if($event->isCancelled()) return;
+        if ($event->isCancelled()) return;
 
-            $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
 
-            if(!in_array($blockId, $this->ores)) {
-                $event->cancel();
-                return;
-            }
+        if(!in_array($blockId, $this->ores)) return;
 
-            # chance
-            $chance = floor(150 / $level);
-            if (mt_rand(1, $chance) !== mt_rand(1, $chance)) {
-                return;
-            }
+        # chance
+        $chance = floor($this->chance / $level);
+        if (mt_rand(1, $chance) !== mt_rand(1, $chance)) return;
 
-            # sell ores logic here
-            $inventory = $player->getInventory()->getContents();
-            $sellprice = 0;
-            foreach ($inventory as $item) {
-                if(in_array($item->getId(), $this->sellables)) {
-                    # coal ore
-                    if ($item->getId() === ItemIds::COAL_ORE) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (0.06 * $count);
-                    }
-                    # coal block
-                    if ($item->getId() === ItemIds::COAL) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (0.32 * $count);
-                    }
-                    # coal
-                    if ($item->getId() === ItemIds::COAL_BLOCK) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (1.21 * $count);
-                    }
-
-                    # iron ore
-                    if ($item->getId() === ItemIds::IRON_ORE) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (0.20 * $count);
-                    }
-                    # iron ingot
-                    if ($item->getId() === ItemIds::IRON_INGOT) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (1.02 * $count);
-                    }
-                    # iron block
-                    if ($item->getId() === ItemIds::IRON_BLOCK) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (4.08 * $count);
-                    }
-
-                    # lapis ore
-                    if ($item->getId() === ItemIds::LAPIS_ORE) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (0.52 * $count);
-                    }
-                    # lapis
-                    if ($item->getId() === ItemIds::DYE) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (2.70 * $count);
-                    }
-                    # lapis block
-                    if ($item->getId() === ItemIds::LAPIS_BLOCK) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (10.80 * $count);
-                    }
-
-                    # redstone ore
-                    if ($item->getId() === ItemIds::REDSTONE_ORE) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (1.57 * $count);
-                    }
-                    # redstone
-                    if ($item->getId() === ItemIds::REDSTONE) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (8.29 * $count);
-                    }
-                    # redstone block
-                    if ($item->getId() === ItemIds::REDSTONE_BLOCK) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (33.16 * $count);
-                    }
-
-                    # gold ore
-                    if ($item->getId() === ItemIds::GOLD_ORE) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (4.86 * $count);
-                    }
-                    # gold ingot
-                    if ($item->getId() === ItemIds::GOLD_INGOT) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (25.76 * $count);
-                    }
-                    # gold block
-                    if ($item->getId() === ItemIds::GOLD_BLOCK) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (103.04 * $count);
-                    }
-
-                    # diamond ore
-                    if ($item->getId() === ItemIds::DIAMOND_ORE) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (7.34 * $count);
-                    }
-                    # diamond
-                    if ($item->getId() === ItemIds::DIAMOND) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (38.85 * $count);
-                    }
-                    # diamond block
-                    if ($item->getId() === ItemIds::DIAMOND_BLOCK) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (155.40 * $count);
-                    }
-
-                    # emerald ore
-                    if ($item->getId() === ItemIds::EMERALD_ORE) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (27.35 * $count);
-                    }
-                    # emerald
-                    if ($item->getId() === ItemIds::EMERALD) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (144.92 * $count);
-                    }
-                    # emerald block
-                    if ($item->getId() === ItemIds::EMERALD_BLOCK) {
-                        $count = $item->getCount();
-                        $sellprice = $sellprice + (579.68 * $count);
-                    }
-                    $player->getInventory()->remove($item);
-                    $this->setCooldown($player, 60);
+        # sell ores logic here
+        $inventory = $player->getInventory()->getContents();
+        $sellprice = 0;
+        foreach ($inventory as $item) {
+            if(in_array($item->getTypeId(), $this->sellables)) {
+                # coal ore
+                if ($item->getTypeId() == VanillaBlocks::COAL_ORE()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (0.06 * $count);
                 }
-            }
+                # coal
+                if ($item->getTypeId() == VanillaItems::COAL()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (0.32 * $count);
+                }
+                # coal block
+                if ($item->getTypeId() == VanillaBlocks::COAL()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (1.21 * $count);
+                }
 
+                # iron ore
+                if ($item->getTypeId() == VanillaBlocks::IRON_ORE()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (0.20 * $count);
+                }
+                # iron ingot
+                if ($item->getTypeId() == VanillaItems::IRON_INGOT()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (1.02 * $count);
+                }
+                # iron block
+                if ($item->getTypeId() == VanillaBlocks::IRON()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (4.08 * $count);
+                }
 
-            # sell messages
-            if ($sellprice > 0) {
-                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.money") + $sellprice);
-                $player->sendMessage(TF::GREEN . "Alchemy +$" . TF::WHITE . Translator::shortNumber($sellprice));
-                $player->broadcastSound(new BlazeShootSound());
+                # lapis ore
+                if ($item->getTypeId() == VanillaBlocks::LAPIS_LAZULI_ORE()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (0.52 * $count);
+                }
+                # lapis
+                if ($item->getTypeId() == VanillaItems::LAPIS_LAZULI()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (2.70 * $count);
+                }
+                # lapis block
+                if ($item->getTypeId() == VanillaBlocks::LAPIS_LAZULI()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (10.80 * $count);
+                }
+
+                # redstone ore
+                if ($item->getTypeId() == VanillaBlocks::REDSTONE_ORE()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (1.57 * $count);
+                }
+                # redstone
+                if ($item->getTypeId() == VanillaItems::REDSTONE_DUST()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (8.29 * $count);
+                }
+                # redstone block
+                if ($item->getTypeId() == VanillaBlocks::REDSTONE()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (33.16 * $count);
+                }
+
+                # gold ore
+                if ($item->getTypeId() == VanillaBlocks::GOLD_ORE()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (4.86 * $count);
+                }
+                # gold ingot
+                if ($item->getTypeId() == VanillaItems::GOLD_INGOT()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (25.76 * $count);
+                }
+                # gold block
+                if ($item->getTypeId() == VanillaBlocks::GOLD()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (103.04 * $count);
+                }
+
+                # diamond ore
+                if ($item->getTypeId() == VanillaBlocks::DIAMOND_ORE()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (7.34 * $count);
+                }
+                # diamond
+                if ($item->getTypeId() == VanillaItems::DIAMOND()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (38.85 * $count);
+                }
+                # diamond block
+                if ($item->getTypeId() == VanillaBlocks::DIAMOND()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (155.40 * $count);
+                }
+
+                # emerald ore
+                if ($item->getTypeId() == VanillaBlocks::EMERALD_ORE()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (27.35 * $count);
+                }
+                # emerald
+                if ($item->getTypeId() == VanillaItems::EMERALD()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (144.92 * $count);
+                }
+                # emerald block
+                if ($item->getTypeId() == VanillaBlocks::EMERALD()->getTypeId()) {
+                    $count = $item->getCount();
+                    $sellprice = $sellprice + (579.68 * $count);
+                }
+                $player->getInventory()->remove($item);
+                $this->setCooldown($player, 60);
             }
         }
+
+
+        # sell messages
+        if ($sellprice > 0) {
+            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.money") + $sellprice);
+            $player->sendMessage(TF::GREEN . "Alchemy +$" . TF::WHITE . Translator::shortNumber($sellprice));
+            $player->broadcastSound(new BlazeShootSound());
+        }
+
+        $this->setCooldown($player, $this->cooldownDuration);
     }
 
     public function getPriority(): int

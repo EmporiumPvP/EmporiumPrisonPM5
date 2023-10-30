@@ -25,9 +25,9 @@ class UnmuteCommand extends Command {
             return false;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.unmute");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), ["emporiumcore.command.unmute"]);
         if (!$permission) {
-            $sender->sendMessage(TF::RED . "No permission");
+            $sender->sendMessage(\Emporium\Prison\Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 

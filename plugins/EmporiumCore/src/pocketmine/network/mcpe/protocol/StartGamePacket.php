@@ -21,6 +21,7 @@ use pocketmine\network\mcpe\protocol\types\BlockPaletteEntry;
 use pocketmine\network\mcpe\protocol\types\CacheableNbt;
 use pocketmine\network\mcpe\protocol\types\ItemTypeEntry;
 use pocketmine\network\mcpe\protocol\types\LevelSettings;
+use pocketmine\network\mcpe\protocol\types\NetworkPermissions;
 use pocketmine\network\mcpe\protocol\types\PlayerMovementSettings;
 use Ramsey\Uuid\UuidInterface;
 use function count;
@@ -54,6 +55,8 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 	public string $serverSoftwareVersion;
 	public UuidInterface $worldTemplateId; //why is this here twice ??? mojang
 	public bool $enableClientSideChunkGeneration;
+	public bool $blockNetworkIdsAreHashes = false; //new in 1.19.80, possibly useful for multi version
+	public NetworkPermissions $networkPermissions;
 
 	/**
 	 * @var BlockPaletteEntry[]
@@ -62,7 +65,7 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 	public array $blockPalette = [];
 
 	/**
-	 * Checksum of the full block palette. This is a hash of some weird stringified version of the nbt.
+	 * Checksum of the full block palette. This is a hash of some weird stringified version of the NBT.
 	 * This is used along with the baseGameVersion to check for inconsistencies in the block palette.
 	 * Fill with 0 if you don't want to bother having the client verify the palette (seems pointless anyway).
 	 */
@@ -103,6 +106,8 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		string $serverSoftwareVersion,
 		UuidInterface $worldTemplateId,
 		bool $enableClientSideChunkGeneration,
+		bool $blockNetworkIdsAreHashes,
+		NetworkPermissions $networkPermissions,
 		array $blockPalette,
 		int $blockPaletteChecksum,
 		array $itemTable,
@@ -128,6 +133,8 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$result->serverSoftwareVersion = $serverSoftwareVersion;
 		$result->worldTemplateId = $worldTemplateId;
 		$result->enableClientSideChunkGeneration = $enableClientSideChunkGeneration;
+		$result->blockNetworkIdsAreHashes = $blockNetworkIdsAreHashes;
+		$result->networkPermissions = $networkPermissions;
 		$result->blockPalette = $blockPalette;
 		$result->blockPaletteChecksum = $blockPaletteChecksum;
 		$result->itemTable = $itemTable;
@@ -178,6 +185,8 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$this->blockPaletteChecksum = $in->getLLong();
 		$this->worldTemplateId = $in->getUUID();
 		$this->enableClientSideChunkGeneration = $in->getBool();
+		$this->blockNetworkIdsAreHashes = $in->getBool();
+		$this->networkPermissions = NetworkPermissions::decode($in);
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
@@ -221,6 +230,8 @@ class StartGamePacket extends DataPacket implements ClientboundPacket{
 		$out->putLLong($this->blockPaletteChecksum);
 		$out->putUUID($this->worldTemplateId);
 		$out->putBool($this->enableClientSideChunkGeneration);
+		$out->putBool($this->blockNetworkIdsAreHashes);
+		$this->networkPermissions->encode($out);
 	}
 
 	public function handle(PacketHandlerInterface $handler) : bool{

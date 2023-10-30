@@ -3,10 +3,10 @@
 namespace Emporium\Prison\commands\Default;
 
 use Emporium\Prison\Variables;
+use EmporiumData\PermissionsManager;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
@@ -15,22 +15,19 @@ class PickaxePrestigeCommand extends Command {
     public function __construct() {
         parent::__construct("pickaxeprestige", "Main command to prestige pickaxe", "/pickaxeprestige", ["pprestige", "pp"]);
         $this->setPermission("emporiumprison.command.pickaxeprestige");
-        $this->setPermissionMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
+    public function execute(CommandSender $sender, string $commandLabel, array $args): void {
 
         if(!$sender instanceof Player) {
             return;
         }
 
-        /*
-        $permission = DataManager::getData($sender, "Permissions", "emporiumprison.command.pickaxeprestige");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if ($permission === false) {
-            $sender->sendMessage(TF::RED . "No permission");
-            return false;
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
+            return;
         }
-        */
 
         /*
          * TODO

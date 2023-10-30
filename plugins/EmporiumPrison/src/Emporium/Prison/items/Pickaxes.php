@@ -2,6 +2,7 @@
 
 namespace Emporium\Prison\items;
 
+use customiesdevs\customies\item\CustomiesItemFactory;
 use Emporium\Prison\EmporiumPrison;
 
 use pocketmine\item\Durable;
@@ -59,7 +60,7 @@ class Pickaxes {
         $item = VanillaItems::STONE_PICKAXE();
         # variables
         # set nbt Data
-        $item->getNamedTag()->setString("PickaxeType", "Trainee");
+        $item->getNamedTag()->setString("PickaxeType", "Stone");
         $item->getNamedTag()->setInt("Level", 0);
         $item->getNamedTag()->setInt("Energy", 0);
         $item->getNamedTag()->setInt("SuccessfulEnchants", 0);
@@ -103,7 +104,7 @@ class Pickaxes {
         $item = VanillaItems::GOLDEN_PICKAXE();
         # variables
         # set nbt Data
-        $item->getNamedTag()->setString("PickaxeType", "Trainee");
+        $item->getNamedTag()->setString("PickaxeType", "Gold");
         $item->getNamedTag()->setInt("Level", 0);
         $item->getNamedTag()->setInt("Energy", 0);
         $item->getNamedTag()->setInt("SuccessfulEnchants", 0);
@@ -147,7 +148,7 @@ class Pickaxes {
         $item = VanillaItems::IRON_PICKAXE();
         # variables
         # set nbt Data
-        $item->getNamedTag()->setString("PickaxeType", "Trainee");
+        $item->getNamedTag()->setString("PickaxeType", "Iron");
         $item->getNamedTag()->setInt("Level", 0);
         $item->getNamedTag()->setInt("Energy", 0);
         $item->getNamedTag()->setInt("SuccessfulEnchants", 0);
@@ -192,7 +193,7 @@ class Pickaxes {
         $item = VanillaItems::DIAMOND_PICKAXE();
 
         # set nbt Data
-        $item->getNamedTag()->setString("PickaxeType", "Trainee");
+        $item->getNamedTag()->setString("PickaxeType", "Diamond");
         $item->getNamedTag()->setInt("Level", 0);
         $item->getNamedTag()->setInt("Energy", 0);
         $item->getNamedTag()->setInt("SuccessfulEnchants", 0);
@@ -235,4 +236,53 @@ class Pickaxes {
         return $item;
     }
 
+    public function energyPickaxe(): Item {
+
+        # create item
+        $item = CustomiesItemFactory::getInstance()->get("emporiumprison:energy_pickaxe");
+
+        # set nbt Data
+        $item->getNamedTag()->setString("PickaxeType", "Trainee");
+        $item->getNamedTag()->setInt("Level", 0);
+        $item->getNamedTag()->setInt("Energy", 0);
+        $item->getNamedTag()->setInt("SuccessfulEnchants", 0);
+        $item->getNamedTag()->setInt("FailedEnchants", 0);
+        $item->getNamedTag()->setInt("BlocksMined", 0);
+        $item->getNamedTag()->setString("whitescrolled", "false");
+        $item->getNamedTag()->setInt("LevelRequired", 90);
+        $item->getNamedTag()->setInt("Prestige", 0);
+
+        # prestige buffs
+        $item->getNamedTag()->setString("EnergyMastery", "locked");
+        $item->getNamedTag()->setInt("ChargeOrbSlots", 0);
+        $item->getNamedTag()->setString("XpMastery", "locked");
+        $item->getNamedTag()->setInt("XpMasteryBuff", 0);
+        $item->getNamedTag()->setString("Hoarder", "locked");
+        $item->getNamedTag()->setInt("HoarderBuff", 0);
+        $item->getNamedTag()->setString("MeteoriteMastery", "locked");
+        $item->getNamedTag()->setInt("MeteoriteMasteryBuff", 0);
+
+        # get nbt Data
+        $level = $item->getNamedTag()->getInt("Level");
+
+        if($level == 0) {
+            $item->setCustomName(TF::AQUA . "Energy Pickaxe" . TF::RESET);
+        } else {
+            $item->setCustomName(TF::AQUA . "Energy Pickaxe " . TF::BOLD . TF::GREEN . $level . TF::RESET);
+        }
+
+        # create lore
+        $lore = EmporiumPrison::getInstance()->getPickaxeManager()->createLore($item);
+
+        # set lore
+        $item->setLore($lore);
+
+        # set item unbreakable
+        if($item instanceof Durable) {
+            $item->setUnbreakable();
+        }
+
+        return $item;
+
+    }
 }

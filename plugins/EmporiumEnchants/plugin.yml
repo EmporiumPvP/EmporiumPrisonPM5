@@ -1,15 +1,17 @@
 # About
 name: EmporiumEnchants
-description: "Tetro Custom Enchants"
+description: "EmporiumPVP Custom Enchants"
 main: Tetro\EmporiumEnchants\EmporiumEnchants
 author: Tetro
 
 # Versions
 version: 1.0.0
-api: 4.9.0
+api: 5.0.0
 
 # Permissions
 permissions:
+  emporiumenchants.command.customenchants:
+    default: true
   emporiumenchants.command.enchant:
     default: op
   emporiumenchants.command.info:
@@ -20,5 +22,7 @@ permissions:
     default: op
   emporiumenchants.command.blackscroll:
     default: op
+  emporiumenchants.command.give:
+    default: true
   cmd.ce.about:
     default: false

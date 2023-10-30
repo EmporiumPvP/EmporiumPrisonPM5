@@ -62,12 +62,12 @@ class SilenceCE extends ReactiveEnchantment
             }
             // Enchantment Code
             $enemy = $event->getEntity();
-            if (!isset(self::$silence[$enemy->getId()])) {
+            if (!isset(self::$silence[$enemy->getTypeId()])) {
                 $endTime = ($level * 10);
-                self::$silence[$enemy->getId()] = new ClosureTask(function () use ($enemy, $endTime): void {
+                self::$silence[$enemy->getTypeId()] = new ClosureTask(function () use ($enemy, $endTime): void {
                     if (!$enemy->isAlive() || $enemy->isClosed() || $enemy->isFlaggedForDespawn() || $endTime < time()) {
-                        self::$silence[$enemy->getId()]->getHandler()->cancel();
-                        unset(self::$silence[$enemy->getId()]);
+                        self::$silence[$enemy->getTypeId()]->getHandler()->cancel();
+                        unset(self::$silence[$enemy->getTypeId()]);
                         return;
                     }
                     $enemy->getEffects()->remove(VanillaEffects::ABSORPTION());
@@ -76,7 +76,7 @@ class SilenceCE extends ReactiveEnchantment
                     $enemy->getEffects()->remove(VanillaEffects::JUMP_BOOST());
                     $enemy->getEffects()->remove(VanillaEffects::NIGHT_VISION());
                 });
-                $this->plugin->getScheduler()->scheduleRepeatingTask(self::$silence[$enemy->getId()], 1);
+                $this->plugin->getScheduler()->scheduleRepeatingTask(self::$silence[$enemy->getTypeId()], 1);
                 $enemy->sendTitle(TextFormat::BOLD . TextFormat::LIGHT_PURPLE . "Silence", 20, 20, 20);
                 $enemy->sendSubtitle(TextFormat::BOLD . TextFormat::LIGHT_PURPLE . "You have been Silenced!", 20, 20, 20);
                 $player->sendTitle(TextFormat::BOLD . TextFormat::LIGHT_PURPLE . "Silence", 20, 20, 20);

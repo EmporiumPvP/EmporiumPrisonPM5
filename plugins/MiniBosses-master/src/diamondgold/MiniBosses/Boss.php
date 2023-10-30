@@ -3,12 +3,10 @@
 namespace diamondgold\MiniBosses;
 
 use diamondgold\MiniBosses\data\DropsEntry;
-use EmporiumData\Provider\JsonProvider;
 use Exception;
 use LogLevel;
 use pocketmine\block\utils\DyeColor;
-use pocketmine\data\bedrock\DyeColorIdMap;
-use pocketmine\data\bedrock\DyeColorIdMapTest;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\data\SavedDataLoadingException;
 use pocketmine\entity\animation\ArmSwingAnimation;
 use pocketmine\entity\Attribute;
@@ -24,16 +22,12 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Durable;
 use pocketmine\item\Dye;
 use pocketmine\item\Item;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIdentifier;
-use pocketmine\item\ItemIds;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\JsonNbtParser;
 use pocketmine\nbt\LittleEndianNbtSerializer;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\convert\SkinAdapterSingleton;
 use pocketmine\network\mcpe\convert\TypeConverter;
 use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\network\mcpe\protocol\AddPlayerPacket;
@@ -65,7 +59,79 @@ use TypeError;
 
 class Boss extends Living
 {
-    protected Main $plugin;
+    const PROJECTILE_OPTIONS_TYPE = [
+        "networkId" => "string",
+        "fireRangeMin" => "double",
+        "fireRangeMax" => "double",
+        "speed" => "double",
+        "attackRate" => "integer",
+        "attackDamage" => "double",
+        "explodeRadius" => "double",
+        "explodeDestroyBlocks" => "boolean",
+        "health" => "double",
+        "canBeAttacked" => "boolean",
+        "despawnAfter" => "integer",
+        "gravity" => "double",
+        "canBeDeflected" => "boolean",
+        "followNearest" => "boolean",
+        "particle" => "string",
+    ];
+    const MINIONS_OPTIONS_TYPE = [
+        "name" => "string",
+        "spawnInterval" => "integer",
+        "spawnRange" => "integer",
+        "despawnAfter" => "integer",
+    ];
+    const PROJECTILE_OPTIONS_DEFAULT = [
+        "networkId" => "",
+        "fireRangeMin" => 0,
+        "fireRangeMax" => 100,
+        "speed" => 1,
+        "attackRate" => 10,
+        "attackDamage" => 1,
+        "explodeRadius" => 0,
+        "explodeDestroyBlocks" => false,
+        "health" => 1,
+        "canBeAttacked" => false,
+        "despawnAfter" => 0,
+        "gravity" => 0.04,
+        "canBeDeflected" => true,
+        "followNearest" => false,
+        "particle" => "",
+    ];
+    const BOSS_OPTIONS_DEFAULT = [
+        "enabled" => false,
+        "health" => 20,
+        "displayHealth" => "",
+        "range" => 10,
+        "attackDamage" => 1,
+        "attackRate" => 10,
+        "attackRange" => 1.5,
+        "speed" => 1,
+        "drops" => "",
+        "respawnTime" => 100,
+        "heldItem" => "",
+        "offhandItem" => "",
+        "scale" => 1,
+        "autoAttack" => false,
+        "width" => 1,
+        "height" => 1,
+        "jumpStrength" => 2,
+        "gravity" => 0.08,
+        "spreadDrops" => false,
+        "xpDrop" => 0,
+        "commands" => [],
+        "projectiles" => [],
+        "armor" => [],
+        "hurtModifiers" => [],
+        "knockbackResistance" => 0,
+        "minions" => [],
+        "topRewards" => [],
+        "movesByJumping" => false,
+    ];
+    const MINIONS_OPTIONS_DEFAULT = [
+        "despawnAfter" => 0,
+    ];
     public Position $spawnPos;
     public float $attackDamage;
     public float $speed;
@@ -106,89 +172,17 @@ class Boss extends Living
     public int $despawnAfter;
     /** @var int[] */
     public array $projectileDelay = [];
-
-    const PROJECTILE_OPTIONS_TYPE = [
-        "networkId" => "string",
-        "fireRangeMin" => "double",
-        "fireRangeMax" => "double",
-        "speed" => "double",
-        "attackRate" => "integer",
-        "attackDamage" => "double",
-        "explodeRadius" => "double",
-        "explodeDestroyBlocks" => "boolean",
-        "health" => "double",
-        "canBeAttacked" => "boolean",
-        "despawnAfter" => "integer",
-        "gravity" => "double",
-        "canBeDeflected" => "boolean",
-        "followNearest" => "boolean",
-        "particle" => "string",
-    ];
-
-    const MINIONS_OPTIONS_TYPE = [
-        "name" => "string",
-        "spawnInterval" => "integer",
-        "spawnRange" => "integer",
-        "despawnAfter" => "integer",
-    ];
-
-    const PROJECTILE_OPTIONS_DEFAULT = [
-        "networkId" => "",
-        "fireRangeMin" => 0,
-        "fireRangeMax" => 100,
-        "speed" => 1,
-        "attackRate" => 10,
-        "attackDamage" => 1,
-        "explodeRadius" => 0,
-        "explodeDestroyBlocks" => false,
-        "health" => 1,
-        "canBeAttacked" => false,
-        "despawnAfter" => 0,
-        "gravity" => 0.04,
-        "canBeDeflected" => true,
-        "followNearest" => false,
-        "particle" => "",
-    ];
-
-    const BOSS_OPTIONS_DEFAULT = [
-        "enabled" => false,
-        "health" => 20,
-        "displayHealth" => "",
-        "range" => 10,
-        "attackDamage" => 1,
-        "attackRate" => 10,
-        "attackRange" => 1.5,
-        "speed" => 1,
-        "drops" => "",
-        "respawnTime" => 100,
-        "heldItem" => "",
-        "offhandItem" => "",
-        "scale" => 1,
-        "autoAttack" => false,
-        "width" => 1,
-        "height" => 1,
-        "jumpStrength" => 2,
-        "gravity" => 0.08,
-        "spreadDrops" => false,
-        "xpDrop" => 0,
-        "commands" => [],
-        "projectiles" => [],
-        "armor" => [],
-        "hurtModifiers" => [],
-        "knockbackResistance" => 0,
-        "minions" => [],
-        "topRewards" => [],
-        "movesByJumping" => false,
-    ];
-
-    const MINIONS_OPTIONS_DEFAULT = [
-        "despawnAfter" => 0,
-    ];
+    protected Main $plugin;
 
     public function __construct(Location $location, ?CompoundTag $nbt = null, string $drops)
     {
         $this->strDrops = $drops;
         parent::__construct($location, $nbt);
+    }
+
+    public static function getNetworkTypeId(): string
+    {
+        return "Boss";
     }
 
     public function initEntity(CompoundTag $nbt): void
@@ -220,6 +214,16 @@ class Boss extends Living
         }
     }
 
+    protected function log(string $level, string $msg): void
+    {
+        $this->plugin->getLogger()->log($level, "[" . ($this->isMinion ? "Minion$this->minionId " . $this->getName() : $this->getName()) . "] " . $msg);
+    }
+
+    public function getName(): string
+    {
+        return $this->getNameTag();
+    }
+
     /**
      * @param mixed[] $data
      * @param bool $validateMinions
@@ -233,12 +237,7 @@ class Boss extends Living
         $this->setScale($this->scale = $this->validateType($data, "scale", "double"));
         $this->networkId = $this->validateType($data, "networkId", "string");
         $this->range = $this->validateType($data, "range", "integer");
-        $this->spawnPos = new Position(
-            $this->validateType($data, "x", "double"),
-            $this->validateType($data, "y", "double"),
-            $this->validateType($data, "z", "double"),
-            $this->server->getWorldManager()->getWorldByName($this->validateType($data, "world", "string"))
-        );
+        $this->spawnPos = $this->location->asPosition();
         $this->attackDamage = $this->validateType($data, "attackDamage", "double");
         $this->attackRate = $this->validateType($data, "attackRate", "double");
         $this->attackRange = $this->validateType($data, "attackRange", "double", $this->scale * $this->width / 2 + 1);
@@ -463,16 +462,6 @@ class Boss extends Living
         return VanillaItems::AIR();
     }
 
-    protected function log(string $level, string $msg): void
-    {
-        $this->plugin->getLogger()->log($level, "[" . ($this->isMinion ? "Minion$this->minionId " . $this->getName() : $this->getName()) . "] " . $msg);
-    }
-
-    public function getName(): string
-    {
-        return $this->getNameTag();
-    }
-
     public function setNameTag(string $name): void
     {
         if ($this->getNameTag() === "") {
@@ -486,7 +475,7 @@ class Boss extends Living
     {
         if ($this->networkId === EntityIds::PLAYER) {
             if ($this->skin === null) {
-                throw new AssumptionFailedError("Boss ".$this->getName()." has no skin");
+                throw new AssumptionFailedError("Boss " . $this->getName() . " has no skin");
             }
             $uuid = Uuid::uuid4();
             $player->getNetworkSession()->sendDataPacket(PlayerListPacket::add([PlayerListEntry::createAdditionEntry($uuid, $this->id, $this->getName(), SkinAdapterSingleton::get()->toSkinData($this->skin))]));
@@ -549,7 +538,7 @@ class Boss extends Living
         if ($this->knockbackTicks > 0) {
             $this->knockbackTicks--;
         }
-        if ($this->isMinion && $this->despawnAfter > 0 && $this->ticksLived >= $this->despawnAfter) {
+        if ($this->despawnAfter > 0 && $this->ticksLived >= $this->despawnAfter) {
             $this->flagForDespawn();
         }
         if ($this->isAlive()) {
@@ -682,6 +671,33 @@ class Boss extends Living
         return !$this->closed;
     }
 
+    public function attack(EntityDamageEvent $source): void
+    {
+        if (isset($this->hurtModifiers[$source->getCause()])) {
+            $source->setBaseDamage($source->getBaseDamage() * $this->hurtModifiers[$source->getCause()]);
+        }
+        parent::attack($source);
+        if (!$source->isCancelled() && $source instanceof EntityDamageByEntityEvent) {
+            if (strlen($this->displayHealth)) {
+                $length = 20;
+                $green = (int)($this->getHealth() / $this->getMaxHealth() * $length);
+                $this->setScoreTag(
+                    str_replace(
+                        ["{HEALTH}", "{MAX_HEALTH}", "{BAR}"],
+                        [$this->getHealth(), $this->getMaxHealth(), str_repeat('|', $green) . TextFormat::GRAY . str_repeat('|', $length - $green)],
+                        $this->displayHealth
+                    )
+                );
+            }
+            $dmg = $source->getDamager();
+            if ($dmg instanceof Player) {
+                $this->setTargetEntity($dmg);
+                $this->knockbackTicks = 10;
+                $this->topDamage[$dmg->getName()] = $source->getFinalDamage() + ($this->topDamage[$dmg->getName()] ?? 0);
+            }
+        }
+    }
+
     /**
      * @param int $id
      * @param float[]|bool[]|string[] $option
@@ -721,33 +737,6 @@ class Boss extends Living
         return null;
     }
 
-    public function attack(EntityDamageEvent $source): void
-    {
-        if (isset($this->hurtModifiers[$source->getCause()])) {
-            $source->setBaseDamage($source->getBaseDamage() * $this->hurtModifiers[$source->getCause()]);
-        }
-        parent::attack($source);
-        if (!$source->isCancelled() && $source instanceof EntityDamageByEntityEvent) {
-            if (strlen($this->displayHealth)) {
-                $length = 20;
-                $green = (int)($this->getHealth() / $this->getMaxHealth() * $length);
-                $this->setScoreTag(
-                    str_replace(
-                        ["{HEALTH}", "{MAX_HEALTH}", "{BAR}"],
-                        [$this->getHealth(), $this->getMaxHealth(), str_repeat('|', $green) . TextFormat::GRAY . str_repeat('|', $length - $green)],
-                        $this->displayHealth
-                    )
-                );
-            }
-            $dmg = $source->getDamager();
-            if ($dmg instanceof Player) {
-                $this->setTargetEntity($dmg);
-                $this->knockbackTicks = 10;
-                $this->topDamage[$dmg->getName()] = $source->getFinalDamage() + ($this->topDamage[$dmg->getName()] ?? 0);
-            }
-        }
-    }
-
     public function kill(): void
     {
         parent::kill();
@@ -775,23 +764,6 @@ class Boss extends Living
         }
         if (!$this->isMinion && $this->respawnTime >= 0) {
             $this->plugin->respawn($this->getName(), $this->respawnTime);
-        }
-    }
-
-    protected function onDeath(): void
-    {
-        if ($this->spreadDrops) {
-            $id = Entity::nextRuntimeId() + 1;
-        }
-        parent::onDeath();
-        if (isset($id)) {
-            $now = Entity::nextRuntimeId();
-            for ($i = $id; $i < $now; $i++) {
-                $e = $this->getWorld()->getEntity($i);
-                if ($e instanceof ItemEntity || $e instanceof ExperienceOrb) {
-                    $e->setMotion($e->getMotion()->multiply(3));
-                }
-            }
         }
     }
 
@@ -824,18 +796,32 @@ class Boss extends Living
         unset($this->heldItem);
     }
 
+    public function getOffsetPosition(Vector3 $vector3): Vector3
+    {
+        return $this->networkId === EntityIds::PLAYER ? $vector3->add(0, 1.621, 0) : parent::getOffsetPosition($vector3);
+    }
+
+    protected function onDeath(): void
+    {
+        if ($this->spreadDrops) {
+            $id = Entity::nextRuntimeId() + 1;
+        }
+        parent::onDeath();
+        if (isset($id)) {
+            $now = Entity::nextRuntimeId();
+            for ($i = $id; $i < $now; $i++) {
+                $e = $this->getWorld()->getEntity($i);
+                if ($e instanceof ItemEntity || $e instanceof ExperienceOrb) {
+                    $e->setMotion($e->getMotion()->multiply(3));
+                }
+            }
+        }
+    }
+
     protected function getInitialSizeInfo(): EntitySizeInfo
     {
         return new EntitySizeInfo($this->height ?? $this->scale, $this->width ?? $this->scale);
     }
 
-    public static function getNetworkTypeId(): string
-    {
-        return "Boss";
-    }
-
-    public function getOffsetPosition(Vector3 $vector3): Vector3
-    {
-        return $this->networkId === EntityIds::PLAYER ? $vector3->add(0, 1.621, 0) : parent::getOffsetPosition($vector3);
-    }
+    #private function onDefendPlayer()
 }

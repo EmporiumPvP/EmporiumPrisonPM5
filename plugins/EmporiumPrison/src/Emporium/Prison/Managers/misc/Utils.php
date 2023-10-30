@@ -3,6 +3,7 @@
 namespace Emporium\Prison\Managers\misc;
 
 use Exception;
+use pocketmine\inventory\Inventory;
 use pocketmine\utils\TextFormat;
 
 class Utils {
@@ -31,6 +32,31 @@ class Utils {
             "white" => TextFormat::WHITE,
         };
         return $translatedColour;
+    }
+
+    public static function getNextCenteredSlot(Inventory $inventory): ?int{
+        $size = $inventory->getSize();
+        $center = (int)floor(($size -1) / 2);
+        for ($i = 0; $i < $size / 2; $i++) {
+            if ($inventory->isSlotEmpty($slot = $center - $i) || $inventory->isSlotEmpty($slot = $center + $i)) return $slot;
+        }
+        return null;
+    }
+
+    public static function romanNumeral(int $number): String {
+
+        return match ($number) {
+            1 => "I",
+            2 => "II",
+            3 => "III",
+            4 => "IV",
+            5 => "V",
+            6 => "VI",
+            7 => "VII",
+            8 => "VIII",
+            9 => "IX",
+            10 => "X"
+        };
     }
 
 }

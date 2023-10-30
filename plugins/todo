@@ -1,0 +1,60 @@
+#######################
+# Emporium Prison 1.0 #
+#######################
+
+########
+# BUGS #
+########
+boss (loot not dropping)
+change default world - respawn in tutorial (when player hasn't complete tutorial)
+merge Variables file from core and prison or rename
+fix prison break
+
+##########
+# Checks #
+##########
+double check confirmation messages/sounds/error messages
+
+############
+# FEATURES #
+############
+add player level limit when applying armour (need level 30 to wear gold armour etc)
+implement the rest of the meteor flare rarity
+implement gkit flare - started need to create the block spawn event and block listener
+implement position checks when calling flares (not at spawn, on mine platforms etc)
+change wormhole to entity based
+
+auction house working with custom economy system
+
+clean up and shorten a lot of code
+
+######################
+# migration to api 5 #
+######################
+
+enchants:
+Tools/
+Global/
+
+prison:
+ArmourListener
+
+mini-bosses needs updating
+entity api needs updating
+
+
+#######################
+# Emporium Prison 2.0 #
+#######################
+
+###################
+# System upgrades #
+###################
+
+change to MySQL database
+Convert meteor system to the new BlockData library (possibly)
+
+###################
+# Feature Updates #
+###################
+convert forms (InvMenu) to json ui

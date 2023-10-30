@@ -431,7 +431,7 @@ class Utils {
 
     # If Item Matches
     public static function itemMatchesItemType(Item $item, int $enchantType): bool {
-        if ($item->getId() === ItemIds::BOOK || $item->getId() === ItemIds::ENCHANTED_BOOK) return true;
+        if ($item->getTypeId() == VanillaItems::BOOK()->getTypeId() || $item->getTypeId() == VanillaItems::ENCHANTED_BOOK()->getTypeId()) return true;
 
         return match ($enchantType) {
             CustomEnchant::ITEM_TYPE_GLOBAL => true,
@@ -441,7 +441,7 @@ class Utils {
             CustomEnchant::ITEM_TYPE_AXE => $item instanceof Axe,
             CustomEnchant::ITEM_TYPE_SCYTHE => $item instanceof Hoe,
             CustomEnchant::ITEM_TYPE_TOOLS => $item instanceof Tool,
-            CustomEnchant::ITEM_TYPE_ARMOR => ($item instanceof Armor || $item->getId() === ItemIds::ELYTRA),
+            CustomEnchant::ITEM_TYPE_ARMOR => $item instanceof Armor,
             CustomEnchant::ITEM_TYPE_HELMET => self::isHelmet($item),
             CustomEnchant::ITEM_TYPE_CHESTPLATE => self::isChestplate($item),
             CustomEnchant::ITEM_TYPE_LEGGINGS => self::isLeggings($item),
@@ -457,13 +457,13 @@ class Utils {
             if (!$otherEnchant instanceof CustomEnchant) continue;
 
             if (
-                isset(self::INCOMPATIBLE_ENCHANTS[$otherEnchant->getId()]) &&
-                in_array($enchant->getId(), self::INCOMPATIBLE_ENCHANTS[$otherEnchant->getId()], true)
+                isset(self::INCOMPATIBLE_ENCHANTS[$otherEnchant->getTypeId()]) &&
+                in_array($enchant->getTypeId(), self::INCOMPATIBLE_ENCHANTS[$otherEnchant->getTypeId()], true)
             ) return false;
 
             if (
-                isset(self::INCOMPATIBLE_ENCHANTS[$enchant->getId()]) &&
-                in_array($otherEnchant->getId(), self::INCOMPATIBLE_ENCHANTS[$enchant->getId()], true)
+                isset(self::INCOMPATIBLE_ENCHANTS[$enchant->getTypeId()]) &&
+                in_array($otherEnchant->getTypeId(), self::INCOMPATIBLE_ENCHANTS[$enchant->getTypeId()], true)
             ) return false;
         }
 

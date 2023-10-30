@@ -3,14 +3,13 @@
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Event;
 
 use pocketmine\inventory\Inventory;
 
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\item\StringToItemParser;
 
 use pocketmine\player\Player;
@@ -24,9 +23,9 @@ class OreSurgeCE extends ReactiveEnchantment {
     public string $name = "Ore Surge";
     public string $description = "Chance to shoot a bolt of energy into the ore enriching it .";
     public int $rarity = CustomEnchant::RARITY_LEGENDARY;
-    public int $cooldownDuration = 0;
+    public int $cooldownDuration = 30;
     public int $maxLevel = 10;
-    public int $chance = 1;
+    public int $chance = 500;
 
     # Compatibility
     public int $usageType = CustomEnchant::TYPE_HAND;
@@ -38,82 +37,63 @@ class OreSurgeCE extends ReactiveEnchantment {
         return [BlockBreakEvent::class];
     }
 
-    private array $blocks = [
-        ItemIds::COAL_ORE, ItemIds::COAL_BLOCK,
-        ItemIds::IRON_ORE, ItemIds::IRON_BLOCK,
-        ItemIds::LAPIS_ORE, ItemIds::LAPIS_BLOCK,
-        ItemIds::REDSTONE_ORE, ItemIds::REDSTONE_BLOCK,
-        ItemIds::GOLD_ORE, ItemIds::GOLD_BLOCK,
-        ItemIds::DIAMOND_ORE, ItemIds::DIAMOND_BLOCK,
-        ItemIds::EMERALD_ORE, ItemIds::EMERALD_BLOCK
-    ];
-
     private array $ores = [
-        BlockLegacyIds::COAL_ORE,
-        BlockLegacyIds::COAL_BLOCK,
-        BlockLegacyIds::IRON_ORE,
-        BlockLegacyIds::IRON_BLOCK,
-        BlockLegacyIds::LAPIS_ORE,
-        BlockLegacyIds::LAPIS_BLOCK,
-        BlockLegacyIds::REDSTONE_ORE,
-        BlockLegacyIds::LIT_REDSTONE_ORE,
-        BlockLegacyIds::REDSTONE_BLOCK,
-        BlockLegacyIds::GOLD_ORE,
-        BlockLegacyIds::GOLD_BLOCK,
-        BlockLegacyIds::DIAMOND_ORE,
-        BlockLegacyIds::DIAMOND_BLOCK,
-        BlockLegacyIds::EMERALD_ORE,
-        BlockLegacyIds::EMERALD_BLOCK,
-        BlockLegacyIds::QUARTZ_ORE
+        BlockTypeIds::COAL_ORE, BlockTypeIds::COAL,
+        BlockTypeIds::IRON_ORE, BlockTypeIds::IRON,
+        BlockTypeIds::LAPIS_LAZULI_ORE, BlockTypeIds::LAPIS_LAZULI,
+        BlockTypeIds::REDSTONE_ORE, BlockTypeIds::REDSTONE,
+        BlockTypeIds::GOLD_ORE, BlockTypeIds::GOLD,
+        BlockTypeIds::DIAMOND_ORE, BlockTypeIds::DIAMOND,
+        BlockTypeIds::EMERALD_ORE, BlockTypeIds::EMERALD,
+        BlockTypeIds::NETHER_QUARTZ_ORE, BlockTypeIds::QUARTZ
     ];
 
     # Enchantment
     public function react(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void {
 
+        if(!$event instanceof BlockBreakEvent) return;
+
+        if ($event->isCancelled()) return;
+
         // Chance
-        $chance = floor(500 / $level);
-        if (mt_rand(1, $chance) !== mt_rand(1, $chance)) {
-            return;
+        $chance = floor($this->chance / $level);
+        if (mt_rand(1, $chance) !== mt_rand(1, $chance)) return;
+
+        if(!in_array($event->getBlock()->getTypeId(), $this->ores)) return;
+
+        $amount = (mt_rand(5, 25) * $level);
+        switch($event->getBlock()->getTypeId()) {
+
+            case BlockTypeIds::COAL_ORE:
+                $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("coal_ore")->setCount($amount));
+                break;
+
+            case BlockTypeIds::IRON_ORE:
+                $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("iron_ore")->setCount($amount));
+                break;
+
+            case BlockTypeIds::LAPIS_LAZULI_ORE:
+                $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("lapis_ore")->setCount($amount));
+                break;
+
+            case BlockTypeIds::REDSTONE_ORE:
+                $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("redstone_ore")->setCount($amount));
+                break;
+
+            case BlockTypeIds::GOLD_ORE:
+                $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("gold_ore")->setCount($amount));
+                break;
+
+            case BlockTypeIds::DIAMOND_ORE:
+                $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("diamond_ore")->setCount($amount));
+                break;
+
+            case BlockTypeIds::EMERALD_ORE:
+                $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("emerald_ore")->setCount($amount));
+                break;
         }
-        // Enchantment Code
-        if ($event instanceof BlockBreakEvent) {
-            $block = $event->getBlock();
-            if(in_array($block->getIdInfo()->getBlockId(), $this->blocks)) {
-                $amount = (mt_rand(5, 25) * $level);
-                switch($block->getIdInfo()->getBlockId()) {
-
-                    case ItemIds::COAL_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("coal_ore")->setCount($amount));
-                        break;
-
-                    case ItemIds::IRON_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("iron_ore")->setCount($amount));
-                        break;
-
-                    case ItemIds::LAPIS_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("lapis_ore")->setCount($amount));
-                        break;
-
-                    case ItemIds::REDSTONE_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("redstone_ore")->setCount($amount));
-                        break;
-
-                    case ItemIds::GOLD_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("gold_ore")->setCount($amount));
-                        break;
-
-                    case ItemIds::DIAMOND_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("diamond_ore")->setCount($amount));
-                        break;
-
-                    case ItemIds::EMERALD_ORE:
-                        $player->getInventory()->addItem(StringToItemParser::getInstance()->parse("emerald_ore")->setCount($amount));
-                        break;
-                }
-                $player->sendMessage(TextFormat::RED . "Ore Surge");
-                $this->setCooldown($player, 1);
-            }
-        }
+        $player->sendMessage(TextFormat::RED . "Ore Surge");
+        $this->setCooldown($player, $this->cooldownDuration);
     }
 
     public function getPriority(): int

@@ -2,10 +2,13 @@
 
 namespace EmporiumCore\Commands\Default;
 
+use Emporium\Prison\Variables;
 use EmporiumData\PermissionsManager;
+
 use muqsit\playervaults\PlayerVaults;
 use muqsit\playervaults\vault\Vault;
 use muqsit\playervaults\vault\VaultAccess;
+
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -24,8 +27,9 @@ class ItemsCommand extends Command {
             return;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.items");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if(!$permission) {
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
             return;
         }
 
@@ -37,9 +41,10 @@ class ItemsCommand extends Command {
             $inventory = $vault->getInventory();
             if(count($inventory->getContents()) === 0) {
                 $sender->sendMessage(TextFormat::RED . "You have no Items in your collection chest");
-            } else {
-                $vaults->openVault($sender, $sender->getName(), 10);
+                return;
             }
+            $vaults->openVault($sender, $sender->getName(), 10);
+
             $access->release(); // unloads vault and if necessary, saves vault
         });
     }

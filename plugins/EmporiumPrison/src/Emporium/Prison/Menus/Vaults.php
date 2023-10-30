@@ -2,48 +2,49 @@
 
 namespace Emporium\Prison\Menus;
 
-use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\library\formapi\SimpleForm;
 use Emporium\Prison\Managers\misc\GlowManager;
 
 use EmporiumData\PermissionsManager;
 
-use muqsit\playervaults\PlayerVaults;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
+use muqsit\invmenu\type\InvMenuTypeIds;
+use muqsit\playervaults\PlayerVaults;
 
+use pocketmine\block\VanillaBlocks;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\sound\EnderChestCloseSound;
 use pocketmine\world\sound\NoteInstrument;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\item\StringToItemParser;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\NoteSound;
 
 class Vaults extends Menu {
 
-    public function open(Player $player): void
-    {
-        $this->Form($player);
-    }
-
     public function Inventory($player): void {
 
-        $menu = InvMenu::create(EmporiumPrison::TYPE_DISPENSER);
+        $menu = InvMenu::create(InvMenuTypeIds::TYPE_CHEST);
         $menu->setName(TF::BOLD . "Vaults");
         $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) {
             $player = $transaction->getPlayer();
             $itemClicked = $transaction->getItemClicked();
-            $itemClickedId = $itemClicked->getId();
+            $itemClickedId = abs($itemClicked->getTypeId());
 
             /** @var PlayerVaults $vaults */
             $vaults = Server::getInstance()->getPluginManager()->getPlugin("PlayerVaults");
 
-            if($itemClickedId === ItemIds::OBSIDIAN) {
+            if($itemClickedId == VanillaBlocks::OBSIDIAN()->getTypeId()) {
                 $player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 12), [$player]);
-            } elseif($itemClickedId === ItemIds::ENDER_CHEST) {
+            } elseif($itemClickedId === VanillaBlocks::ENDER_CHEST()->getTypeId()) {
+
+                /* CHANGE TO THIS WHEN CRASH IS FIXED
+                if(!$itemClicked->getNamedTag()->getTag("pv")) return;
+                $vaults->openVault($player, $player->getName(), $itemClicked->getNamedTag()->getInt("pv"));
+                */
+
                 if ($itemClicked->getNamedTag()->getInt("pv") === 1) {
                     $vaults->openVault($player, $player->getName(), 1);
                 } elseif ($itemClicked->getNamedTag()->getInt("pv") === 2) {
@@ -68,15 +69,15 @@ class Vaults extends Menu {
         }));
         $inventory = $menu->getInventory();
 
-        $inventory->setItem(0, $this->pv1());
-        $inventory->setItem(1, $this->pv2($player));
-        $inventory->setItem(2, $this->pv3($player));
-        $inventory->setItem(3, $this->pv4($player));
-        $inventory->setItem(4, $this->pv5($player));
-        $inventory->setItem(5, $this->pv6($player));
-        $inventory->setItem(6, $this->pv7($player));
-        $inventory->setItem(7, $this->pv8($player));
-        $inventory->setItem(8, $this->pv9($player));
+        $inventory->setItem(9, $this->pv1());
+        $inventory->setItem(10, $this->pv2($player));
+        $inventory->setItem(11, $this->pv3($player));
+        $inventory->setItem(12, $this->pv4($player));
+        $inventory->setItem(13, $this->pv5($player));
+        $inventory->setItem(14, $this->pv6($player));
+        $inventory->setItem(15, $this->pv7($player));
+        $inventory->setItem(16, $this->pv8($player));
+        $inventory->setItem(17, $this->pv9($player));
 
         $menu->send($player);
     }
@@ -94,7 +95,7 @@ class Vaults extends Menu {
         return $item;
     } # all players have minimum 1 pv
     public function pv2($player): Item {
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.2");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.2"]);
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 2);
         if($permission) {
@@ -112,7 +113,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv3($player): Item {
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.3");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.3"]);
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 3);
         if($permission) {
@@ -130,7 +131,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv4($player): Item {
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.4");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.4"]);
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 4);
         if($permission) {
@@ -148,7 +149,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv5($player): Item {
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.5");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.5"]);
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 5);
         if($permission) {
@@ -166,7 +167,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv6($player): Item {
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.6");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.6"]);
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 6);
         if($permission) {
@@ -184,7 +185,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv7($player): Item {
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.7");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.7"]);
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 7);
         if($permission) {
@@ -202,7 +203,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv8($player): Item {
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.8");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.8"]);
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 8);
         if($permission) {
@@ -220,7 +221,7 @@ class Vaults extends Menu {
         return $item;
     }
     public function pv9($player): Item {
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.9");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.9"]);
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->getNamedTag()->setInt("pv", 9);
         if($permission) {
@@ -255,8 +256,8 @@ class Vaults extends Menu {
                     break;
 
                 case 1:
-                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.2")) {
-                        $vaults->openVault($player, $player->getName(), 1);
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.2"])) {
+                        $vaults->openVault($player, $player->getName(), 2);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
                         $player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 12), [$player]);
@@ -264,8 +265,8 @@ class Vaults extends Menu {
                     break;
 
                 case 2:
-                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.3")) {
-                        $vaults->openVault($player, $player->getName(), 1);
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.3"])) {
+                        $vaults->openVault($player, $player->getName(), 3);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
                         $player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 12), [$player]);
@@ -273,8 +274,8 @@ class Vaults extends Menu {
                     break;
 
                 case 3:
-                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.4")) {
-                        $vaults->openVault($player, $player->getName(), 1);
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.4"])) {
+                        $vaults->openVault($player, $player->getName(), 4);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
                         $player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 12), [$player]);
@@ -282,8 +283,8 @@ class Vaults extends Menu {
                     break;
 
                 case 4:
-                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.5")) {
-                        $vaults->openVault($player, $player->getName(), 1);
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.5"])) {
+                        $vaults->openVault($player, $player->getName(), 5);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
                         $player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 12), [$player]);
@@ -291,8 +292,8 @@ class Vaults extends Menu {
                     break;
 
                 case 5:
-                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.6")) {
-                        $vaults->openVault($player, $player->getName(), 1);
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.6"])) {
+                        $vaults->openVault($player, $player->getName(), 6);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
                         $player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 12), [$player]);
@@ -300,8 +301,8 @@ class Vaults extends Menu {
                     break;
 
                 case 6:
-                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.7")) {
-                        $vaults->openVault($player, $player->getName(), 1);
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.7"])) {
+                        $vaults->openVault($player, $player->getName(), 7);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
                         $player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 12), [$player]);
@@ -309,8 +310,8 @@ class Vaults extends Menu {
                     break;
 
                 case 7:
-                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.8")) {
-                        $vaults->openVault($player, $player->getName(), 1);
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.8"])) {
+                        $vaults->openVault($player, $player->getName(), 8);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
                         $player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 12), [$player]);
@@ -318,8 +319,8 @@ class Vaults extends Menu {
                     break;
 
                 case 8:
-                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.9")) {
-                        $vaults->openVault($player, $player->getName(), 1);
+                    if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.9"])) {
+                        $vaults->openVault($player, $player->getName(), 9);
                     } else {
                         $player->sendMessage(TF::RED . "That Vault is locked, unlock with a Vault Token or Purchase from the store.");
                         $player->broadcastSound(new NoteSound(NoteInstrument::DOUBLE_BASS(), 12), [$player]);
@@ -330,7 +331,7 @@ class Vaults extends Menu {
         $form->setTitle(TF::BOLD . "Vaults");
 
         for ($i = 1; $i <= 9; $i++) {
-            if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), "playervaults.vault.$i")) {
+            if(PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["playervaults.vault.$i"])) {
                 $form->addButton(TF::AQUA . "Vault" . TF::WHITE . " $i");
                 continue;
             }
@@ -340,6 +341,5 @@ class Vaults extends Menu {
         }
 
         $player->sendForm($form);
-
-    } # END OF EXECUTE
+    }
 }

@@ -2,12 +2,12 @@
 
 namespace Tetro\EmporiumEnchants\Core;
 
+use customiesdevs\customies\item\CustomiesItemFactory;
 use Emporium\Prison\Managers\misc\Translator;
 
 use Exception;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\Item;
-use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
 
 class BookManager {
@@ -182,15 +182,14 @@ class BookManager {
     }
 
     public function createLore(Item $item, int $enchantId, int $level, int $rarity, int $success, int $energyNeeded, int $energy): array {
-        # energy data
-        $translatedEnergy = Translator::shortNumber($energy);
-        $translatedEnergyNeeded = Translator::shortNumber($energyNeeded);
+
         # enchant data
         $fail = 100 - $success;
         $enchant = CustomEnchantManager::getEnchantment($enchantId);
         $description = $enchant->getDescription();
         $maximumLevel = $enchant->getMaxLevel();
         $type = $enchant->getItemType();
+
         # translate enchant type
         $applicableTo = match ($type) {
             CustomEnchant::ITEM_TYPE_GLOBAL => TF::WHITE . "All",
@@ -205,22 +204,24 @@ class BookManager {
             CustomEnchant::ITEM_TYPE_BOOTS => TF::WHITE . "Boots",
             CustomEnchant::ITEM_TYPE_TOOLS => TF::WHITE . "Tools",
         };
+
         # create energy bar
         $energyBar = $this->createEnergyBar($item, $level, $rarity);
+
         # create lore
         return [
             TF::RESET . TF::GRAY . $description,
-            TF::EOL,
+            " ",
             TF::RESET . TF::BOLD . TF::GREEN . $success . "% Success rate",
             TF::RESET . TF::BOLD . TF::RED . $fail . "% fail rate",
-            TF::EOL,
+            " ",
             TF::RESET . TF::BOLD . TF::AQUA . "Energy",
             TF::RESET . "$energyBar",
-            TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . " / $translatedEnergyNeeded)",
-            TF::EOL,
+            TF::RESET . TF::GRAY . "(" . TF::WHITE . Translator::numberFormat($energy) . TF::GRAY . " / " . Translator::numberFormat($energyNeeded) .")",
+            " ",
             TF::RESET . TF::GRAY . "Maximum Level: " . TF::WHITE . $maximumLevel,
             TF::RESET . TF::GRAY . "Applicable to: " . TF::WHITE . $applicableTo,
-            TF::EOL,
+            " ",
             TF::RESET . TF::GRAY . "Drag n' Drop onto an item to enchant"
         ];
     }
@@ -231,6 +232,7 @@ class BookManager {
     public function EnchantedBook($enchant, int $level, int $rarity, int $id, int $success): Item {
 
         $energyNeeded = $this->getBookEnergyNeeded($level, $rarity);
+
         # get rarity colour
         $translatedRarityColour = match ($rarity) {
             800 => TF::BLUE,
@@ -242,6 +244,7 @@ class BookManager {
             806 => TF::WHITE,
             default => TF::GRAY
         };
+
         # get rarity name
         $translatedRarity = match ($rarity) {
             800 => "Elite",
@@ -253,11 +256,22 @@ class BookManager {
             806 => TF::WHITE . "Pickaxe",
             default => TF::GRAY . "Unknown"
         };
+
+        $bookType = match ($rarity) {
+            800 => "emporiumenchants:elite_book",
+            801 => "emporiumenchants:ultimate_book",
+            802 => "emporiumenchants:legendary_book",
+            803 => "emporiumenchants:godly_book",
+            804 => "emporiumenchants:heroic_book",
+            805 => "emporiumenchants:executive_book",
+            default => "Unknown"
+        };
         # create item
-        $item = VanillaItems::BOOK();
+        $item = CustomiesItemFactory::getInstance()->get($bookType);
         $item->setCustomName(TF::BOLD . $translatedRarityColour . $enchant->getDisplayName() . " " . TF::RESET . TF::AQUA . Translator::romanNumber($level));
+
         # set item tags
-        $item->getNamedTag()->setInt("CustomEnchantBook", 0);
+        $item->getNamedTag()->setInt("OpenedCustomEnchantBook", 0);
         $item->getNamedTag()->setInt("level", $level);
         $item->getNamedTag()->setString("RarityName", $translatedRarity);
         $item->getNamedTag()->setInt("Rarity", $rarity);
@@ -266,9 +280,11 @@ class BookManager {
         $item->getNamedTag()->setInt("id", $id);
         $item->getNamedTag()->setInt("Success", $success);
         $energy = $item->getNamedTag()->getInt("Energy");
+
         # set the lore
         $lore = $this->createLore($item, $id, $level, $rarity, $success, $energyNeeded, $energy);
         $item->setLore($lore);
+
         # add enchant
         $item->addEnchantment(new EnchantmentInstance($enchant, $level));
 

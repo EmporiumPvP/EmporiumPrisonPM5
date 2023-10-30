@@ -74,8 +74,8 @@ class Crucible {
         $item->addEnchantment(new EnchantmentInstance($enchant7, $enchant7Level));
         return $item;
     }
-    public function pickaxe($player): Item {
-        $pickaxe = new Pickaxes($player);
+    public function pickaxe(): Item {
+        $pickaxe = new Pickaxes();
         $item = $pickaxe->Gold();
         $item->setCustomName(TF::BOLD . TF::YELLOW . "Crucible Pickaxe");
         return $item;

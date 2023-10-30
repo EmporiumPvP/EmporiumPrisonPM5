@@ -86,7 +86,7 @@ class CustomEnchant extends Enchantment {
     }
 
     # Get ID
-    public function getId(): int {
+    public function getTypeId(): int {
         return $this->id;
     }
 

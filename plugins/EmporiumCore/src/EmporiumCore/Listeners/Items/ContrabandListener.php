@@ -4,19 +4,25 @@ namespace EmporiumCore\Listeners\Items;
 
 use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\Managers\misc\Translator;
+
 use EmporiumCore\EmporiumCore;
+use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Tasks\Utils\DelayedFireworks;
 use EmporiumCore\Tasks\Utils\DespawnContrabandTask;
 use EmporiumCore\Tasks\Utils\SpawnContrabandReward;
+
 use EmporiumData\DataManager;
+
 use pocketmine\block\VanillaBlocks;
 use pocketmine\entity\Location;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\VanillaItems;
+use pocketmine\math\Facing;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\TotemUseSound;
+
 use Tetro\EmporiumEnchants\EmporiumEnchants;
 
 class ContrabandListener implements Listener {
@@ -34,6 +40,7 @@ class ContrabandListener implements Listener {
 
         if($item->getNamedTag()->getTag("EliteContraband")) {
 
+            WebhookEvent::itemWebhook($player, "EliteContraband");
             # remove 1 from count
             $player->getInventory()->setItemInHand($item->setCount($count - 1));
             # send confirmation message
@@ -68,12 +75,15 @@ class ContrabandListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("UltimateContraband")) {
+
+            WebhookEvent::itemWebhook($player, "UltimateContraband");
+
             $player->getInventory()->setItemInHand($item->setCount($count - 1));
 
             $player->sendMessage(TF::BOLD . TF::GRAY . "Opening Contraband...");
             $player->broadcastSound(new TotemUseSound());
             # spawn block
-            $world->setBlockAt($x, $y + 2, $z, VanillaBlocks::ENDER_CHEST());
+            $world->setBlockAt($x, $y + 2, $z, VanillaBlocks::ENDER_CHEST()->setFacing(Facing::opposite($player->getHorizontalFacing())));
             EmporiumCore::getInstance()->getScheduler()->scheduleDelayedTask(new DespawnContrabandTask($world, $x, $y, $z), 240);
             # send fireworks
             EmporiumCore::getInstance()->getScheduler()->scheduleDelayedTask(new DelayedFireworks($player), 160);
@@ -100,6 +110,9 @@ class ContrabandListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("LegendaryContraband")) {
+
+            WebhookEvent::itemWebhook($player, "LegendaryContraband");
+
             $player->getInventory()->setItemInHand($item->setCount($count - 1));
 
             $player->sendMessage(TF::BOLD . TF::GRAY . "Opening Contraband...");
@@ -132,6 +145,9 @@ class ContrabandListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("GodlyContraband")) {
+
+            WebhookEvent::itemWebhook($player, "GodlyContraband");
+
             $player->getInventory()->setItemInHand($item->setCount($count - 1));
 
             $player->sendMessage(TF::BOLD . TF::GRAY . "Opening Contraband...");
@@ -164,6 +180,9 @@ class ContrabandListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicContraband")) {
+
+            WebhookEvent::itemWebhook($player, "HeroicContraband");
+
             $player->getInventory()->setItemInHand($item->setCount($count - 1));
 
             $player->sendMessage(TF::BOLD . TF::GRAY . "Opening Contraband...");

@@ -27,7 +27,7 @@ class BlackScrollCommand extends Command {
             return;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumenchants.command.blackscroll");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if(!$permission) return;
 
         if(isset($args[0])) {

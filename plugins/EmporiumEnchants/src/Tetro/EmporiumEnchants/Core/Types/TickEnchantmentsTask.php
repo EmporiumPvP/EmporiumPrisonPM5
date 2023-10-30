@@ -5,15 +5,13 @@ namespace Tetro\EmporiumEnchants\Core\Types;
 
 # Pocketmine Packages
 use pocketmine\item\Item;
-use pocketmine\item\ItemFactory;
-use pocketmine\item\ItemIds;
+use pocketmine\item\VanillaItems;
 use pocketmine\scheduler\Task;
 use pocketmine\Server;
 use pocketmine\Utils\TextFormat;
 
 # Used Files
-use Tetro\EmporiumEnchants\enchants\TickingEnchantment;
-use Tetro\EmporiumEnchants\enchants\CustomEnchant;
+use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\Utils\Utils;
 use Tetro\EmporiumEnchants\EmporiumEnchants;
 
@@ -21,14 +19,15 @@ use Tetro\EmporiumEnchants\EmporiumEnchants;
 class TickEnchantmentsTask extends Task {
 
     # Tick
-    private static $r = 0;
+    private static int $r = 0;
     
     # Constructor
     public function __construct(private EmporiumEnchants $plugin) {
         self::$r = 0;
     }
 
-    public static function getTick() {
+    public static function getTick(): int
+    {
         return self::$r;
     }
 
@@ -38,9 +37,10 @@ class TickEnchantmentsTask extends Task {
         foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
             $successfulEnchantments = [];
             foreach ($player->getInventory()->getContents() as $slot => $content) {
-                if ($content->getId() === ItemIds::BOOK) {
+                if ($content->getTypeId() == VanillaItems::BOOK()->getTypeId()) {
                     if (count($content->getEnchantments()) > 0) {
-                        $enchantedBook = ItemFactory::getInstance()->get(ItemIds::ENCHANTED_BOOK, 0, $content->getCount(), $content->getNamedTag());
+                        $enchantedBook = VanillaItems::ENCHANTED_BOOK()->setCount($content->getCount())->setNamedTag($content->getNamedTag());
+                        #$enchantedBook = ItemFactory::getInstance()->get(BlockTypeIds::ENCHANTED_BOOK, 0, $content->getCount(), $content->getNamedTag());
                         $enchantedBook->setCustomName(TextFormat::RESET . TextFormat::YELLOW . "Enchanted Book" . TextFormat::RESET);
                         $enchantedBook->addEnchantment(...$content->getEnchantments());
                         $player->getInventory()->setItem($slot, $enchantedBook);

@@ -7,7 +7,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
-use Tetro\EmporiumTinker\menus\TinkerMenu;
+
 use Tetro\EmporiumTinker\Tinker;
 
 class TinkerCommand extends Command {
@@ -24,7 +24,7 @@ class TinkerCommand extends Command {
             return;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumtinker.command.EmporiumTinker");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if (!$permission) {
             $sender->sendMessage(TF::RED . "You need a higher rank to use that, please visit the EmporiumTinker at " . TF::AQUA . "/shop");
             return;

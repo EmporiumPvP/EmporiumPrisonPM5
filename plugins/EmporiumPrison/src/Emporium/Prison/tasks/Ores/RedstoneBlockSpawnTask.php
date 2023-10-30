@@ -7,8 +7,9 @@ use pocketmine\block\Block;
 use pocketmine\block\BlockBreakInfo;
 use pocketmine\block\BlockIdentifier;
 use pocketmine\block\BlockToolType;
+use pocketmine\block\BlockTypeInfo;
 use pocketmine\block\VanillaBlocks;
-use pocketmine\item\ItemIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\scheduler\Task;
 
 use pocketmine\world\Position;
@@ -26,6 +27,6 @@ class RedstoneBlockSpawnTask extends Task {
 
     public function onRun(): void {
         $this->block->getPosition()->getWorld()->setBlock($this->blockPosition, VanillaBlocks::REDSTONE());
-        $this->block->getPosition()->getWorld()->addSound($this->blockPosition->asVector3() , new BlockPlaceSound(new Block(new BlockIdentifier(ItemIds::COAL_ORE, 16), "coal_ore", new BlockBreakInfo(10.0, BlockToolType::PICKAXE, 1))));
+        $this->block->getPosition()->getWorld()->addSound($this->blockPosition->asVector3() , new BlockPlaceSound(new Block(new BlockIdentifier(BlockTypeIds::REDSTONE), "redstone_block", new BlockTypeInfo(new BlockBreakInfo(10.0, BlockToolType::PICKAXE, 1)))));
     }
 }

@@ -3,6 +3,7 @@
 namespace EmporiumCore\Commands\Staff;
 
 use EmporiumCore\EmporiumCore;
+use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumCore\Variables;
 use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
@@ -23,9 +24,9 @@ class WarnCommand extends Command {
             return false;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.warn");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), ["emporiumcore.command.warn"]);
         if (!$permission) {
-            $sender->sendMessage(TF::RED . "No permission");
+            $sender->sendMessage(\Emporium\Prison\Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 
@@ -34,6 +35,17 @@ class WarnCommand extends Command {
             if ($player instanceof Player) {
                 $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have warned {$player->getName()}.");
                 $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have been warned by staff.");
+
+                # create reason message
+                $reason = $args;
+                $sortedReason = str_replace($player, "", $reason);
+                if ($sortedReason === "" || $sortedReason === " ") {
+                    $sortedReason = "No reason was specified.";
+                }
+
+                # Send webhook
+                WebhookEvent::staffWebhook($sender, $player, "Warn", $sortedReason);
+
                 return true;
             } else {
                 $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That player cannot be found.");

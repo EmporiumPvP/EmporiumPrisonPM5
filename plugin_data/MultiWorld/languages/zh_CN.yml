@@ -5,6 +5,7 @@
 
 not-perms: '§c你没有使用这个命令的相应权限!'
 default-usage: '§c输入: §7/mw help'
+ingame: '§cThis command can be only used in game.'
 
 # Help Command:
 help: '§2--- §fMultiWorld 帮助页码 ({%0}/{%1}) §2---'
@@ -21,7 +22,8 @@ help-9: '§2/mw manage §f显示管理世界的GUI'
 help-10: '§2/mw rename §f重命名世界'
 
 help-11: '§2/mw duplicate §f复制一个世界'
-help-12: '§2/mw update §f更新 lobby, spawn or default 世界'
+help-12: '§2/mw setspawan §fUpdate world spawn'
+help-13: '§2/mw setlobby §fUpdate server lobby position'
 
 # Create Command:
 create-usage: '§c输入: §7/mw create <世界名> [种子] [生成器]'
@@ -37,6 +39,7 @@ teleport-load: '正在加载世界 {%0}...'
 teleport-done-1: '§a你被传送到这个世界 {%0}.'
 teleport-done-2: '§a玩家 {%1} 被传送到世界 {%0}!'
 teleport-playernotexists: '§c玩家 {%0} 不存在!'
+teleport-error: '§cAn error occurred whilst teleporting player: {%0}'
 
 # List Command:
 list-done: '§a世界 ({%0}):'
@@ -46,6 +49,7 @@ load-usage: '§c输入: §7/mw load <世界名>'
 load-levelnotexists: '§c世界 {%0} 不存在!'
 load-loaded: '§c不能加载这个世界!'
 load-done: '§a该世界被成功加载!'
+load-error: '§cAn error occurred whilst loading the world: {%0}'
 
 # Unload Command:
 unload-usage: '§c输入: §7/mw unload <世界名>'
@@ -59,17 +63,9 @@ delete-usage: '§c输入: §7/mw delete <世界名>'
 delete-levelnotexists: '§c世界 {%0} 不存在!'
 delete-done: '§a世界已经被删除! ({%0} 文件已经被删除.)'
 
-# Update Command:
-update-usage: '§c输入: §7/mw update <mod: spawn|lobby|default> [options: (世界名) (x) (y) (z)]'
-update-levelnotexists: '§c世界 {%0}不存在!'
-update-spawn-done: '§aSpawn 在如下世界 {%0}被更改.'
-update-lobby-done: '§aLobby 在如下世界 {%0}被更改.'
-update-default-usage: '§c输入: §7/mw update default <level>'
-update-default-done: '§a默认世界被更改为 {%0}.'
-update-notsupported: '§c这个命令不支持控制台'
-
 # Info Command:
 info-levelnotexists: '§c{%0} 不存在,'
+info-unloaded: '§cCould not fetch info from the world {%0}, due to the world could not be loaded.'
 info: '§a--- {%0} ---'
 info-name: '§7名字: {%0}'
 info-folderName: '§7文件夹名: {%0}'
@@ -90,12 +86,20 @@ rename-usage: '§c用法: §7/mw rename <from> <to>'
 rename-exists: '§c地图 {%0} 已存在.'
 rename-levelnotfound: '§c地图 {%0} 不存在.'
 rename-done: '§a地图 {%0} 重命名为 {%1}.'
+rename-error: '§cCould not rename the world (Access denied)'
 
 # Duplicate Command
-duplicate-usage: '§c用法: §7/mw duplicate <Lobby> [newName]'
+duplicate-usage: '§c用法: §7/mw duplicate <world> [newName]'
 duplicate-exists: '§c世界 {%0}已存在.'
 duplicate-levelnotfound: '§c地图 {%0}不村庄.'
 duplicate-done: '世界 {%0} 已复制为 {%1}'
+
+# Set Spawn
+setspawn-success: '§a{%0} world spawn set to {%1}'
+
+# Set Lobby
+setlobby-errror: '§cCould not update default world: {%0}'
+setlobby-success: '§aServer lobby position set to {%0} at {%1}'
 
 # Forms
 forms-invalid: '§c无效结果.'

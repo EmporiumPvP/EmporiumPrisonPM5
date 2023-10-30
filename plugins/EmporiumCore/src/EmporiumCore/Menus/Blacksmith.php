@@ -4,10 +4,13 @@ namespace EmporiumCore\Menus;
 
 use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\library\formapi\SimpleForm;
+
 use EmporiumData\DataManager;
+
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
+
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
@@ -610,7 +613,7 @@ class Blacksmith extends Menu {
             $player = $transaction->getPlayer();
             $itemClicked = $transaction->getItemClicked();
             # bow
-            if($itemClicked->getId() === ItemIds::BOW) {
+            if($itemClicked->getTypeId() == VanillaItems::BOW()) {
                 if($money >= 5000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 5000);
                     $player->getInventory()->addItem(VanillaItems::BOW());
@@ -622,7 +625,7 @@ class Blacksmith extends Menu {
                 }
             }
             # arrow
-            if($itemClicked->getId() === ItemIds::ARROW) {
+            if($itemClicked->getTypeId() == VanillaItems::ARROW()) {
                 if($money >= 100) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100);
                     $player->getInventory()->addItem(VanillaItems::ARROW());
@@ -634,7 +637,7 @@ class Blacksmith extends Menu {
                 }
             }
             # trainee pickaxe
-            if($itemClicked->getId() === ItemIds::WOODEN_PICKAXE) {
+            if($itemClicked->getTypeId() == VanillaItems::WOODEN_PICKAXE()) {
                 if($money >= 20) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 20);
                     $player->getInventory()->addItem((EmporiumPrison::getInstance()->getPickaxes())->Trainee());
@@ -646,7 +649,7 @@ class Blacksmith extends Menu {
                 }
             }
             # wooden sword
-            if($itemClicked->getId() === ItemIds::WOODEN_SWORD) {
+            if($itemClicked->getTypeId() == VanillaItems::WOODEN_SWORD()) {
                 if($money >= 100) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100);
                     $player->getInventory()->addItem(VanillaItems::WOODEN_SWORD());
@@ -658,7 +661,7 @@ class Blacksmith extends Menu {
                 }
             }
             # wooden axe
-            if($itemClicked->getId() === ItemIds::WOODEN_AXE) {
+            if($itemClicked->getTypeId() == VanillaItems::WOODEN_AXE()) {
                 if($money >= 100) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100);
                     $player->getInventory()->addItem(VanillaItems::WOODEN_AXE());
@@ -672,7 +675,7 @@ class Blacksmith extends Menu {
 
 
             # chain helmet
-            if($itemClicked->getId() === ItemIds::CHAINMAIL_HELMET) {
+            if($itemClicked->getTypeId() == VanillaItems::CHAINMAIL_HELMET()) {
                 if($money >= 100) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100);
                     $player->getInventory()->addItem(VanillaItems::CHAINMAIL_HELMET());
@@ -684,7 +687,7 @@ class Blacksmith extends Menu {
                 }
             }
             # chain chestplate
-            if($itemClicked->getId() === ItemIds::CHAINMAIL_CHESTPLATE) {
+            if($itemClicked->getTypeId() == VanillaItems::CHAINMAIL_CHESTPLATE()) {
                 if($money >= 100) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100);
                     $player->getInventory()->addItem(VanillaItems::CHAINMAIL_CHESTPLATE());
@@ -696,7 +699,7 @@ class Blacksmith extends Menu {
                 }
             }
             # chain leggings
-            if($itemClicked->getId() === ItemIds::CHAIN_LEGGINGS) {
+            if($itemClicked->getTypeId() == VanillaItems::CHAINMAIL_LEGGINGS()) {
                 if($money >= 100) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100);
                     $player->getInventory()->addItem(VanillaItems::CHAINMAIL_LEGGINGS());
@@ -708,7 +711,7 @@ class Blacksmith extends Menu {
                 }
             }
             # chain boots
-            if($itemClicked->getId() === ItemIds::CHAIN_BOOTS) {
+            if($itemClicked->getTypeId() == VanillaItems::CHAINMAIL_BOOTS()) {
                 if($money >= 100) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100);
                     $player->getInventory()->addItem(VanillaItems::CHAINMAIL_BOOTS());
@@ -720,7 +723,7 @@ class Blacksmith extends Menu {
                 }
             }
             # stone pickaxe
-            if($itemClicked->getId() === ItemIds::STONE_PICKAXE) {
+            if($itemClicked->getTypeId() == VanillaItems::STONE_PICKAXE()) {
                 if($money >= 200) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 200);
                     $player->getInventory()->addItem((EmporiumPrison::getInstance()->getPickaxes())->Stone());
@@ -732,7 +735,7 @@ class Blacksmith extends Menu {
                 }
             }
             # stone sword
-            if($itemClicked->getId() === ItemIds::STONE_SWORD) {
+            if($itemClicked->getTypeId() == VanillaItems::STONE_SWORD()) {
                 if($money >= 500) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 500);
                     $player->getInventory()->addItem(VanillaItems::STONE_SWORD());
@@ -744,7 +747,7 @@ class Blacksmith extends Menu {
                 }
             }
             # stone axe
-            if($itemClicked->getId() === ItemIds::STONE_AXE) {
+            if($itemClicked->getTypeId() == VanillaItems::STONE_AXE()) {
                 if($money >= 500) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 500);
                     $player->getInventory()->addItem(VanillaItems::STONE_AXE());
@@ -758,7 +761,7 @@ class Blacksmith extends Menu {
 
 
             # golden helmet
-            if($itemClicked->getId() === ItemIds::GOLDEN_HELMET) {
+            if($itemClicked->getTypeId() == VanillaItems::GOLDEN_HELMET()) {
                 if($money >= 1000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 1000);
                     $player->getInventory()->addItem(VanillaItems::GOLDEN_HELMET());
@@ -770,9 +773,10 @@ class Blacksmith extends Menu {
                 }
             }
             # golden chestplate
-            if($itemClicked->getId() === ItemIds::GOLDEN_CHESTPLATE) {
+            if($itemClicked->getTypeId() == VanillaItems::GOLDEN_CHESTPLATE()) {
                 if($money >= 1000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 1000);
+                    $player->getInventory()->addItem(VanillaItems::GOLDEN_CHESTPLATE());
                     $player->broadcastSound(new XpCollectSound(), [$player]);
                     $player->sendMessage(TF::RED . "- $1,000");
                 } else {
@@ -781,7 +785,7 @@ class Blacksmith extends Menu {
                 }
             }
             # golden leggings
-            if($itemClicked->getId() === ItemIds::GOLDEN_LEGGINGS) {
+            if($itemClicked->getTypeId() == VanillaItems::GOLDEN_LEGGINGS()) {
                 if($money >= 1000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 1000);
                     $player->getInventory()->addItem(VanillaItems::GOLDEN_LEGGINGS());
@@ -793,7 +797,7 @@ class Blacksmith extends Menu {
                 }
             }
             # golden boots
-            if($itemClicked->getId() === ItemIds::GOLDEN_BOOTS) {
+            if($itemClicked->getTypeId() == VanillaItems::GOLDEN_BOOTS()) {
                 if($money >= 1000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 1000);
                     $player->getInventory()->addItem(VanillaItems::GOLDEN_BOOTS());
@@ -805,7 +809,7 @@ class Blacksmith extends Menu {
                 }
             }
             # golden pickaxe
-            if($itemClicked->getId() === ItemIds::GOLDEN_PICKAXE) {
+            if($itemClicked->getTypeId() == VanillaItems::GOLDEN_PICKAXE()) {
                 if($money >= 2000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 2000);
                     $player->getInventory()->addItem((EmporiumPrison::getInstance()->getPickaxes())->Gold());
@@ -817,7 +821,7 @@ class Blacksmith extends Menu {
                 }
             }
             # golden sword
-            if($itemClicked->getId() === ItemIds::GOLDEN_SWORD) {
+            if($itemClicked->getTypeId() == VanillaItems::GOLDEN_SWORD()) {
                 if($money >= 2000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 2000);
                     $player->getInventory()->addItem(VanillaItems::GOLDEN_SWORD());
@@ -829,7 +833,7 @@ class Blacksmith extends Menu {
                 }
             }
             # golden axe
-            if($itemClicked->getId() === ItemIds::GOLDEN_AXE) {
+            if($itemClicked->getTypeId() == VanillaItems::GOLDEN_AXE()) {
                 if($money >= 2000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 2000);
                     $player->getInventory()->addItem(VanillaItems::GOLDEN_AXE());
@@ -843,7 +847,7 @@ class Blacksmith extends Menu {
 
 
             # iron helmet
-            if($itemClicked->getId() === ItemIds::IRON_HELMET) {
+            if($itemClicked->getTypeId() == VanillaItems::IRON_HELMET()) {
                 if($money >= 100000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100000);
                     $player->getInventory()->addItem(VanillaItems::IRON_HELMET());
@@ -855,7 +859,7 @@ class Blacksmith extends Menu {
                 }
             }
             # iron chestplate
-            if($itemClicked->getId() === ItemIds::IRON_CHESTPLATE) {
+            if($itemClicked->getTypeId() == VanillaItems::IRON_CHESTPLATE()) {
                 if($money >= 100000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100000);
                     $player->getInventory()->addItem(VanillaItems::IRON_CHESTPLATE());
@@ -867,7 +871,7 @@ class Blacksmith extends Menu {
                 }
             }
             # iron leggings
-            if($itemClicked->getId() === ItemIds::IRON_LEGGINGS) {
+            if($itemClicked->getTypeId() == VanillaItems::IRON_LEGGINGS()) {
                 if($money >= 100000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100000);
                     $player->getInventory()->addItem(VanillaItems::IRON_LEGGINGS());
@@ -879,7 +883,7 @@ class Blacksmith extends Menu {
                 }
             }
             # iron boots
-            if($itemClicked->getId() === ItemIds::IRON_BOOTS) {
+            if($itemClicked->getTypeId() == VanillaItems::IRON_BOOTS()) {
                 if($money >= 100000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 100000);
                     $player->getInventory()->addItem(VanillaItems::IRON_BOOTS());
@@ -891,7 +895,7 @@ class Blacksmith extends Menu {
                 }
             }
             # iron pickaxe
-            if($itemClicked->getId() === ItemIds::IRON_PICKAXE) {
+            if($itemClicked->getTypeId() == VanillaItems::IRON_PICKAXE()) {
                 if($money >= 200000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 200000);
                     $player->getInventory()->addItem((EmporiumPrison::getInstance()->getPickaxes())->Iron());
@@ -903,7 +907,7 @@ class Blacksmith extends Menu {
                 }
             }
             # iron sword
-            if($itemClicked->getId() === ItemIds::IRON_SWORD) {
+            if($itemClicked->getTypeId() == VanillaItems::IRON_SWORD()) {
                 if($money >= 200000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 200000);
                     $player->getInventory()->addItem(VanillaItems::IRON_SWORD());
@@ -915,7 +919,7 @@ class Blacksmith extends Menu {
                 }
             }
             # iron axe
-            if($itemClicked->getId() === ItemIds::IRON_AXE) {
+            if($itemClicked->getTypeId() == VanillaItems::IRON_AXE()) {
                 if($money >= 200000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 200000);
                     $player->getInventory()->addItem(VanillaItems::IRON_AXE());
@@ -929,7 +933,7 @@ class Blacksmith extends Menu {
 
 
             # diamond helmet
-            if($itemClicked->getId() === ItemIds::DIAMOND_HELMET) {
+            if($itemClicked->getTypeId() == VanillaItems::DIAMOND_HELMET()) {
                 if($money >= 1000000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 1000000);
                     $player->getInventory()->addItem(VanillaItems::DIAMOND_HELMET());
@@ -941,7 +945,7 @@ class Blacksmith extends Menu {
                 }
             }
             # diamond chestplate
-            if($itemClicked->getId() === ItemIds::DIAMOND_CHESTPLATE) {
+            if($itemClicked->getTypeId() == VanillaItems::DIAMOND_CHESTPLATE()) {
                 if($money >= 1000000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 1000000);
                     $player->getInventory()->addItem(VanillaItems::DIAMOND_CHESTPLATE());
@@ -953,7 +957,7 @@ class Blacksmith extends Menu {
                 }
             }
             # diamond leggings
-            if($itemClicked->getId() === ItemIds::DIAMOND_LEGGINGS) {
+            if($itemClicked->getTypeId() == VanillaItems::DIAMOND_LEGGINGS()) {
                 if($money >= 1000000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 1000000);
                     $player->getInventory()->addItem(VanillaItems::DIAMOND_LEGGINGS());
@@ -965,7 +969,7 @@ class Blacksmith extends Menu {
                 }
             }
             # diamond boots
-            if($itemClicked->getId() === ItemIds::DIAMOND_BLOCK) {
+            if($itemClicked->getTypeId() == VanillaItems::DIAMOND_BOOTS()) {
                 if($money >= 1000000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 1000000);
                     $player->getInventory()->addItem(VanillaItems::DIAMOND_BOOTS());
@@ -977,7 +981,7 @@ class Blacksmith extends Menu {
                 }
             }
             # diamond pickaxe
-            if($itemClicked->getId() === ItemIds::DIAMOND_PICKAXE) {
+            if($itemClicked->getTypeId() == VanillaItems::DIAMOND_PICKAXE()) {
                 if($money >= 2000000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 2000000);
                     $player->getInventory()->addItem((EmporiumPrison::getInstance()->getPickaxes())->Diamond());
@@ -989,7 +993,7 @@ class Blacksmith extends Menu {
                 }
             }
             # diamond sword
-            if($itemClicked->getId() === ItemIds::DIAMOND_SWORD) {
+            if($itemClicked->getTypeId() == VanillaItems::DIAMOND_SWORD()) {
                 if($money >= 2000000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 2000000);
                     $player->getInventory()->addItem(VanillaItems::DIAMOND_SWORD());
@@ -1000,7 +1004,7 @@ class Blacksmith extends Menu {
                 }
             }
             # diamond axe
-            if($itemClicked->getId() === ItemIds::DIAMOND_AXE) {
+            if($itemClicked->getTypeId() == VanillaItems::DIAMOND_AXE()) {
                 if($money >= 2000000) {
                     DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.money", 2000000);
                     $player->getInventory()->addItem(VanillaItems::DIAMOND_AXE());

@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace pocketmine\network\mcpe\protocol\types\login;
 
 /**
- * Model class for LoginPacket JSON Data for JsonMapper
+ * Model class for LoginPacket JSON data for JsonMapper
  */
 final class AuthenticationData{
 
@@ -24,6 +24,8 @@ final class AuthenticationData{
 
 	/** @required */
 	public string $identity;
+
+	public string $sandboxId = "RETAIL"; //TODO: what are the other possible values?
 
 	public string $titleId = ""; //TODO: find out what this is for
 

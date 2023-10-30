@@ -30,7 +30,6 @@ class MinesCommand extends Command {
     public function __construct() {
         parent::__construct("mines", "Opens the Mine Menu", "/mines", ["mm", "mine"]);
         $this->setPermission("emporiumprison.command.mines");
-        $this->setPermissionMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args): void {
@@ -38,7 +37,10 @@ class MinesCommand extends Command {
         if(!$sender instanceof Player) return;
 
         # permission check
-        if(!PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumprison.command.mines")) return;
+        if(!PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions())) {
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
+            return;
+        }
 
         $menu = EmporiumPrison::getInstance()->getMines();
 
@@ -59,7 +61,7 @@ class MinesCommand extends Command {
         $parameter = strtolower($args[0]);
 
         if(!$parameter == "info") {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "invalid usage");
+            $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "invalid usage");
             $sender->sendMessage(TF::GRAY . "/mines | info [mine]");
             return;
         }
@@ -72,7 +74,7 @@ class MinesCommand extends Command {
         $mine = strtolower($args[1]);
 
         if(!in_array($mine, $this->mines)) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "that mine does not exist");
+            $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "that mine does not exist");
             $sender->sendMessage(TF::GRAY . "Available mines:");
             $sender->sendMessage(TF::GRAY . "Coal");
             $sender->sendMessage(TF::GRAY . "Iron");

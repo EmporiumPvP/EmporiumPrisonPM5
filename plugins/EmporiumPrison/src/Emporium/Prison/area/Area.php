@@ -21,20 +21,31 @@ class Area {
     /** @var World|null */
     private ?World $world;
 
+    /** @var bool */
+    private bool $pvpFlag;
+
+    /** @var bool */
+    private bool $editFlag;
+
+
     /**
      * Area constructor.
      *
      * @param string $name
      * @param Position $firstPosition
      * @param Position $secondPosition
-     *
+     * @param bool $pvpFlag
+     * @param bool $editFlag
      * @throws AreaException
      */
-    public function __construct(string $name, Position $firstPosition, Position $secondPosition) {
+    public function __construct(string $name, Position $firstPosition, Position $secondPosition, bool $pvpFlag = false, bool $editFlag = false) {
         $this->firstPosition = $firstPosition;
         $this->secondPosition = $secondPosition;
         $this->name = $name;
         $this->world = $firstPosition->getWorld()->getDisplayName() === $secondPosition->getWorld()->getDisplayName() ? $firstPosition->getWorld() : null;
+        $this->pvpFlag = $pvpFlag;
+        $this->editFlag = $editFlag;
+
         if($this->world === null) {
             throw new AreaException("Area \"$name\"'s first position's world does not equal the second position's world.");
         }
@@ -86,5 +97,20 @@ class Area {
      */
     public function getName(): string {
         return $this->name;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getPvpFlag(): bool
+    {
+        return $this->pvpFlag;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getEditFlag(): bool {
+        return $this->editFlag;
     }
 }

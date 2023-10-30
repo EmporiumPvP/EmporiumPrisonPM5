@@ -4,14 +4,15 @@ declare(strict_types = 1);
 
 namespace Emporium\Prison\tasks;
 
+use Emporium\Prison\EmporiumPrison;
+
+use pocketmine\entity\effect\EffectInstance;
+use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\player\Player;
 use pocketmine\world\sound\EndermanTeleportSound;
-use pocketmine\entity\Effect;
-use pocketmine\entity\EffectInstance;
 use pocketmine\scheduler\CancelTaskException;
 use pocketmine\world\Position;
 use pocketmine\scheduler\Task;
-use pocketmine\utils\TextFormat;
 
 class TeleportTask extends Task {
 
@@ -38,21 +39,24 @@ class TeleportTask extends Task {
      * @param int $time
      */
     public function __construct(Player $player, Position $position, int $time) {
+
         $this->player = $player;
-        //$areas = Main::getInstance()->getAreaManager()->getAreasInPosition($player);
-        //if($areas !== null) {
-        //foreach($areas as $area) {
-        //if($area->getPvpFlag() === false) {
-        //$this->player->addEffect(new EffectInstance(Effect::getEffect(Effect::RESISTANCE), 200, 20));
-        //$player->teleport($position);
-        //$player->sendPopUp("§aSuccessfully Teleported!");
-        //$player->getLevel()->addSound(new EndermanTeleportSound($player));
-        //$this->player = null;
-        //return;
-        //}
-        //}
-        //}
+        $areas = EmporiumPrison::getInstance()->getAreaManager()->getAreasInPosition($player->getPosition());
+
+        if($areas !== null) {
+            foreach($areas as $area) {
+                if($area->getPvpFlag() === false) {
+                    $this->player->getEffects()->add(new EffectInstance(VanillaEffects::RESISTANCE(), 200, 20));
+                    $player->teleport($position);
+                    $player->sendPopUp("§aSuccessfully Teleported!");
+                    $player->getWorld()->addSound($player->getPosition(), new EndermanTeleportSound(), [$player]);
+                    $this->player = null;
+                    return;
+                }
+            }
+        }
         $this->player->sendTitle("§6Teleporting..§r", "§7Do not move!");
+        $this->player->getEffects()->add(new EffectInstance(VanillaEffects::NAUSEA(), 200, 2));
         $this->position = $position;
         $this->originalLocation = $player->getPosition();
         $this->time = $time;
@@ -63,31 +67,36 @@ class TeleportTask extends Task {
      * @throws CancelTaskException
      */
     public function onRun() : void {
+
         if($this->player === null or $this->player->isClosed()) {
             throw new CancelTaskException();
         }
+
         if($this->position === null) {
             throw new CancelTaskException();
         }
+
         if($this->player->getPosition()->distance($this->originalLocation) >= 2) {
             $this->player->sendPopUp("§cTeleportation Cancelled!");
             $this->player->sendTitle("§l§4FAILED TO TELEPORT§r", "§7You must not move!");
+            $this->player->getEffects()->remove(VanillaEffects::NAUSEA());
             throw new CancelTaskException();
         }
+
         if($this->time >= 0) {
-            if($this->player === null or $this->player->isClosed()) {
-                throw new CancelTaskException();
-            }
             $this->player->sendPopUp("§eTeleporting in $this->time" . str_repeat(".", ($this->maxTime - $this->time) % 4));
             $this->time--;
             return;
         }
+
         if($this->player->isCreative() and !$this->player->getAllowFlight()) {
             $this->player->setAllowFlight(true);
         }
+
         if($this->player === null or $this->player->isClosed()) {
             throw new CancelTaskException();
         }
+
         if($this->position !== null) {
             $this->player->teleport($this->position);
             $this->player->sendPopUp("§aSuccessfully Teleported!");

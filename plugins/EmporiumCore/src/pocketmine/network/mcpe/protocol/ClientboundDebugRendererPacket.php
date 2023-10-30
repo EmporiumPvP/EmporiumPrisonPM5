@@ -25,7 +25,7 @@ class ClientboundDebugRendererPacket extends DataPacket implements ClientboundPa
 
 	private int $type;
 
-	//TODO: if more types are added, we'll probably want to make a separate Data type and interfaces
+	//TODO: if more types are added, we'll probably want to make a separate data type and interfaces
 	private string $text;
 	private Vector3 $position;
 	private float $red;

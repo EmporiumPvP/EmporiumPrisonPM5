@@ -3,6 +3,7 @@
 namespace EmporiumCore\Listeners\Items;
 
 use Emporium\Prison\items\Scrolls;
+use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumData\DataManager;
 use Items\GKitsItems\Blacksmith;
 use Items\GKitsItems\Crucible;
@@ -36,9 +37,12 @@ class GKitListener implements Listener {
         $count = $item->getCount();
 
         if($item->getNamedTag()->getTag("HeroicVulkarionGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicVulkarion");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_RED . "Heroic Vulkarion GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_RED . "Heroic Vulkarion ");
             if($player->getInventory()->canAddItem((new HeroicVulkarion())->helmet()) && $player->getInventory()->canAddItem((new HeroicVulkarion())->chestplate()) && $player->getInventory()->canAddItem((new HeroicVulkarion())->leggings()) && $player->getInventory()->canAddItem((new HeroicVulkarion())->boots()) && $player->getInventory()->canAddItem((new HeroicVulkarion())->sword())) {
                 $player->getInventory()->addItem((new HeroicVulkarion())->helmet());
                 $player->getInventory()->addItem((new HeroicVulkarion())->chestplate());
@@ -56,9 +60,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicZenithGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicZenith");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GOLD . " Heroic Zenith GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GOLD . " Heroic Zenith ");
             if($player->getInventory()->canAddItem((new HeroicZenith())->leggings()) && $player->getInventory()->canAddItem((new HeroicZenith())->pickaxe($player))) {
                 $player->getInventory()->addItem((new HeroicZenith())->leggings());
                 $player->getInventory()->addItem((new HeroicZenith())->pickaxe($player));
@@ -70,9 +77,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicColossusGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicColossus");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::WHITE . " Heroic Colossus GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::WHITE . " Heroic Colossus ");
             if($player->getInventory()->canAddItem((new HeroicColossus())->boots()) && $player->getInventory()->canAddItem((new HeroicColossus())->sword())) {
                 $player->getInventory()->addItem((new HeroicColossus())->boots());
                 $player->getInventory()->addItem((new HeroicColossus())->sword());
@@ -84,9 +94,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicWarlockGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicWarlock");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_PURPLE . " Heroic Warlock GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_PURPLE . " Heroic Warlock ");
             if($player->getInventory()->canAddItem((new HeroicWarlock())->energy()) && $player->getInventory()->canAddItem((new HeroicWarlock())->mysteryEliteEnchants()) && $player->getInventory()->canAddItem((new HeroicWarlock())->mysteryUltimateEnchants()) && $player->getInventory()->canAddItem((new HeroicWarlock())->mysteryLegendaryEnchants()) && $player->getInventory()->canAddItem((new HeroicWarlock())->mysteryGodlyEnchants()) && $player->getInventory()->canAddItem((new HeroicWarlock())->mysteryHeroicEnchants())) {
                 $player->getInventory()->addItem((new HeroicWarlock())->energy());
                 $player->getInventory()->addItem((new HeroicWarlock())->mysteryEliteEnchants());
@@ -106,9 +119,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicSlaughterGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicSlaughter");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::RED . " Heroic Slaughter GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::RED . " Heroic Slaughter ");
             if($player->getInventory()->canAddItem((new HeroicSlaughter())->chestplate()) && $player->getInventory()->canAddItem((new HeroicSlaughter())->axe())) {
                 $player->getInventory()->addItem((new HeroicSlaughter())->chestplate());
                 $player->getInventory()->addItem((new HeroicSlaughter())->axe());
@@ -120,9 +136,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicEnchanterGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicEnchanter");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::AQUA . " Heroic Enchanter GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::AQUA . " Heroic Enchanter ");
             if($player->getInventory()->canAddItem((new HeroicEnchanter())->energy()) && $player->getInventory()->canAddItem((new HeroicEnchanter())->mysteryEliteEnchants()) && $player->getInventory()->canAddItem((new HeroicEnchanter())->mysteryUltimateEnchants()) && $player->getInventory()->canAddItem((new HeroicEnchanter())->mysteryLegendaryEnchants()) && $player->getInventory()->canAddItem((new HeroicEnchanter())->mysteryHeroicEnchants()) && $player->getInventory()->canAddItem((new HeroicEnchanter())->mysteryGodlyEnchants()) && $player->getInventory()->canAddItem((new HeroicEnchanter())->mysteryHeroicEnchants())) {
                 $player->getInventory()->addItem((new HeroicEnchanter())->energy());
                 $player->getInventory()->addItem((new HeroicEnchanter())->mysteryEliteEnchants());
@@ -144,9 +163,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicAtheosGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicAtheos");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GRAY . " Heroic Atheos GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GRAY . " Heroic Atheos ");
             if($player->getInventory()->canAddItem((new HeroicAtheos())->helmet()) && $player->getInventory()->canAddItem((new HeroicAtheos())->sword())) {
                 $player->getInventory()->addItem((new HeroicAtheos())->helmet());
                 $player->getInventory()->addItem((new HeroicAtheos())->sword());
@@ -158,9 +180,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicIapetusGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicIapetus");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::BLUE . " Heroic Iapetus GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::BLUE . " Heroic Iapetus ");
             if($player->getInventory()->canAddItem((new HeroicIapetus())->axe()) && $player->getInventory()->canAddItem((new HeroicIapetus())->energy())) {
                 $player->getInventory()->addItem((new HeroicIapetus())->axe());
                 $player->getInventory()->addItem((new HeroicIapetus())->energy());
@@ -172,9 +197,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicBroteasGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicBroteas");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GREEN . " Heroic Broteas GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GREEN . " Heroic Broteas ");
             if($player->getInventory()->canAddItem((new HeroicBroteas())->axe()) && $player->getInventory()->canAddItem((new HeroicBroteas())->pickaxe()) && $player->getInventory()->canAddItem((new HeroicBroteas())->energy())) {
                 $player->getInventory()->addItem((new HeroicBroteas())->axe());
                 $player->getInventory()->addItem((new HeroicBroteas())->pickaxe());
@@ -188,9 +216,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicAresGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicAres");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GOLD . " Heroic Ares GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::GOLD . " Heroic Ares ");
             if($player->getInventory()->canAddItem((new HeroicAres())->helmet()) && $player->getInventory()->canAddItem((new HeroicAres())->chestplate()) && $player->getInventory()->canAddItem((new HeroicAres())->leggings()) && $player->getInventory()->canAddItem((new HeroicAres())->boots()) && $player->getInventory()->canAddItem((new HeroicAres())->sword())) {
                 $player->getInventory()->addItem((new HeroicAres())->helmet());
                 $player->getInventory()->addItem((new HeroicAres())->chestplate());
@@ -208,9 +239,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicGrimReaperGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicGrimReaper");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::RED . " Heroic Grim Reaper GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::RED . " Heroic Grim Reaper ");
             if($player->getInventory()->canAddItem((new HeroicGrimReaper())->helmet()) && $player->getInventory()->canAddItem((new HeroicGrimReaper())->chestplate()) && $player->getInventory()->canAddItem((new HeroicGrimReaper())->leggings()) && $player->getInventory()->canAddItem((new HeroicGrimReaper())->boots()) && $player->getInventory()->canAddItem((new HeroicGrimReaper())->sword())) {
                 $player->getInventory()->addItem((new HeroicGrimReaper())->helmet());
                 $player->getInventory()->addItem((new HeroicGrimReaper())->chestplate());
@@ -228,9 +262,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroicExecutionerGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHeroicExecutioner");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_RED . " Heroic Executioner GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_RED . " Heroic Executioner ");
             if($player->getInventory()->canAddItem((new HeroicExecutioner())->helmet()) && $player->getInventory()->canAddItem((new HeroicExecutioner())->chestplate()) && $player->getInventory()->canAddItem((new HeroicExecutioner())->leggings()) && $player->getInventory()->canAddItem((new HeroicExecutioner())->boots()) && $player->getInventory()->canAddItem((new HeroicExecutioner())->axe())) {
                 $player->getInventory()->addItem((new HeroicExecutioner())->helmet());
                 $player->getInventory()->addItem((new HeroicExecutioner())->chestplate());
@@ -248,9 +285,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("BlacksmithGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitBlacksmith");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_GRAY . " Blacksmith GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_GRAY . " Blacksmith ");
             if($player->getInventory()->canAddItem((new BlackSmith())->energy()) && $player->getInventory()->canAddItem((new Blacksmith())->whiteScroll()) && $player->getInventory()->canAddItem((new Blacksmith())->mysteryEliteEnchants()) && $player->getInventory()->canAddItem((new Blacksmith())->mysteryUltimateEnchants()) && $player->getInventory()->canAddItem((new Blacksmith())->mysteryLegendaryEnchants()) && $player->getInventory()->canAddItem((new Blacksmith())->mysteryGodlyEnchants()) && $player->getInventory()->canAddItem((new Blacksmith())->mysteryHeroicEnchants())) {
                 $player->getInventory()->addItem((new Blacksmith())->energy());
                 $player->getInventory()->addItem((new Blacksmith())->whiteScroll());
@@ -272,9 +312,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HeroGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHero");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::WHITE . " Hero GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::WHITE . " Hero ");
             if($player->getInventory()->canAddItem((new Hero())->helmet()) && $player->getInventory()->canAddItem((new Hero())->chestplate()) && $player->getInventory()->canAddItem((new Hero())->leggings()) && $player->getInventory()->canAddItem((new Hero())->boots()) && $player->getInventory()->canAddItem((new Hero())->sword())) {
                 $player->getInventory()->addItem((new Hero())->helmet());
                 $player->getInventory()->addItem((new Hero())->chestplate());
@@ -292,9 +335,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("CyborgGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitCyborg");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_AQUA . " Cyborg GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::DARK_AQUA . " Cyborg ");
             if($player->getInventory()->canAddItem((new Cyborg())->helmet()) && $player->getInventory()->canAddItem((new Cyborg())->chestplate()) && $player->getInventory()->canAddItem((new Cyborg())->leggings()) && $player->getInventory()->canAddItem((new Cyborg())->boots()) && $player->getInventory()->canAddItem((new Cyborg())->sword())) {
                 $player->getInventory()->addItem((new Cyborg())->helmet());
                 $player->getInventory()->addItem((new Cyborg())->chestplate());
@@ -312,9 +358,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("CrucibleGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitCrucible");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::YELLOW . " Crucible GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::YELLOW . " Crucible ");
             if( $player->getInventory()->canAddItem((new Crucible())->chestplate()) && $player->getInventory()->canAddItem((new Crucible())->leggings()) && $player->getInventory()->canAddItem((new Crucible())->pickaxe($player))) {
                 $player->getInventory()->addItem((new Crucible())->chestplate());
                 $player->getInventory()->addItem((new Crucible())->leggings());
@@ -328,9 +377,12 @@ class GKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("HunterGKit") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitHunter");
+
             $item = $player->getInventory()->getItemInHand()->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
-            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::AQUA . " Hunter GKit");
+            $player->sendMessage(TF::BOLD . TF::GRAY . "You claimed " . TF::AQUA . " Hunter ");
             if($player->getInventory()->canAddItem((new Hunter())->helmet()) && $player->getInventory()->canAddItem((new Hunter())->chestplate()) && $player->getInventory()->canAddItem((new Hunter())->leggings()) && $player->getInventory()->canAddItem((new Hunter())->boots()) && $player->getInventory()->canAddItem((new Hunter())->sword())) {
                 $player->getInventory()->addItem((new Hunter())->helmet());
                 $player->getInventory()->addItem((new Hunter())->chestplate());

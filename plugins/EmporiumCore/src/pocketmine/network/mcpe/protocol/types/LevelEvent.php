@@ -88,7 +88,7 @@ final class LevelEvent{
 	public const PARTICLE_KNOCKBACK_ROAR = 2022; //spews out tons of white particles
 	public const PARTICLE_TELEPORT_TRAIL = 2023;
 	public const PARTICLE_POINT_CLOUD = 2024;
-	public const PARTICLE_EXPLODE = 2025; //Data >= 2 = huge explode seed, otherwise huge explode
+	public const PARTICLE_EXPLODE = 2025; //data >= 2 = huge explode seed, otherwise huge explode
 	public const PARTICLE_BLOCK_EXPLODE = 2026;
 	public const PARTICLE_VIBRATION_SIGNAL = 2027;
 	public const PARTICLE_DRIPSTONE_DRIP = 2028;
@@ -105,8 +105,8 @@ final class LevelEvent{
 	public const START_THUNDER = 3002;
 	public const STOP_RAIN = 3003;
 	public const STOP_THUNDER = 3004;
-	public const PAUSE_GAME = 3005; //Data: 1 to pause, 0 to resume
-	public const PAUSE_GAME_NO_SCREEN = 3006; //Data: 1 to pause, 0 to resume - same effect as normal pause but without screen
+	public const PAUSE_GAME = 3005; //data: 1 to pause, 0 to resume
+	public const PAUSE_GAME_NO_SCREEN = 3006; //data: 1 to pause, 0 to resume - same effect as normal pause but without screen
 	public const SET_GAME_SPEED = 3007; //x coordinate of pos = scale factor (default 1.0)
 
 	public const REDSTONE_TRIGGER = 3500;
@@ -129,6 +129,12 @@ final class LevelEvent{
 	public const BLOCK_START_BREAK = 3600;
 	public const BLOCK_STOP_BREAK = 3601;
 	public const BLOCK_BREAK_SPEED = 3602;
+	public const PARTICLE_PUNCH_BLOCK_DOWN = 3603;
+	public const PARTICLE_PUNCH_BLOCK_UP = 3604;
+	public const PARTICLE_PUNCH_BLOCK_NORTH = 3605;
+	public const PARTICLE_PUNCH_BLOCK_SOUTH = 3606;
+	public const PARTICLE_PUNCH_BLOCK_WEST = 3607;
+	public const PARTICLE_PUNCH_BLOCK_EAST = 3608;
 
 	public const SET_DATA = 4000;
 

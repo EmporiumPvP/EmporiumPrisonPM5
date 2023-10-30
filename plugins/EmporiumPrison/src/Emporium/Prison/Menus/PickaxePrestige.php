@@ -9,6 +9,7 @@ use muqsit\invmenu\transaction\InvMenuTransaction;
 use muqsit\invmenu\transaction\InvMenuTransactionResult;
 use muqsit\invmenu\type\InvMenuTypeIds;
 
+use pocketmine\block\utils\DyeColor;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
@@ -17,32 +18,34 @@ use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\ClickSound;
 use pocketmine\world\sound\XpLevelUpSound;
 
-class PickaxePrestige {
+class PickaxePrestige
+{
 
-    public function Inventory(Player $player): void {
+    public function Inventory(Player $player): void
+    {
         $menu = InvMenu::create(InvMenuTypeIds::TYPE_CHEST);
         $menu->setName("Pickaxe Prestige");
-        $menu->setListener(function(InvMenuTransaction $transaction) use ($menu): InvMenuTransactionResult {
+        $menu->setListener(function (InvMenuTransaction $transaction) use ($menu): InvMenuTransactionResult {
 
             $itemClickedOut = $transaction->getOut();
             $player = $transaction->getPlayer();
 
             # pickaxe isn't eligible for prestige
-            if($itemClickedOut->getNamedTag()->getInt("Level") < 100) {
+            if ($itemClickedOut->getNamedTag()->getInt("Level") < 100) {
                 $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "This item is not eligible for prestige!");
                 $player->broadcastSound(new ClickSound(0), [$player]);
                 return $transaction->discard();
             }
 
             # pickaxe is max prestige
-            if($itemClickedOut->getNamedTag()->getInt("Prestige") >= 6) {
+            if ($itemClickedOut->getNamedTag()->getInt("Prestige") >= 6) {
                 $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "This item is max prestige!");
                 $player->broadcastSound(new ClickSound(0), [$player]);
                 return $transaction->discard();
             }
 
             # send prestige menu
-            if($itemClickedOut->getNamedTag()->getTag("PickaxeType")) {
+            if ($itemClickedOut->getNamedTag()->getTag("PickaxeType")) {
                 $this->PrestigeMenu($player, $itemClickedOut);
                 return $transaction->discard();
             }
@@ -51,26 +54,27 @@ class PickaxePrestige {
         $inventory = $menu->getInventory();
         # add pickaxes to menu
         foreach ($player->getInventory()->getContents() as $item) {
-            if($item->getNamedTag()->getTag("PickaxeType")) {
-                if($item->getNamedTag()->getTag("Prestige") == 6) return;
-                if($item->getNamedTag()->getInt("Level") >= 100 && ($item->getNamedTag()->getInt("Prestige") < 6)) {
+            if ($item->getNamedTag()->getTag("PickaxeType")) {
+                if ($item->getNamedTag()->getTag("Prestige") == 6) return;
+                if ($item->getNamedTag()->getInt("Level") >= 100 && ($item->getNamedTag()->getInt("Prestige") < 6)) {
                     $inventory->addItem($item);
                     continue;
                 }
-                if($item->getNamedTag()->getInt("Level") < 100) return;
+                if ($item->getNamedTag()->getInt("Level") < 100) return;
             }
         }
         $menu->send($player);
     }
 
-    public function PrestigeMenu(Player $player, Item $item): void {
+    public function PrestigeMenu(Player $player, Item $item): void
+    {
         $menu = InvMenu::create(InvMenuTypeIds::TYPE_CHEST);
         $menu->setName("Pickaxe Prestige");
-        $menu->setListener(function(InvMenuTransaction $transaction) use ($item, $player): InvMenuTransactionResult {
+        $menu->setListener(function (InvMenuTransaction $transaction) use ($item, $player): InvMenuTransactionResult {
             $itemOut = $transaction->getOut();
 
             # energy mastery
-            if($itemOut->getNamedTag()->getTag("EnergyMastery")) {
+            if ($itemOut->getNamedTag()->getTag("EnergyMastery")) {
 
                 # remove old pickaxe
                 $player->getInventory()->remove($item);
@@ -100,14 +104,14 @@ class PickaxePrestige {
                 $updatedPickaxe = EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxe($item);
 
                 # give player new pickaxe
-                if($player->getInventory()->canAddItem($updatedPickaxe)) {
+                if ($player->getInventory()->canAddItem($updatedPickaxe)) {
                     $player->getInventory()->addItem($updatedPickaxe);
                 } else {
                     $player->getWorld()->dropItem($player->getPosition(), $updatedPickaxe);
                 }
 
                 # give player remaining energy in orb
-                if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy))) {
+                if ($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy))) {
                     $player->getInventory()->addItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy));
                 } else {
                     $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy));
@@ -120,11 +124,10 @@ class PickaxePrestige {
                 $player->removeCurrentWindow();
 
                 return $transaction->discard();
-
             }
 
             # xp mastery
-            if($itemOut->getNamedTag()->getTag("XpMastery")) {
+            if ($itemOut->getNamedTag()->getTag("XpMastery")) {
 
                 # remove old pickaxe
                 $player->getInventory()->remove($item);
@@ -155,14 +158,14 @@ class PickaxePrestige {
                 $updatedPickaxe = EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxe($item);
 
                 # give player new pickaxe
-                if($player->getInventory()->canAddItem($updatedPickaxe)) {
+                if ($player->getInventory()->canAddItem($updatedPickaxe)) {
                     $player->getInventory()->addItem($updatedPickaxe);
                 } else {
                     $player->getWorld()->dropItem($player->getPosition(), $updatedPickaxe);
                 }
 
                 # give player remaining energy in orb
-                if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy))) {
+                if ($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy))) {
                     $player->getInventory()->addItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy));
                 } else {
                     $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy));
@@ -175,11 +178,10 @@ class PickaxePrestige {
                 $player->removeCurrentWindow();
 
                 return $transaction->discard();
-
             }
 
             # hoarder
-            if($itemOut->getNamedTag()->getTag("Hoarder")) {
+            if ($itemOut->getNamedTag()->getTag("Hoarder")) {
 
                 # remove old pickaxe
                 $player->getInventory()->remove($item);
@@ -210,14 +212,14 @@ class PickaxePrestige {
                 $updatedPickaxe = EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxe($item);
 
                 # give player new pickaxe
-                if($player->getInventory()->canAddItem($updatedPickaxe)) {
+                if ($player->getInventory()->canAddItem($updatedPickaxe)) {
                     $player->getInventory()->addItem($updatedPickaxe);
                 } else {
                     $player->getWorld()->dropItem($player->getPosition(), $updatedPickaxe);
                 }
 
                 # give player remaining energy in orb
-                if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy))) {
+                if ($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy))) {
                     $player->getInventory()->addItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy));
                 } else {
                     $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy));
@@ -230,11 +232,10 @@ class PickaxePrestige {
                 $player->removeCurrentWindow();
 
                 return $transaction->discard();
-
             }
 
             # meteorite mastery
-            if($itemOut->getNamedTag()->getTag("MeteoriteMastery")) {
+            if ($itemOut->getNamedTag()->getTag("MeteoriteMastery")) {
 
                 # remove old pickaxe
                 $player->getInventory()->remove($item);
@@ -265,14 +266,14 @@ class PickaxePrestige {
                 $updatedPickaxe = EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxe($item);
 
                 # give player new pickaxe
-                if($player->getInventory()->canAddItem($updatedPickaxe)) {
+                if ($player->getInventory()->canAddItem($updatedPickaxe)) {
                     $player->getInventory()->addItem($updatedPickaxe);
                 } else {
                     $player->getWorld()->dropItem($player->getPosition(), $updatedPickaxe);
                 }
 
                 # give player remaining energy in orb
-                if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy))) {
+                if ($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy))) {
                     $player->getInventory()->addItem(EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy));
                 } else {
                     $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getOrbs()->EnergyOrb($energy));
@@ -285,11 +286,10 @@ class PickaxePrestige {
                 $player->removeCurrentWindow();
 
                 return $transaction->discard();
-
             }
 
             # player pickaxe
-            if($itemOut->getNamedTag()->getTag("PickaxeType")) {
+            if ($itemOut->getNamedTag()->getTag("PickaxeType")) {
                 # play sound
                 $player->broadcastSound(new ClickSound(0), [$player]);
                 return $transaction->discard();
@@ -310,9 +310,10 @@ class PickaxePrestige {
     }
 
     # energy mastery
-    public function prestigeOption1(): Item {
+    public function prestigeOption1(): Item
+    {
         # doesn't have this buff
-        $option1 = VanillaItems::LIGHT_BLUE_DYE();
+        $option1 = VanillaItems::DYE()->setColor(DyeColor::LIGHT_BLUE());
         $option1->getNamedTag()->setString("EnergyMastery", "locked");
         $option1->setCustomName(TF::BOLD . TF::GREEN . "Energy Mastery");
         $lore = [
@@ -324,7 +325,8 @@ class PickaxePrestige {
     }
 
     # xp mastery
-    public function prestigeOption2(): Item {
+    public function prestigeOption2(): Item
+    {
         # doesn't have this buff
         $option2 = VanillaItems::EXPERIENCE_BOTTLE();
         $option2->getNamedTag()->setString("XpMastery", "locked");
@@ -338,7 +340,8 @@ class PickaxePrestige {
     }
 
     # hoarder
-    public function prestigeOption3(): Item {
+    public function prestigeOption3(): Item
+    {
         # doesn't have this buff
         $option3 = VanillaBlocks::COAL_ORE()->asItem();
         $option3->getNamedTag()->setString("Hoarder", "locked");
@@ -349,11 +352,11 @@ class PickaxePrestige {
         ];
         $option3->setLore($lore);
         return $option3;
-
     }
 
     # meteorite mastery
-    public function prestigeOption4(): Item {
+    public function prestigeOption4(): Item
+    {
         # doesn't have this buff
         $option4 = VanillaBlocks::NETHER_QUARTZ_ORE()->asItem();
         $option4->getNamedTag()->setString("MeteoriteMastery", "locked");
@@ -364,6 +367,5 @@ class PickaxePrestige {
         ];
         $option4->setLore($lore);
         return $option4;
-
     }
 }

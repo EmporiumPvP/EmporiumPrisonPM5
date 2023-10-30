@@ -15,6 +15,8 @@ use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
 
+use pocketmine\block\utils\MobHeadType;
+use pocketmine\block\VanillaBlocks;
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
@@ -833,7 +835,7 @@ class PlayerLevel extends Menu {
     public function level101($player): Item {
 
         $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
-        $item = VanillaItems::DRAGON_HEAD();
+        $item = VanillaBlocks::MOB_HEAD()->setMobHeadType(MobHeadType::DRAGON())->asItem();
         $item->addEnchantment(GlowManager::$enchInst);
 
         if($playerLevel >= 101) {
@@ -864,7 +866,7 @@ class PlayerLevel extends Menu {
     public function level102($player): Item {
 
         $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
-        $item = VanillaItems::DRAGON_HEAD();
+        $item = VanillaBlocks::MOB_HEAD()->setMobHeadType(MobHeadType::DRAGON())->asItem();
         $item->addEnchantment(GlowManager::$enchInst);
 
         if($playerLevel >= 102) {
@@ -895,7 +897,7 @@ class PlayerLevel extends Menu {
     public function level103($player): Item {
 
         $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
-        $item = VanillaItems::DRAGON_HEAD();
+        $item = VanillaBlocks::MOB_HEAD()->setMobHeadType(MobHeadType::DRAGON())->asItem();
         $item->addEnchantment(GlowManager::$enchInst);
 
         if($playerLevel >= 103) {
@@ -926,7 +928,7 @@ class PlayerLevel extends Menu {
     public function level104($player): Item {
 
         $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
-        $item = VanillaItems::DRAGON_HEAD();
+        $item = VanillaBlocks::MOB_HEAD()->setMobHeadType(MobHeadType::DRAGON())->asItem();
         $item->addEnchantment(GlowManager::$enchInst);
 
         if($playerLevel >= 104) {
@@ -956,7 +958,7 @@ class PlayerLevel extends Menu {
     public function level105($player): Item {
 
         $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
-        $item = VanillaItems::DRAGON_HEAD();
+        $item = VanillaBlocks::MOB_HEAD()->setMobHeadType(MobHeadType::DRAGON())->asItem();
         $item->addEnchantment(GlowManager::$enchInst);
 
         if($playerLevel >= 105) {
@@ -986,7 +988,7 @@ class PlayerLevel extends Menu {
     public function level106($player): Item {
 
         $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(),  "profile.level");
-        $item = VanillaItems::DRAGON_HEAD();
+        $item = VanillaBlocks::MOB_HEAD()->setMobHeadType(MobHeadType::DRAGON())->asItem();
         $item->addEnchantment(GlowManager::$enchInst);
 
         if($playerLevel >= 106) {

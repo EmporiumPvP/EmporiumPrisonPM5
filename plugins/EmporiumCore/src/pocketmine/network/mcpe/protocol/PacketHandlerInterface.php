@@ -140,7 +140,7 @@ interface PacketHandlerInterface{
 
 	public function handleSimpleEvent(SimpleEventPacket $packet) : bool;
 
-	public function handleEvent(EventPacket $packet) : bool;
+	public function handleLegacyTelemetryEvent(LegacyTelemetryEventPacket $packet) : bool;
 
 	public function handleSpawnExperienceOrb(SpawnExperienceOrbPacket $packet) : bool;
 
@@ -241,8 +241,6 @@ interface PacketHandlerInterface{
 	public function handleUpdateSoftEnum(UpdateSoftEnumPacket $packet) : bool;
 
 	public function handleNetworkStackLatency(NetworkStackLatencyPacket $packet) : bool;
-
-	public function handleScriptCustomEvent(ScriptCustomEventPacket $packet) : bool;
 
 	public function handleSpawnParticleEffect(SpawnParticleEffectPacket $packet) : bool;
 
@@ -350,8 +348,6 @@ interface PacketHandlerInterface{
 
 	public function handleUpdateSubChunkBlocks(UpdateSubChunkBlocksPacket $packet) : bool;
 
-	public function handlePhotoInfoRequest(PhotoInfoRequestPacket $packet) : bool;
-
 	public function handleSubChunk(SubChunkPacket $packet) : bool;
 
 	public function handleSubChunkRequest(SubChunkRequestPacket $packet) : bool;
@@ -397,4 +393,20 @@ interface PacketHandlerInterface{
 	public function handleGameTestResults(GameTestResultsPacket $packet) : bool;
 
 	public function handleUpdateClientInputLocks(UpdateClientInputLocksPacket $packet) : bool;
+
+	public function handleCameraPresets(CameraPresetsPacket $packet) : bool;
+
+	public function handleUnlockedRecipes(UnlockedRecipesPacket $packet) : bool;
+
+	public function handleCameraInstruction(CameraInstructionPacket $packet) : bool;
+
+	public function handleCompressedBiomeDefinitionList(CompressedBiomeDefinitionListPacket $packet) : bool;
+
+	public function handleTrimData(TrimDataPacket $packet) : bool;
+
+	public function handleOpenSign(OpenSignPacket $packet) : bool;
+
+	public function handleAgentAnimation(AgentAnimationPacket $packet) : bool;
+
+	public function handleRefreshEntitlements(RefreshEntitlementsPacket $packet) : bool;
 }

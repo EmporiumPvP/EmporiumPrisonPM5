@@ -12,7 +12,7 @@ use Emporium\Prison\Managers\misc\Translator;
 use pocketmine\player\Player;
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\Core\CustomEnchantManager;
-use Tetro\EmporiumEnchants\Utils\Commando\BaseSubCommand;
+use CortexPE\Commando\BaseSubCommand;
 use Tetro\EmporiumEnchants\Utils\Utils;
 
 class InfoSubCommand extends BaseSubCommand {
@@ -110,5 +110,10 @@ class InfoSubCommand extends BaseSubCommand {
     protected function prepare(): void
     {
         $this->setPermission("emporiumenchants.command.info");
+    }
+
+    public function getPermission()
+    {
+        // TODO: Implement getPermission() method.
     }
 }

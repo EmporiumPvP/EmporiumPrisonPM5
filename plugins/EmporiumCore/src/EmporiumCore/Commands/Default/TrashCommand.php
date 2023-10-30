@@ -2,6 +2,7 @@
 
 namespace EmporiumCore\Commands\Default;
 
+use Emporium\Prison\Variables;
 use EmporiumData\PermissionsManager;
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\type\InvMenuTypeIds;
@@ -22,9 +23,9 @@ class TrashCommand extends Command {
             return false;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.trash");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if (!$permission) {
-            $sender->sendMessage(TextFormat::RED . "No permission");
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 

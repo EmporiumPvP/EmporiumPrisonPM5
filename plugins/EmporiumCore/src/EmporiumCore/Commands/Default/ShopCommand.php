@@ -19,27 +19,31 @@ class ShopCommand extends Command {
     }
 
     # Command Code
-    public function execute(CommandSender $sender, string $commandLabel, array $args): bool {
+    public function execute(CommandSender $sender, string $commandLabel, array $args): void {
 
         if(!$sender instanceof Player) {
-            return false;
+            return;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.shop");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if (!$permission) {
-            $sender->sendMessage(TF::RED . "No permission");
-            return false;
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
+            return;
+        }
+
+        $cooldown = DataManager::getInstance()->getPlayerData($sender->getXuid(), "cooldown.command.shop");
+        if($cooldown > 0) {
+            $sender->sendMessage(Variables::PREFIX . "You can use this in $cooldown seconds");
+            return;
         }
 
         $tutorialComplete = DataManager::getInstance()->getPlayerData($sender->getXuid(), "profile.tutorial-complete");
-
         if($tutorialComplete) {
             $sender->teleport(new Position(-1585.5, 170, -317.5, EmporiumPrison::getInstance()->getServer()->getWorldManager()->getWorldByName("world")));
-            return true;
-        } else {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "You need to complete the tutorial to use that");
-            return false;
+            return;
         }
+
+        $sender->sendMessage(Variables::PREFIX . "You need to complete the tutorial to use that");
     }
 
 }

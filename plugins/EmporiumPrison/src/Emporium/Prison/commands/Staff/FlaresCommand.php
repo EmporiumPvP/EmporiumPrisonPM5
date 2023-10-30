@@ -50,7 +50,6 @@ class FlaresCommand extends Command {
     public function __construct() {
         parent::__construct("flare", "Main flare Command", TF::GRAY . "/flare give <player> <type> <rarity>");
         $this->setPermission("emporiumprison.command.flare");
-        $this->setPermissionMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "No permission!");
     }
 
     public function execute(CommandSender $sender, string $commandLabel, array $args) {
@@ -60,47 +59,47 @@ class FlaresCommand extends Command {
         }
 
         # permission check
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumprison.command.flare");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if(!$permission) {
-            $sender->sendMessage($this->getPermissionMessage());
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
             return;
         }
 
         # parameter check
         if(!isset($args[0])) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "invalid usage");
+            $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "invalid usage");
             $sender->sendMessage($this->getUsage());
             return;
         }
         $parmeter = strtolower($args[0]);
 
         if(!$parmeter == "give") {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "invalid usage");
+            $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "invalid usage");
             $sender->sendMessage($this->getUsage());
             return;
         }
 
         # target check
         if(!isset($args[1])) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Please specify a player.");
+            $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Please specify a player.");
             return;
         }
         $target = EmporiumPrison::getInstance()->getServer()->getPlayerExact($args[1]);
 
         if(!$target instanceof Player) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That player is not online");
+            $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "That player is not online");
             return;
         }
 
         # type check
         if(!isset($args[2])) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Please specify a type.");
+            $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "Please specify a type.");
             return;
         }
         $type = strtolower($args[2]);
 
         if(!in_array($type, $this->types)) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "invalid type");
+            $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "invalid type");
             $sender->sendMessage(TF::AQUA . "Available types: ");
             $sender->sendMessage(TF::GRAY . "Meteor");
             $sender->sendMessage(TF::GRAY . "GKit");
@@ -109,7 +108,7 @@ class FlaresCommand extends Command {
 
         # rarity check
         if(!isset($args[3])) {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "invalid usage");
+            $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "invalid usage");
             $sender->sendMessage($this->getUsage());
             return;
         }
@@ -117,7 +116,7 @@ class FlaresCommand extends Command {
 
         if($type === "meteor") {
             if(!in_array($rarity, $this->meteorRarities)) {
-                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "invalid rarity");
+                $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "invalid rarity");
                 $sender->sendMessage(TF::AQUA . "Available rarities: ");
                 $sender->sendMessage(TF::GRAY . "Elite");
                 $sender->sendMessage(TF::GRAY . "Ultimate");
@@ -157,7 +156,7 @@ class FlaresCommand extends Command {
 
         if($type === "gkit") {
             if(!in_array($rarity, $this->gkitRarities)) {
-                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "invalid rarity");
+                $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "invalid rarity");
                 $sender->sendMessage(TF::AQUA . "Available rarities: ");
                 $sender->sendMessage(TF::GRAY . "Vulkarion");
                 $sender->sendMessage(TF::GRAY . "Zenith");

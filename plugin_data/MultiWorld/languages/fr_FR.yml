@@ -1,11 +1,11 @@
 ---
 ### Français/French language file by @Hydros01, updates may be needed.
 ### French in Canada and France are spoken differently.
-### Last Updated: 2022-03-13
 ## Commands:
 
 not-perms: '§cVous n’avez pas la permission d’utiliser cette commande!'
 default-usage: '§cUsage: §7/mw help'
+ingame: '§cThis command can be only used in game.'
 
 # Help Command:
 help: '§2--- Afficher les pages d’aide MultiWorld {%0} of {%1} (/mw help <page>) ---'
@@ -22,7 +22,8 @@ help-9: '§2/mw manage §fAffiche le formulaire de gestion des mondes'
 help-10: '§2/mw rename §fRenomme le monde'
 
 help-11: '§2/mw duplicate §fDuplique le monde'
-help-12: '§2/mw update §fMettre à jour le lobby, frayer dans un monde ou changer le monde par défaut'
+help-12: '§2/mw setspawan §fUpdate world spawn'
+help-13: '§2/mw setlobby §fUpdate server lobby position'
 
 # Create Command:
 create-usage: '§cUsage: §7/mw create <nomme> [semence] [générateur]'
@@ -38,6 +39,7 @@ teleport-load: 'Monde de chargement {%0}...'
 teleport-done-1: '§aVous avez été téléporté à {%0}.'
 teleport-done-2: '§aLe joueur {%1} a été téléporté à {%0}.'
 teleport-playernotexists: '§cLe joueur n’existe pas.'
+teleport-error: '§cAn error occurred whilst teleporting player: {%0}'
 
 # List Command:
 list-done: '§aWorlds ({%0}):'
@@ -47,9 +49,10 @@ load-usage: '§cUsage: §7/mw load <monde>'
 load-notexists: '§cMonde {%0} nexiste pas.'
 load-loaded: '§cIncapable de charger le monde.'
 load-done: '§aMonde chargé.'
+load-error: '§cAn error occurred whilst loading the world: {%0}'
 
 # Unload Command:
-unload-usage: '§cUsage: §7/mw unload <Lobby>'
+unload-usage: '§cUsage: §7/mw unload <world>'
 unload-levelnotexists: '§c{%0} nexiste pas.'
 unload-unloaded: '§cIncapable de décharger le monde.'
 unload-default: '§cUnable to unload default level.'
@@ -60,17 +63,9 @@ delete-usage: '§cUsage: §7/mw delete <monde>'
 delete-levelnotexists: '§cMonde nexiste pas.'
 delete-done: '§aMonde supprimé. ({%0} fichiers supprimés.)'
 
-# Update Command:
-update-usage: '§cUsage: §7/mw update <mod: spawn|lobby|default> [options: (Lobby) (x) (y) (z)]'
-update-levelnotexists: '§cMonde {%0} nexiste pas.'
-update-spawn-done: '§aFrayer dans le monde {%0} a été changé.'
-update-lobby-done: '§aLobby dans le monde {%0} a été changé.'
-update-default-usage: '§cUsage: §7/mw update default <level>'
-update-default-done: '§aLe monde par défaut a été modifié pour {%0}.'
-update-notsupported: '§4Veuillez exécuter cette commande dans le jeu!'
-
 # Info Command:
 info-levelnotexists: '§c{%0} nexiste pas.'
+info-unloaded: '§cCould not fetch info from the world {%0}, due to the world could not be loaded.'
 info: '§a--- {%0} ---'
 info-name: '§7Nomme: {%0}'
 info-folderName: '§7Nom de Dossier: {%0}'
@@ -85,17 +80,26 @@ gamerule-list: '§aRègles de jeu disponibles: {%0}'
 gamerule-levelnotfound: '§cMonde {%0} introuvable.'
 gamerule-notexists: '§cRègle de jeu {%0} nexiste pas.'
 gamerule-done: '§aRègle de jeu {%0} en monde {%1} a été modifié pour {%2}.'
+
 # Rename Command
 rename-usage: '§cUsage: §7/mw rename <de> <à>'
 rename-exists: '§cMonde avec nom {%0} existe déjà.'
 rename-levelnotfound: '§cMonde {%0} nexiste pas.'
 rename-done: '§aMonde avec nom {%0} a été remplacé par {%1}.'
+rename-error: '§cCould not rename the world (Access denied)'
 
 # Duplicate Command
 duplicate-usage: '§cUsage: §7/mw duplicate <monde> [nouveauNom]'
 duplicate-exists: '§cMonde avec nom {%0} existe déjà.'
 duplicate-levelnotfound: '§cMonde {%0} nexiste pas.'
+
+# Set Spawn
+setspawn-success: '§a{%0} world spawn set to {%1}'
 duplicate-done: 'Monde {%0} dupliqué, le nom du duplicata est {%1}'
+
+# Set Lobby
+setlobby-errror: '§cCould not update default world: {%0}'
+setlobby-success: '§aServer lobby position set to {%0} at {%1}'
 
 # Forms
 forms-invalid: '§cRésultat non valide.'

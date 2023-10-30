@@ -2,7 +2,7 @@
 
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\item\Item;
 use pocketmine\event\Event;
 use pocketmine\player\Player;
@@ -21,7 +21,7 @@ class MeteorSummonerCE extends ReactiveEnchantment {
     public int $rarity = CustomEnchant::RARITY_EXECUTIVE;
     public int $cooldownDuration = 300;
     public int $maxLevel = 5;
-    public int $chance = 1;
+    public int $chance = 5000;
 
     # Compatibility
     public int $usageType = CustomEnchant::TYPE_HAND;
@@ -33,38 +33,53 @@ class MeteorSummonerCE extends ReactiveEnchantment {
     }
 
     private array $ores = [
-        BlockLegacyIds::COAL_ORE,
-        BlockLegacyIds::COAL_BLOCK,
-        BlockLegacyIds::IRON_ORE,
-        BlockLegacyIds::IRON_BLOCK,
-        BlockLegacyIds::LAPIS_ORE,
-        BlockLegacyIds::LAPIS_BLOCK,
-        BlockLegacyIds::REDSTONE_ORE,
-        BlockLegacyIds::LIT_REDSTONE_ORE,
-        BlockLegacyIds::REDSTONE_BLOCK,
-        BlockLegacyIds::GOLD_ORE,
-        BlockLegacyIds::GOLD_BLOCK,
-        BlockLegacyIds::DIAMOND_ORE,
-        BlockLegacyIds::DIAMOND_BLOCK,
-        BlockLegacyIds::EMERALD_ORE,
-        BlockLegacyIds::EMERALD_BLOCK,
-        BlockLegacyIds::QUARTZ_ORE
+        BlockTypeIds::COAL_ORE, BlockTypeIds::COAL,
+        BlockTypeIds::IRON_ORE, BlockTypeIds::IRON,
+        BlockTypeIds::LAPIS_LAZULI_ORE, BlockTypeIds::LAPIS_LAZULI,
+        BlockTypeIds::REDSTONE_ORE, BlockTypeIds::REDSTONE,
+        BlockTypeIds::GOLD_ORE, BlockTypeIds::GOLD,
+        BlockTypeIds::DIAMOND_ORE, BlockTypeIds::DIAMOND,
+        BlockTypeIds::EMERALD_ORE, BlockTypeIds::EMERALD,
+        BlockTypeIds::NETHER_QUARTZ_ORE, BlockTypeIds::QUARTZ
     ];
 
     # Enchantment
     public function react(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void {
-        // Chance
-        $chance = floor(2500 / $level);
-        if (mt_rand(1, $chance) !== mt_rand(1, $chance)) {
-            return;
-        }
-        // Enchantment Code
-        if ($event instanceof BlockBreakEvent) {
 
-            $player->sendActionBarMessage(TextFormat::RED . "Meteor Summoner");
-            # add logic random chance to spawn meteor depending on level
-            $this->setCooldown($player, 1);
+        // Enchantment Code
+        if (!$event instanceof BlockBreakEvent) return;
+
+        if ($event->isCancelled()) return;
+
+        // Chance
+        $chance = floor($this->chance / $level);
+        if (mt_rand(1, $chance) !== mt_rand(1, $chance)) return;
+
+        $player->sendActionBarMessage(TextFormat::RED . "Meteor Summoner");
+
+        switch($level) {
+
+            case 1:
+                # spawn elite meteor
+                break;
+
+            case 2:
+                # spawn ultimate meteor
+                break;
+
+            case 3:
+                # spawn legendary meteor
+                break;
+
+            case 4:
+                # spawn godly meteor
+                break;
+
+            case 5:
+                # spawn heroic meteor
+                break;
         }
+        $this->setCooldown($player, $this->cooldownDuration);
     }
 
     public function getPriority(): int

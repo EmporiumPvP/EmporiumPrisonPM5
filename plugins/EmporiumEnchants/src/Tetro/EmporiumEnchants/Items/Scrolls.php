@@ -3,6 +3,7 @@
 namespace Tetro\EmporiumEnchants\Items;
 
 use Emporium\Prison\Managers\misc\GlowManager;
+
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
@@ -31,6 +32,7 @@ class Scrolls
             TF::BOLD . TF::RED . "WARNING: Irreversible action!"
         ];
         $item->setLore($lore);
+        $item->getNamedTag()->setString("Scroll", "black");
         $item->getNamedTag()->setInt("chance", 100);
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -58,6 +60,7 @@ class Scrolls
             TF::BOLD . TF::RED . "WARNING: Irreversible action!"
         ];
         $item->setLore($lore);
+        $item->getNamedTag()->setString("Scroll", "black");
         $item->getNamedTag()->setInt("chance", $chance);
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -84,6 +87,7 @@ class Scrolls
             TF::BOLD . TF::RED . "WARNING: Irreversible action!"
         ];
         $item->setLore($lore);
+        $item->getNamedTag()->setString("Scroll", "black");
         $item->getNamedTag()->setInt("chance", $chance);
         $item->addEnchantment(GlowManager::$enchInst);
 
@@ -92,7 +96,7 @@ class Scrolls
 
     # randomisation scrolls
     public function eliteRandomisationScroll(): Item {
-        $item = VanillaItems::INK_SAC();
+        $item = VanillaItems::PAPER();
         $item->setCustomName(TF::BOLD . TF::BLUE . "Elite Randomisation Scroll");
         $lore = [
             TF::EOL,
@@ -106,13 +110,14 @@ class Scrolls
             TF::GRAY . "(Drag-n-drop on Enchant)"
         ];
         $item->setLore($lore);
+        $item->getNamedTag()->setString("RandomisationScroll", "elite");
         $item->addEnchantment(GlowManager::$enchInst);
 
         return $item;
     }
 
     public function ultimateRandomisationScroll(): Item {
-        $item = VanillaItems::INK_SAC();
+        $item = VanillaItems::PAPER();
         $item->setCustomName(TF::BOLD . TF::YELLOW . "Ultimate Randomisation Scroll");
         $lore = [
             TF::EOL,
@@ -126,13 +131,14 @@ class Scrolls
             TF::GRAY . "(Drag-n-drop on Enchant)"
         ];
         $item->setLore($lore);
+        $item->getNamedTag()->setString("RandomisationScroll", "ultimate");
         $item->addEnchantment(GlowManager::$enchInst);
 
         return $item;
     }
 
     public function legendaryRandomisationScroll(): Item {
-        $item = VanillaItems::INK_SAC();
+        $item = VanillaItems::PAPER();
         $item->setCustomName(TF::BOLD . TF::GOLD . "Legendary Randomisation Scroll");
         $lore = [
             TF::EOL,
@@ -146,13 +152,14 @@ class Scrolls
             TF::GRAY . "(Drag-n-drop on Enchant)"
         ];
         $item->setLore($lore);
+        $item->getNamedTag()->setString("RandomisationScroll", "legendary");
         $item->addEnchantment(GlowManager::$enchInst);
 
         return $item;
     }
 
     public function godlyRandomisationScroll(): Item {
-        $item = VanillaItems::INK_SAC();
+        $item = VanillaItems::PAPER();
         $item->setCustomName(TF::BOLD . TF::LIGHT_PURPLE . "Godly Randomisation Scroll");
         $lore = [
             TF::EOL,
@@ -166,13 +173,14 @@ class Scrolls
             TF::GRAY . "(Drag-n-drop on Enchant)"
         ];
         $item->setLore($lore);
+        $item->getNamedTag()->setString("RandomisationScroll", "godly");
         $item->addEnchantment(GlowManager::$enchInst);
 
         return $item;
     }
 
     public function heroicRandomisationScroll(): Item {
-        $item = VanillaItems::INK_SAC();
+        $item = VanillaItems::PAPER();
         $item->setCustomName(TF::BOLD . TF::RED . "Heroic Randomisation Scroll");
         $lore = [
             TF::EOL,
@@ -186,6 +194,7 @@ class Scrolls
             TF::GRAY . "(Drag-n-drop on Enchant)"
         ];
         $item->setLore($lore);
+        $item->getNamedTag()->setString("RandomisationScroll", "heroic");
         $item->addEnchantment(GlowManager::$enchInst);
 
         return $item;

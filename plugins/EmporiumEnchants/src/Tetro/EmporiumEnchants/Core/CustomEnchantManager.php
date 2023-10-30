@@ -32,6 +32,7 @@ use Tetro\EmporiumEnchants\Enchants\Weapons\Axe\{InsanityCE, OvergrowthCE};
 use Tetro\EmporiumEnchants\Enchants\Weapons\Global\{AccuracyCE,
     AerialCE,
     BloodCurdleCE,
+    LightningCE,
     SilenceCE,
     BackstabCE,
     BlessedCE,
@@ -66,7 +67,7 @@ use Tetro\EmporiumEnchants\Enchants\Weapons\Global\{AccuracyCE,
     WitherCE,
     RageCE,
     SergeonCE};
-use Tetro\EmporiumEnchants\Enchants\Weapons\Sword\{AssassinCE};
+use Tetro\EmporiumEnchants\Enchants\Weapons\Sword\{AssassinCE, DemonicSharpenedCE, GloryCE, SharpenedCE};
 // Other
 use Tetro\EmporiumEnchants\Enchants\Global\{AutoRepairCE};
 
@@ -141,6 +142,7 @@ class CustomEnchantManager {
         self::registerEnchantment(new DemiseCE($plugin, CustomEnchantIds::DEMISE));
         self::registerEnchantment(new DemonForgedCE($plugin, CustomEnchantIds::DEMONFORGED));
         self::registerEnchantment(new DemonicLifestealCE($plugin, CustomEnchantIds::DEMONICLIFESTEAL));
+        self::registerEnchantment(new DemonicSharpenedCE($plugin, CustomEnchantIds::DEMONICSHARPENED));
         self::registerEnchantment(new DisarmorCE($plugin, CustomEnchantIds::DISARMOR));
         self::registerEnchantment(new DisintegrateCE($plugin, CustomEnchantIds::DISINTEGRATE));
         self::registerEnchantment(new DominateCE($plugin, CustomEnchantIds::DOMINATE));
@@ -149,6 +151,7 @@ class CustomEnchantManager {
         self::registerEnchantment(new ExperienceHunterCE($plugin, CustomEnchantIds::EXPERIENCEHUNTER));
         self::registerEnchantment(new FreezeCE($plugin, CustomEnchantIds::FREEZE));
         self::registerEnchantment(new FrenzyCE($plugin, CustomEnchantIds::FRENZY));
+        self::registerEnchantment(new GloryCE($plugin, CustomEnchantIds::GLORY));
         self::registerEnchantment(new GravityCE($plugin, CustomEnchantIds::GRAVITY));
         self::registerEnchantment(new HallucinationCE($plugin, CustomEnchantIds::HALLUCINATION));
         self::registerEnchantment(new HuntsmanCE($plugin, CustomEnchantIds::HUNTSMAN));
@@ -158,9 +161,11 @@ class CustomEnchantManager {
         self::registerEnchantment(new InsanityCE($plugin, CustomEnchantIds::INSANITY));
         self::registerEnchantment(new InversionCE($plugin, CustomEnchantIds::INVERSION));
         self::registerEnchantment(new LifestealCE($plugin, CustomEnchantIds::LIFESTEAL));
+        self::registerEnchantment(new LightningCE($plugin, CustomEnchantIds::LIGHTNING));
         self::registerEnchantment(new ManiacCE($plugin, CustomEnchantIds::MANIAC));
         self::registerEnchantment(new PoisonCE($plugin, CustomEnchantIds::POISON));
         self::registerEnchantment(new RageCE($plugin, CustomEnchantIds::RAGE));
+        self::registerEnchantment(new SharpenedCE($plugin, CustomEnchantIds::SHARPEN));
         self::registerEnchantment(new SilenceCE($plugin, CustomEnchantIds::SILENCE));
         self::registerEnchantment(new SoulStealCE($plugin, CustomEnchantIds::SOULSTEAL));
         self::registerEnchantment(new UltraRageCE($plugin, CustomEnchantIds::ULTRARAGE));
@@ -195,16 +200,16 @@ class CustomEnchantManager {
 
     # Register Enchant
     public static function registerEnchantment(CustomEnchant $enchant): void {
-        EnchantmentIdMap::getInstance()->register($enchant->getId(), $enchant);
-        self::$enchants[$enchant->getId()] = $enchant;
+        EnchantmentIdMap::getInstance()->register($enchant->getTypeId(), $enchant);
+        self::$enchants[$enchant->getTypeId()] = $enchant;
         StringToEnchantmentParser::getInstance()->register($enchant->name, fn() => $enchant);
         if ($enchant->name !== $enchant->getDisplayName()) StringToEnchantmentParser::getInstance()->register($enchant->getDisplayName(), fn() => $enchant);
-        self::$plugin->getLogger()->debug("Custom Enchantment '" . $enchant->getDisplayName() . "' registered with id " . $enchant->getId());
+        self::$plugin->getLogger()->debug("Custom Enchantment '" . $enchant->getDisplayName() . "' registered with id " . $enchant->getTypeId());
     }
 
     # Unregister Enchant
     public static function unregisterEnchantment(int|CustomEnchant $id): void {
-        $id = $id instanceof CustomEnchant ? $id->getId() : $id;
+        $id = $id instanceof CustomEnchant ? $id->getTypeId() : $id;
         $enchant = self::$enchants[$id];
 
         $property = new ReflectionProperty(StringToTParser::class, "callbackMap");
@@ -214,7 +219,7 @@ class CustomEnchantManager {
         if ($enchant->name !== $enchant->getDisplayName()) unset($value[strtolower(str_replace([" ", "minecraft:"], ["_", ""], trim($enchant->getDisplayName())))]);
         $property->setValue(StringToEnchantmentParser::getInstance(), $value);
 
-        self::$plugin->getLogger()->debug("Custom Enchantment '" . $enchant->getDisplayName() . "' unregistered with id " . $enchant->getId());
+        self::$plugin->getLogger()->debug("Custom Enchantment '" . $enchant->getDisplayName() . "' unregistered with id " . $enchant->getTypeId());
         unset(self::$enchants[$id]);
 
         $property = new ReflectionProperty(EnchantmentIdMap::class, "enchToId");

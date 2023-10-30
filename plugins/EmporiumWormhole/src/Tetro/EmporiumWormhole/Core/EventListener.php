@@ -3,13 +3,15 @@
 namespace Tetro\EmporiumWormhole\Core;
 
 use Emporium\Prison\EmporiumPrison;
-use Emporium\Prison\Variables;
 
-use Tetro\EmporiumWormhole\Menus\Menu;
+use Tetro\EmporiumTutorial\Tasks\RemoveItemTask;
 
+use Tetro\EmporiumWormhole\EmporiumWormhole;
+use Tetro\EmporiumWormhole\Tasks\OpenWormholeMenuTask;
+
+use pocketmine\item\Pickaxe;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDropItemEvent;
-use pocketmine\item\ItemIds;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\EndermanTeleportSound;
 use pocketmine\world\sound\XpLevelUpSound;
@@ -20,52 +22,51 @@ class EventListener implements Listener {
 
         $player = $event->getPlayer();
         $item = $event->getItem();
-        $hand = $item->getId();
         $playerX = $player->getPosition()->getX();
         $playerY = $player->getPosition()->getY();
         $playerZ = $player->getPosition()->getZ();
-
         $world = $player->getWorld()->getFolderName();
-        if($world === "world") {
-            # player is in wormhole range
-            if($playerX >= -1516 && $playerX <= -1488 && $playerY >= 166 && $playerY <= 178 && $playerZ >= -331 && $playerZ <= -303) {
-                if($hand === ItemIds::WOODEN_PICKAXE || $hand === ItemIds::STONE_PICKAXE || $hand === ItemIds::GOLDEN_PICKAXE || $hand === ItemIds::IRON_PICKAXE || $hand === ItemIds::DIAMOND_PICKAXE) {
-                    if($item->getNamedTag()->getTag("Level") !== null) {
-                        $level = $item->getNamedTag()->getInt("Level");
-                        if($level >= 100) {
-                            # pickaxe is max level
-                            $event->cancel();
-                            $player->sendMessage(TF::RED . "You need to prestige your pickaxe to do this");
-                        } else {
-                            $energy = $item->getNamedTag()->getInt("Energy");
-                            $energyNeeded = EmporiumPrison::getInstance()->getPickaxeManager()->getEnergyNeeded($item);
-                            if ($energy >= $energyNeeded) {
-                                # pickaxe is ready to level up
-                                $event->cancel();
-                                # play sound to player
-                                $player->broadcastSound(new EndermanTeleportSound(), [$player]);
-                                # remove energy from pickaxe
-                                EmporiumPrison::getInstance()->getPickaxeManager()->removeLevelUpEnergy($item);
-                                # send inventory
-                                $menu = new Menu();
-                                $menu->Inventory($player, $item);
-                            } else {
-                                # pickaxe is not ready to level up
-                                $player->broadcastSound(new XpLevelUpSound(30));
-                                $player->sendMessage(TF::RED . "You need more energy to Enchant!");
-                                $event->cancel();
-                            }
-                        }
-                    } else {
-                        $player->broadcastSound(new XpLevelUpSound(30));
-                        $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That is not a valid pickaxe");
-                        $event->cancel();
-                    } # not a valid pickaxe
-                } else {
-                    $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You need to be holding the Pickaxe you want to enchant");
-                    $event->cancel();
-                } # player not holding a pickaxe
-            } # not in wormhole range
-        } # not "world"
+
+        if(!$world == "world") return;
+
+        if($playerX < -1516 && $playerX > -1488 && $playerY < 166 && $playerY > 178 && $playerZ < -331 && $playerZ > -303) return;
+
+        $event->cancel();
+
+        if(!$item instanceof Pickaxe) {
+            $player->broadcastSound(new XpLevelUpSound(30));
+            $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "That is not a valid pickaxe");
+            return;
+        }
+
+        if(!$item->getNamedTag()->getTag("PickaxeType")) {
+            $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You need to be holding the Pickaxe you want to enchant");
+            return;
+        }
+
+        if($item->getNamedTag()->getInt("Level") >= 100) {
+            $player->sendMessage(TF::RED . "You need to prestige your pickaxe to do this");
+            return;
+        }
+
+        $energy = $item->getNamedTag()->getInt("Energy");
+        $energyNeeded = EmporiumPrison::getInstance()->getPickaxeManager()->getEnergyNeeded($item);
+
+        # pickaxe needs more energy
+        if($energy < $energyNeeded) {
+            $player->broadcastSound(new XpLevelUpSound(30));
+            $player->sendMessage(TF::RED . "You need more energy to Enchant!");
+            return;
+        }
+
+        # pickaxe is ready to level up
+
+        # play sound to player
+        $player->broadcastSound(new EndermanTeleportSound(), [$player]);
+
+        # schedule task
+        EmporiumWormhole::getInstance()->getScheduler()->scheduleDelayedTask(new RemoveItemTask($player, $item), 1);
+
+        EmporiumWormhole::getInstance()->getScheduler()->scheduleDelayedTask(new OpenWormholeMenuTask($player, $item), 5);
     }
 }

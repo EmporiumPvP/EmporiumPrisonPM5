@@ -27,7 +27,7 @@ class MuteCommand extends Command {
 
         $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.mute");
         if (!$permission) {
-            $sender->sendMessage(TF::RED . "No permission");
+            $sender->sendMessage(\Emporium\Prison\Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 
@@ -43,8 +43,17 @@ class MuteCommand extends Command {
                             $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have been muted for $time.");
                             $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You have muted {$player->getName()}.");
                             $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Mute Duration: $time.");
-                            // Send Logs
-                            WebhookEvent::staffWebhook($sender, $player, "Mute");
+
+                            # create reason message
+                            $reason = $args;
+                            $sortedReason = str_replace([$player, $time], ["", ""], $reason);
+                            if ($sortedReason === "" || $sortedReason === " ") {
+                                $sortedReason = "No reason was specified.";
+                            }
+
+                            # Send webhook
+                            WebhookEvent::staffWebhook($sender, $player, "Mute", $sortedReason);
+
                             return true;
                         } else {
                             $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "Please enter a valid duration.");

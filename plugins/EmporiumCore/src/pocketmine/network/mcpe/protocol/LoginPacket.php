@@ -58,11 +58,11 @@ class LoginPacket extends DataPacket implements ServerboundPacket{
 		if($chainDataJsonLength <= 0){
 			//technically this is always positive; the problem results because getLInt() is implicitly signed
 			//this is inconsistent with many other methods, but we can't do anything about that for now
-			throw new PacketDecodeException("Length of chain Data JSON must be positive");
+			throw new PacketDecodeException("Length of chain data JSON must be positive");
 		}
 		$chainDataJson = json_decode($connRequestReader->get($chainDataJsonLength));
 		if(!is_object($chainDataJson)){
-			throw new PacketDecodeException("Failed decoding chain Data JSON: " . json_last_error_msg());
+			throw new PacketDecodeException("Failed decoding chain data JSON: " . json_last_error_msg());
 		}
 		$mapper = new \JsonMapper;
 		$mapper->bExceptionOnMissingData = true;

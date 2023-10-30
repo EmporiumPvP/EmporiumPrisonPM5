@@ -4,12 +4,13 @@ namespace Items;
 
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
+use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
 
 class Crystals {
 
     public function noble(): Item {
-        $item = StringToItemParser::getInstance()->parse("nether_star");
+        $item = VanillaItems::NETHER_STAR();
         $item->setCustomName(TF::DARK_GRAY . "Noble Rank" . TF::LIGHT_PURPLE . " Crystal");
         $item->getNamedTag()->setByte("NobleCrystal", 1);
 

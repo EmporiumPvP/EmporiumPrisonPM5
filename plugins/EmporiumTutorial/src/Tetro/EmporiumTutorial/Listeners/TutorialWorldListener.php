@@ -30,6 +30,7 @@ use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\EndermanTeleportSound;
 use pocketmine\world\sound\XpLevelUpSound;
 
+use Tetro\EmporiumTutorial\Tasks\RemoveItemTask;
 use Tetro\EmporiumWormhole\EmporiumWormhole;
 
 use EmporiumData\DataManager;
@@ -69,49 +70,56 @@ class TutorialWorldListener implements Listener {
         $playerZ = $player->getPosition()->getZ();
         $world = $player->getWorld()->getFolderName();
 
-        if($world != "TutorialMine") return;
+        var_dump("world");
+        if($world != "TutorialMine") {
+            var_dump("world is not tutorial mine");
+            return;
+        }
 
         # is player in wormhole range
-        if(!$playerX >= -25 && !$playerX <= -5 && !$playerY >= 145 && !$playerY <= 153 && !$playerZ >= 5 && !$playerZ <= 25) return;
+        if(!$playerX >= -25 && !$playerX <= -5 && !$playerY >= 145 && !$playerY <= 153 && !$playerZ >= 5 && !$playerZ <= 25) {
+            var_dump("player is not in range");
+            return;
+        }
+
+        $event->cancel();
 
         # is it an upgradable pickaxe
         if($item->getNamedTag()->getTag("PickaxeType") == null) {
-            $event->cancel();
+            var_dump("not a valid pickaxe");
             $player->broadcastSound(new XpLevelUpSound(30));
             $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You need to be holding the Pickaxe you want to enchant");
             return;
         }
 
-        # compatability checks
-        if($item->getNamedTag()->getTag("Level") == null) return;
+        # pickaxe data
         $level = $item->getNamedTag()->getInt("Level");
+        $energy = $item->getNamedTag()->getInt("Energy");
+        $energyNeeded = $this->pickaxeManager->getEnergyNeeded($item);
+
+        var_dump($energy);
+        var_dump($energyNeeded);
+
+        # compatability checks
 
         # pickaxe is max level
         if($level >= 100) {
-            $event->cancel();
             $player->sendMessage(TF::RED . "You need to prestige your pickaxe to do this");
             return;
         }
 
-        # does pickaxe have energy
-        if($item->getNamedTag()->getTag("Energy") == null) return;
-        $energy = $item->getNamedTag()->getInt("Energy");
-        $energyNeeded = $this->pickaxeManager->getEnergyNeeded($item);
-
-        # does pickaxe have enough energy
-        $event->cancel();
+        # pickaxe doesn't have enough energy
         if ($energy < $energyNeeded) {
+            var_dump("need more energy");
             $player->broadcastSound(new XpLevelUpSound(30));
             $player->sendMessage(TF::RED . "You need more energy to Enchant!");
             return;
         }
 
         # pickaxe is ready to level up
-        # remove pickaxe from inventory
-        $player->getInventory()->remove($item);
 
-        # remove pickaxe from cursor
-        $player->getCursorInventory()->remove($item);
+        # remove pickaxe
+        EmporiumWormhole::getInstance()->getScheduler()->scheduleDelayedTask(new RemoveItemTask($player, $item), 20);
 
         # play sound to player
         $player->broadcastSound(new EndermanTeleportSound(), [$player]);
@@ -132,7 +140,7 @@ class TutorialWorldListener implements Listener {
 
         # event info
         $player = $event->getPlayer();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $world = $event->getPlayer()->getWorld()->getFolderName();
 
         # world check
@@ -193,13 +201,13 @@ class TutorialWorldListener implements Listener {
         # check pickaxe type
         if($item->getNamedTag()->getString("PickaxeType") != "Trainee") {
             $event->cancel();
-            $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "You can only use a" . TF::GREEN . " Wooden Pickaxe" . TF::RED . " here!");
+            $player->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "You can only use a" . TF::GREEN . " Wooden Pickaxe" . TF::RED . " here!");
             return;
         }
 
         # block info
         $block = $event->getBlock();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $blockPosition = $block->getPosition();
 
         # player boosters data

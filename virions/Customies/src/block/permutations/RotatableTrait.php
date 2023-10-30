@@ -3,8 +3,11 @@ declare(strict_types=1);
 
 namespace customiesdevs\customies\block\permutations;
 
+use Exception;
 use pocketmine\block\Block;
 use pocketmine\block\utils\HorizontalFacingTrait;
+use pocketmine\data\bedrock\block\convert\BlockStateReader;
+use pocketmine\data\bedrock\block\convert\BlockStateWriter;
 use pocketmine\item\Item;
 use pocketmine\math\Facing;
 use pocketmine\math\Vector3;
@@ -30,25 +33,49 @@ trait RotatableTrait {
 	public function getPermutations(): array {
 		return [
 			(new Permutation("q.block_property('customies:rotation') == 2"))
-				->withComponent("minecraft:rotation", CompoundTag::create()
-					->setFloat("x", 0)
-					->setFloat("y", 0)
-					->setFloat("z", 0)),
+				->withComponent("minecraft:transformation", CompoundTag::create()
+					->setInt("RX", 0)
+					->setInt("RY", 0)
+					->setInt("RZ", 0)
+					->setFloat("SX", 1.0)
+					->setFloat("SY", 1.0)
+					->setFloat("SZ", 1.0)
+					->setFloat("TX", 0.0)
+					->setFloat("TY", 0.0)
+					->setFloat("TZ", 0.0)),
 			(new Permutation("q.block_property('customies:rotation') == 3"))
-				->withComponent("minecraft:rotation", CompoundTag::create()
-					->setFloat("x", 0)
-					->setFloat("y", 180)
-					->setFloat("z", 0)),
+				->withComponent("minecraft:transformation", CompoundTag::create()
+					->setInt("RX", 0)
+					->setInt("RY", 2)
+					->setInt("RZ", 0)
+					->setFloat("SX", 1.0)
+					->setFloat("SY", 1.0)
+					->setFloat("SZ", 1.0)
+					->setFloat("TX", 0.0)
+					->setFloat("TY", 0.0)
+					->setFloat("TZ", 0.0)),
 			(new Permutation("q.block_property('customies:rotation') == 4"))
-				->withComponent("minecraft:rotation", CompoundTag::create()
-					->setFloat("x", 0)
-					->setFloat("y", 90)
-					->setFloat("z", 0)),
+				->withComponent("minecraft:transformation", CompoundTag::create()
+					->setInt("RX", 0)
+					->setInt("RY", 1)
+					->setInt("RZ", 0)
+					->setFloat("SX", 1.0)
+					->setFloat("SY", 1.0)
+					->setFloat("SZ", 1.0)
+					->setFloat("TX", 0.0)
+					->setFloat("TY", 0.0)
+					->setFloat("TZ", 0.0)),
 			(new Permutation("q.block_property('customies:rotation') == 5"))
-				->withComponent("minecraft:rotation", CompoundTag::create()
-					->setFloat("x", 0)
-					->setFloat("y", 270)
-					->setFloat("z", 0)),
+				->withComponent("minecraft:transformation", CompoundTag::create()
+					->setInt("RX", 0)
+					->setInt("RY", 3)
+					->setInt("RZ", 0)
+					->setFloat("SX", 1.0)
+					->setFloat("SY", 1.0)
+					->setFloat("SZ", 1.0)
+					->setFloat("TX", 0.0)
+					->setFloat("TY", 0.0)
+					->setFloat("TZ", 0.0)),
 		];
 	}
 
@@ -56,7 +83,10 @@ trait RotatableTrait {
 		return [$this->facing];
 	}
 
-	protected function writeStateToMeta(): int {
+    /**
+     * @throws Exception
+     */
+    protected function writeStateToMeta(): int {
 		return Permutations::toMeta($this);
 	}
 
@@ -74,5 +104,13 @@ trait RotatableTrait {
 			$this->facing = $player->getHorizontalFacing();
 		}
 		return parent::place($tx, $item, $blockReplace, $blockClicked, $face, $clickVector, $player);
+	}
+
+	public function serializeState(BlockStateWriter $out): void {
+		$out->writeInt("customies:rotation", $this->facing);
+	}
+
+	public function deserializeState(BlockStateReader $in): void {
+		$this->facing = $in->readInt("customies:rotation");
 	}
 }

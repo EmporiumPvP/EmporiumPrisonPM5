@@ -3,20 +3,16 @@
 namespace Emporium\Prison\Managers;
 
 use Emporium\Prison\EmporiumPrison;
-use Emporium\Prison\items\Contraband;
+
 use EmporiumData\DataManager;
+
 use JsonException;
-use pocketmine\entity\Location;
+
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerMoveEvent;
-use pocketmine\item\VanillaItems;
-use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
 use pocketmine\player\Player;
-use pocketmine\scheduler\ClosureTask;
-use pocketmine\utils\TextFormat;
 use pocketmine\world\sound\XpLevelUpSound;
+
 use Tetro\EmporiumTutorial\Managers\TutorialManager;
 use Tetro\EmporiumWormhole\Utils\FireworksParticle;
 

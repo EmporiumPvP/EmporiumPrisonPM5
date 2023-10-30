@@ -2,6 +2,7 @@
 
 namespace EmporiumCore\Listeners\Items;
 
+use EmporiumCore\Listeners\WebhookEvent;
 use EmporiumData\DataManager;
 use Items\GKits;
 use Items\RankKits;
@@ -19,6 +20,9 @@ class LootboxListener implements Listener {
         $count = $item->getCount();
 
         if($item->getNamedTag()->getTag("GKitLootbox") !== null) {
+
+            WebhookEvent::itemWebhook($player, "GKitLootbox");
+
             # remove item
             $item->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
@@ -108,6 +112,9 @@ class LootboxListener implements Listener {
             }
         }
         if($item->getNamedTag()->getTag("RankKitLootbox") !== null) {
+
+            WebhookEvent::itemWebhook($player, "RankKitLootbox");
+
             # remove item
             $item->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);
@@ -147,6 +154,9 @@ class LootboxListener implements Listener {
             }
         }
         if($item->getNamedTag()->getTag("PrestigeKitLootbox") !== null) {
+
+            WebhookEvent::itemWebhook($player, "PrestigeKitLootbox");
+
             # remove item
             $item->setCount($count - 1);
             $player->getInventory()->setItemInHand($item);

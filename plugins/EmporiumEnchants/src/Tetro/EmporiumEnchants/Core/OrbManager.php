@@ -2,9 +2,11 @@
 
 namespace Tetro\EmporiumEnchants\Core;
 
+use customiesdevs\customies\item\CustomiesItemFactory;
 use Emporium\Prison\Managers\misc\Translator;
 
 use Exception;
+use pocketmine\block\utils\DyeColor;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
@@ -240,28 +242,28 @@ class OrbManager {
         # create item
         switch($rarity) {
             case CustomEnchant::RARITY_ELITE:
-                $item = VanillaItems::BLUE_DYE();
+                $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:elite_orb");
                 break;
             case CustomEnchant::RARITY_ULTIMATE:
-                $item = VanillaItems::YELLOW_DYE();
+                $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:ultimate_orb");
                 break;
             case CustomEnchant::RARITY_LEGENDARY:
-                $item = VanillaItems::ORANGE_DYE();
+                $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:legendary_orb");
                 break;
             case CustomEnchant::RARITY_GODLY:
-                $item = VanillaItems::PINK_DYE();
+                $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:godly_orb");
                 break;
             case CustomEnchant::RARITY_HEROIC:
-                $item = VanillaItems::RED_DYE();
+                $item = CustomiesItemFactory::getInstance()->get("emporiumenchants:heroic_orb");
                 break;
 
             default:
-                $item = VanillaItems::CYAN_DYE();
+                $item = VanillaItems::DYE()->setColor(DyeColor::CYAN());
                 break;
         }
         $item->setCustomName(TF::BOLD . $translatedRarityColour . $enchant->getDisplayName() . " " . TF::RESET . TF::AQUA . Translator::romanNumber($level));
         # set item tags
-        $item->getNamedTag()->setInt("CustomEnchantOrb", 0);
+        $item->getNamedTag()->setInt("OpenedPickaxeEnchantOrb", 0);
         $item->getNamedTag()->setInt("level", $level);
         $item->getNamedTag()->setString("RarityName", $translatedRarity);
         $item->getNamedTag()->setInt("Rarity", $rarity);

@@ -4,6 +4,7 @@ namespace Emporium\Prison\commands\Default;
 
 use Emporium\Prison\Variables;
 
+use EmporiumData\PermissionsManager;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -14,22 +15,21 @@ class PlayerPrestigeCommand extends Command {
     public function __construct() {
         parent::__construct("prestige", "Main command to prestige", "/prestige");
         $this->setPermission("emporiumprison.command.prestige");
-        $this->setPermissionMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "No permission");
     }
 
-    public function execute(CommandSender $sender, string $commandLabel, array $args) {
+    public function execute(CommandSender $sender, string $commandLabel, array $args): void {
 
         if(!$sender instanceof Player) {
             return;
         }
 
-        /*
-        $permission = DataManager::getData($sender, "Permissions", "emporiumprison.command.prestige");
+
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         if ($permission === false) {
-            $sender->sendMessage(TextFormat::RED . "No permission");
-            return false;
+            $sender->sendMessage(Variables::NO_PERMISSION_MESSAGE);
+            return;
         }
-        */
+
 
         /*
          * TODO

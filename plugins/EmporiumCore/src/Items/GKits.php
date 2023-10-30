@@ -2,14 +2,14 @@
 
 namespace Items;
 
+use pocketmine\block\VanillaBlocks;
 use pocketmine\item\Item;
-use pocketmine\item\StringToItemParser;
 use pocketmine\utils\TextFormat as TF;
 
 class GKits {
 
     public function heroicVulkarion(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::DARK_RED . "Heroic Vulkarion " . TF::RESET . TF::DARK_RED . "GKit");
         $item->getNamedTag()->setByte("HeroicVulkarionGKit", 1);
         $item->setCount($amount);
@@ -31,7 +31,7 @@ class GKits {
     }
 
     public function heroicZenith(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::GOLD . "Heroic Zenith " . TF::RESET . TF::GOLD . "GKit");
         $item->getNamedTag()->setByte("HeroicZenithGKit", 1);
         $item->setCount($amount);
@@ -50,7 +50,7 @@ class GKits {
     }
 
     public function heroicColossus(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::WHITE . "Heroic Colossus " . TF::RESET . TF::WHITE . "GKit");
         $item->getNamedTag()->setByte("HeroicColossusGKit", 1);
         $item->setCount($amount);
@@ -69,7 +69,7 @@ class GKits {
     }
 
     public function heroicWarlock(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::DARK_PURPLE . "Heroic Warlock " . TF::RESET . TF::DARK_PURPLE . "GKit");
         $item->getNamedTag()->setByte("HeroicWarlockGKit", 1);
         $item->setCount($amount);
@@ -92,7 +92,7 @@ class GKits {
     }
 
     public function heroicSlaughter(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::RED . "Heroic Slaughter " . TF::RESET . TF::DARK_PURPLE . "GKit");
         $item->getNamedTag()->setByte("HeroicSlaughterGKit", 1);
         $item->setCount($amount);
@@ -112,7 +112,7 @@ class GKits {
     }
 
     public function heroicEnchanter(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::AQUA . "Heroic Enchanter " . TF::RESET . TF::DARK_PURPLE . "GKit");
         $item->getNamedTag()->setByte("HeroicEnchanterGKit", 1);
         $item->setCount($amount);
@@ -141,7 +141,7 @@ class GKits {
     }
 
     public function heroicAtheos(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::GRAY . "Heroic Atheos " . TF::RESET . TF::DARK_PURPLE . "GKit");
         $item->getNamedTag()->setByte("HeroicAtheosGKit", 1);
         $item->setCount($amount);
@@ -161,7 +161,7 @@ class GKits {
     }
 
     public function heroicIapetus(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::BLUE . "Heroic Iapetus " . TF::RESET . TF::DARK_PURPLE . "GKit");
         $item->getNamedTag()->setByte("HeroicIapetusGKit", 1);
         $item->setCount($amount);
@@ -186,7 +186,7 @@ class GKits {
     }
 
     public function heroicBroteas(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::GREEN . "Heroic Broteas " . TF::RESET . TF::DARK_PURPLE . "GKit");
         $item->getNamedTag()->setByte("HeroicBroteasGKit", 1);
         $item->setCount($amount);
@@ -206,7 +206,7 @@ class GKits {
     }
 
     public function heroicAres(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::GOLD . "Heroic Ares " . TF::RESET . TF::GOLD . "GKit");
         $item->getNamedTag()->setByte("HeroicAresGKit", 1);
         $item->setCount($amount);
@@ -228,7 +228,7 @@ class GKits {
     }
 
     public function heroicGrimReaper(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::RED . "Heroic Grim Reaper " . TF::RESET . TF::GOLD . "GKit");
         $item->getNamedTag()->setByte("HeroicGrimReaperGKit", 1);
         $item->setCount($amount);
@@ -250,7 +250,7 @@ class GKits {
     }
 
     public function heroicExecutioner(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::DARK_RED . "Heroic Executioner " . TF::RESET . TF::GOLD . "GKit");
         $item->getNamedTag()->setByte("HeroicExecutionerGKit", 1);
         $item->setCount($amount);
@@ -272,7 +272,7 @@ class GKits {
     }
 
     public function Blacksmith(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::DARK_GRAY . "Blacksmith " . TF::RESET . TF::DARK_GRAY . "GKit");
         $item->getNamedTag()->setByte("BlacksmithGKit", 1);
         $item->setCount($amount);
@@ -302,7 +302,7 @@ class GKits {
     }
 
     public function Hero(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::WHITE . "Hero " . TF::RESET . TF::WHITE . "GKit");
         $item->getNamedTag()->setByte("HeroGKit", 1);
         $item->setCount($amount);
@@ -324,7 +324,7 @@ class GKits {
     }
 
     public function Cyborg(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::DARK_AQUA . "Cyborg " . TF::RESET . TF::DARK_AQUA . "GKit");
         $item->getNamedTag()->setByte("CyborgGKit", 1);
         $item->setCount($amount);
@@ -346,7 +346,7 @@ class GKits {
     }
 
     public function Crucible(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::YELLOW . "Crucible " . TF::RESET . TF::YELLOW . "GKit");
         $item->getNamedTag()->setByte("CyborgGKit", 1);
         $item->setCount($amount);
@@ -367,7 +367,7 @@ class GKits {
     }
 
     public function Hunter(int $amount): Item {
-        $item = StringToItemParser::getInstance()->parse("ender_chest");
+        $item = VanillaBlocks::ENDER_CHEST()->asItem();
         $item->setCustomName(TF::BOLD . TF::AQUA . "Hunter " . TF::RESET . TF::AQUA . "GKit");
         $item->getNamedTag()->setByte("HunterGKit", 1);
         $item->setCount($amount);

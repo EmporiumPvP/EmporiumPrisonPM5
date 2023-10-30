@@ -5,12 +5,14 @@ namespace EmporiumCore\Menus;
 use Emporium\Prison\library\formapi\CustomForm;
 use Emporium\Prison\library\formapi\SimpleForm;
 use Emporium\Prison\Managers\misc\Translator;
+
 use EmporiumData\DataManager;
+
 use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
+
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
@@ -274,8 +276,9 @@ class Chef extends Menu {
             $player = $transaction->getPlayer();
             $itemClicked = $transaction->getItemClicked();
             $playerMoney = DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.money");
-            switch($itemClicked->getId()) {
-                case ItemIds::COOKIE:
+            switch($itemClicked->getTypeId()) {
+
+                case VanillaItems::COOKIE()->getTypeId():
                     if($playerMoney >= 0.05) {
                         if($player->getInventory()->canAddItem(VanillaItems::COOKIE())) {
                             $player->getInventory()->addItem(VanillaItems::COOKIE());
@@ -291,7 +294,8 @@ class Chef extends Menu {
                         $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     }
                     break;
-                case ItemIds::APPLE:
+
+                case VanillaItems::APPLE()->getTypeId():
                     if($playerMoney >= 0.25) {
                         if($player->getInventory()->canAddItem(VanillaItems::APPLE())) {
                             $player->getInventory()->addItem(VanillaItems::APPLE());
@@ -307,7 +311,8 @@ class Chef extends Menu {
                         $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     }
                     break;
-                case ItemIds::PUMPKIN_PIE:
+
+                case VanillaItems::PUMPKIN_PIE()->getTypeId():
                     if($playerMoney >= 1) {
                         if($player->getInventory()->canAddItem(VanillaItems::PUMPKIN_PIE())) {
                             $player->getInventory()->addItem(VanillaItems::PUMPKIN_PIE());
@@ -323,7 +328,8 @@ class Chef extends Menu {
                         $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     }
                     break;
-                case ItemIds::BREAD:
+
+                case VanillaItems::BREAD()->getTypeId():
                     if($playerMoney >= 0.25) {
                         if($player->getInventory()->canAddItem(VanillaItems::BREAD())) {
                             $player->getInventory()->addItem(VanillaItems::BREAD());
@@ -339,7 +345,8 @@ class Chef extends Menu {
                         $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     }
                     break;
-                case ItemIds::COOKED_CHICKEN:
+
+                case VanillaItems::COOKED_CHICKEN()->getTypeId():
                     if($playerMoney >= 5) {
                         if($player->getInventory()->canAddItem(VanillaItems::COOKED_CHICKEN())) {
                             $player->getInventory()->addItem(VanillaItems::COOKED_CHICKEN());
@@ -355,7 +362,8 @@ class Chef extends Menu {
                         $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     }
                     break;
-                case ItemIds::STEAK:
+
+                case VanillaItems::STEAK()->getTypeId():
                     if($playerMoney >= 10) {
                         if($player->getInventory()->canAddItem(VanillaItems::STEAK())) {
                             $player->getInventory()->addItem(VanillaItems::STEAK());
@@ -371,7 +379,8 @@ class Chef extends Menu {
                         $player->broadcastSound(new ItemFrameAddItemSound(), [$player]);
                     }
                     break;
-                case ItemIds::GOLDEN_CARROT:
+
+                case VanillaItems::GOLDEN_CARROT()->getTypeId():
                     if($playerMoney >= 25) {
                         if($player->getInventory()->canAddItem(VanillaItems::GOLDEN_CARROT())) {
                             $player->getInventory()->addItem(VanillaItems::GOLDEN_CARROT());

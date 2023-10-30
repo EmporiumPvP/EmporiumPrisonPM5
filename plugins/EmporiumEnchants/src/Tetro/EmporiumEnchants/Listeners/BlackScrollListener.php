@@ -2,17 +2,16 @@
 
 namespace Tetro\EmporiumEnchants\Listeners;
 
-use Emporium\Prison\EmporiumPrison;
+use Emporium\Prison\Variables;
 
 use Exception;
 
+use pocketmine\block\BlockTypeIds;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
 use pocketmine\inventory\transaction\action\SlotChangeAction;
-use pocketmine\item\enchantment\Enchantment;
-use pocketmine\item\ItemIds;
-use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
+use pocketmine\world\sound\DoorBumpSound;
 use pocketmine\world\sound\XpCollectSound;
 
 use Tetro\EmporiumEnchants\Core\BookManager;
@@ -37,63 +36,111 @@ class BlackScrollListener implements Listener
         $player = $event->getTransaction()->getSource();
         $transaction = $event->getTransaction();
         $actions = array_values($transaction->getActions());
+        $applySuccessful = false;
 
         if (count($actions) === 2) {
             foreach ($actions as $i => $action) {
-                if ($action instanceof SlotChangeAction && ($otherAction = $actions[($i + 1) % 2]) instanceof SlotChangeAction && ($itemClickedWith = $action->getTargetItem())->getId() === ItemIds::DYE && ($itemClicked = $action->getSourceItem())->getId() !== ItemIds::AIR) {
-                    if($itemClickedWith->getNamedTag()->getTag("Blackscroll") === null) return;
-                    if ($itemClickedWith->getNamedTag()->getTag("chance") === null) return;
-                    if ($itemClicked->getNamedTag()->getTag("Energy") === null) return;
+                $itemClickedWith = $action->getTargetItem();
+                $itemClicked = $action->getSourceItem();
 
-                    # cancel event
+                if ($action instanceof SlotChangeAction and
+                    ($otherAction = $actions[($i + 1) % 2]) instanceof SlotChangeAction and
+                    $itemClicked->getTypeId() !== BlockTypeIds::AIR) {
+
+
+                    # not a scroll
+                    if($itemClickedWith->getNamedTag()->getTag("Scroll") === null) return;
+
+                    # not a black scroll
+                    if($itemClickedWith->getNamedTag()->getString("Scroll") !== "black") return;
+
                     $event->cancel();
+
+                    # using on a pickaxe
+                    if($itemClicked->getNamedTag()->getTag("PickaxeType")) {
+                        $player->sendMessage(Variables::PREFIX . "You cannot extract Pickaxe Enchants");
+                        $player->broadcastSound(new DoorBumpSound(), [$player]);
+                        return;
+                    }
+
+                    $totalCustomEnchants = 0;
+                    $totalVanillaEnchants = 0;
+                    $count = 0;
+                    $enchantNames = [];
+                    $enchantLevels = [];
+                    $enchantRarities = [];
+
                     # get item enchants
                     if(count($itemClicked->getEnchantments()) > 0) {
+
                         $count = count($itemClicked->getEnchantments());
+
                         # get random enchant from item
                         foreach ($itemClicked->getEnchantments() as $enchant) {
+
                             $enchantLevels[] = $enchant->getLevel();
-                            if($enchant instanceof CustomEnchant) {
-                                $enchantNames[] = $enchant->getName();
-                                $enchantRarities[] = $enchant->getRarity();
+
+                            # custom enchant
+                            if (!$enchant->getType() instanceof CustomEnchant)  {
+                                $totalVanillaEnchants++;
+                                continue;
                             }
-                            if($enchant instanceof Enchantment) {
-                                break;
-                            }
+                            if($enchant->getType()->getRarity() == CustomEnchant::RARITY_EXECUTIVE) continue;
+
+                            $enchantNames[] = $enchant->getType()->getName();
+                            $enchantRarities[] = $enchant->getType()->getRarity();
+                            $totalCustomEnchants++;
                         }
+
+                        # only has vanilla enchants
+                        if($totalCustomEnchants == 0 && $totalVanillaEnchants > 0) {
+                            $player->sendMessage(Variables::PREFIX . "You can only extract Custom Enchants");
+                            return;
+                        }
+
+                        # has no enchants
+                        if($totalCustomEnchants == 0) {
+                            $player->sendMessage(Variables::PREFIX . "That item doesn't have any enchants");
+                            return;
+                        }
+
                         # remove random enchant
                         $randomEnchant = mt_rand(0, $count - 1);
                         $itemClicked->removeEnchantment(CustomEnchantManager::getEnchantmentByName($enchantNames[$randomEnchant]));
+
                         # enchant info
                         $name = $enchantNames[$randomEnchant];
                         $enchant = CustomEnchantManager::getEnchantmentByName($name);
                         $level = $enchantLevels[$randomEnchant];
                         $rarity = $enchantRarities[$randomEnchant];
-                        $id = CustomEnchantManager::getEnchantmentByName($name)->getId();
-                        # blackscroll info
+                        $id = CustomEnchantManager::getEnchantmentByName($name)->getTypeId();
+
+                        # blackscroll chance
                         $chance = $itemClickedWith->getNamedTag()->getInt("chance");
+
                         # send confirmation
                         $player->sendMessage(TF::GRAY . "You have extracted " . TF::LIGHT_PURPLE . $name . " " . $level . TF::GRAY . " with a " . TF::WHITE . $chance . "%" . TF::GRAY . " chance");
+
                         # set apply successful
                         $applySuccessful = true;
-                    } else {
-                        $player->sendMessage("That item doesn't have any enchants that can be extracted");
-                        return;
                     }
+                }
 
+                if ($applySuccessful) {
 
-                    if ($applySuccessful) {
-                        # update pickaxe information
-                        $updatedPickaxe = EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxe($itemClicked);
-                        # give player new pickaxe
-                        $action->getInventory()->setItem($action->getSlot(), $updatedPickaxe);
-                        # create enchant book
-                        $book = $this->bookManager->EnchantedBook($enchant, $level, $rarity, $id, $chance);
-                        $player->getInventory()->addItem($book);
-                        # give player enchant book
-                        $otherAction->getInventory()->setItem($otherAction->getSlot(), VanillaItems::AIR());
-                        $player->broadcastSound(new XpCollectSound(), [$player]);
-                    }
+                    # remove old item
+                    $action->getInventory()->removeItem($itemClicked);
+
+                    # give player new item
+                    $action->getInventory()->setItem($action->getSlot(), $itemClicked);
+
+                    # create enchant book
+                    $book = $this->bookManager->EnchantedBook($enchant, $level, $rarity, $id, $chance);
+                    $player->getInventory()->addItem($book);
+
+                    # give player enchant book
+                    $otherAction->getInventory()->setItem($otherAction->getSlot(), BlockTypeIds::AIR);
+                    $player->broadcastSound(new XpCollectSound(), [$player]);
                 }
             }
         }

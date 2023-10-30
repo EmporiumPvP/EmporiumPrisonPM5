@@ -10,8 +10,8 @@ use muqsit\invmenu\transaction\DeterministicInvMenuTransaction;
 use muqsit\invmenu\type\InvMenuTypeIds;
 
 use pocketmine\item\Item;
-use pocketmine\item\ItemFactory;
 use pocketmine\item\StringToItemParser;
+use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\EnderChestOpenSound;
@@ -320,17 +320,17 @@ class Help extends Menu {
         $menu->setListener(InvMenu::readonly(function(DeterministicInvMenuTransaction $transaction) {
 
             $itemClicked = $transaction->getItemClicked();
-            $itemClickedMeta = $transaction->getItemClicked()->getMeta();
+            $itemClickedMeta = $transaction->getItemClicked()->getStateId();
             $transaction->getPlayer()->removeCurrentWindow();
             # warps
-            if($itemClicked->getId() === 120) {
+            if($itemClicked->getTypeId() == 120) {
                 $transaction->getPlayer()->removeCurrentWindow();
                 $transaction->then(function (Player $player): void {
                     $this->warpsForm($player);
                 });
             }
             # bandits | bosses | player levels
-            if($itemClicked->getId() === 397) {
+            if($itemClicked->getTypeId() == 397) {
                 # zombie head
 
                 switch ($itemClickedMeta) {
@@ -357,7 +357,7 @@ class Help extends Menu {
                 }
             }
 
-            switch ($itemClicked->getId()) {
+            switch ($itemClicked->getTypeId()) {
                 case 311: # events
                     $transaction->getPlayer()->removeCurrentWindow();
                     $transaction->then(function (Player $player): void {
@@ -581,7 +581,7 @@ class Help extends Menu {
         return $item;
     }
     public function tinkerer(): Item {
-        $item = ItemFactory::getInstance()->get(403);
+        $item = VanillaItems::ENCHANTED_BOOK();
         $item->setCustomName(TF::BOLD . TF::DARK_AQUA . "EmporiumTinker");
         $lore = [
             "§r",

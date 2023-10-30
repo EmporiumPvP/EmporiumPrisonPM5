@@ -50,7 +50,7 @@ final class DialogueAPI
     {
     }
 
-    public static function register(PluginBase $plugin)
+    public static function register(PluginBase $plugin): void
     {
         $plugin->getServer()->getPluginManager()->registerEvents(new PacketHandler(), $plugin);
     }

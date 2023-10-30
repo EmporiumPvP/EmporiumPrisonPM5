@@ -24,6 +24,8 @@ use pocketmine\network\mcpe\protocol\types\recipe\PotionTypeRecipe;
 use pocketmine\network\mcpe\protocol\types\recipe\RecipeWithTypeId;
 use pocketmine\network\mcpe\protocol\types\recipe\ShapedRecipe;
 use pocketmine\network\mcpe\protocol\types\recipe\ShapelessRecipe;
+use pocketmine\network\mcpe\protocol\types\recipe\SmithingTransformRecipe;
+use pocketmine\network\mcpe\protocol\types\recipe\SmithingTrimRecipe;
 use function count;
 
 class CraftingDataPacket extends DataPacket implements ClientboundPacket{
@@ -37,6 +39,8 @@ class CraftingDataPacket extends DataPacket implements ClientboundPacket{
 	public const ENTRY_SHULKER_BOX = 5;
 	public const ENTRY_SHAPELESS_CHEMISTRY = 6;
 	public const ENTRY_SHAPED_CHEMISTRY = 7;
+	public const ENTRY_SMITHING_TRANSFORM = 8;
+	public const ENTRY_SMITHING_TRIM = 9;
 
 	/** @var RecipeWithTypeId[] */
 	public array $recipesWithTypeIds = [];
@@ -75,6 +79,8 @@ class CraftingDataPacket extends DataPacket implements ClientboundPacket{
 				self::ENTRY_SHAPED, self::ENTRY_SHAPED_CHEMISTRY => ShapedRecipe::decode($recipeType, $in),
 				self::ENTRY_FURNACE, self::ENTRY_FURNACE_DATA => FurnaceRecipe::decode($recipeType, $in),
 				self::ENTRY_MULTI => MultiRecipe::decode($recipeType, $in),
+				self::ENTRY_SMITHING_TRANSFORM => SmithingTransformRecipe::decode($recipeType, $in),
+				self::ENTRY_SMITHING_TRIM => SmithingTrimRecipe::decode($recipeType, $in),
 				default => throw new PacketDecodeException("Unhandled recipe type $recipeType!"),
 			};
 		}

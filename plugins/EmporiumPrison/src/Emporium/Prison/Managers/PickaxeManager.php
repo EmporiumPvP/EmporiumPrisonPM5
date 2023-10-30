@@ -9,6 +9,7 @@ use pocketmine\item\Item;
 use pocketmine\network\mcpe\protocol\OnScreenTextureAnimationPacket;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
+use Tetro\EmporiumEnchants\Core\CustomEnchant;
 
 class PickaxeManager {
 
@@ -31,34 +32,26 @@ class PickaxeManager {
     }
 
     public function addSuccessfulEnchant(Player $player, $item): Item {
-        $oldData = $item->getNamedTag()->getInt("SuccessfulEnchants");
-        $newData = $oldData + 1;
-        $item->getNamedTag()->setInt("SuccessfulEnchants", $newData);
-        $this->updatePickaxeSetInHand($player, $item);
+        $item->getNamedTag()->setInt("SuccessfulEnchants", $item->getNamedTag()->getInt("SuccessfulEnchants") + 1);
+        $this->updatePickaxe($item);
         return $item;
     }
 
     public function addFailedEnchant(Player $player, $item): Item {
-        $oldData = $item->getNamedTag()->getInt("FailedEnchants");
-        $newData = $oldData + 1;
-        $item->getNamedTag()->setInt("FailedEnchants", $newData);
-        $this->updatePickaxeSetInHand($player, $item);
+        $item->getNamedTag()->setInt("FailedEnchants", $item->getNamedTag()->getInt("FailedEnchants") + 1);
+        $this->updatePickaxe($item);
         return $item;
     }
 
     public function removeLevelUpEnergy($item): Item {
         $energyNeeded = $this->getEnergyNeeded($item);
-        $oldData = $item->getNamedTag()->getInt("Energy");
-        $newData = $oldData - $energyNeeded;
-        $item->getNamedTag()->setInt("Energy", $newData);
+        $item->getNamedTag()->setInt("Energy", $item->getNamedTag()->getInt("Energy") - $energyNeeded);
         $this->updatePickaxe($item);
         return $item;
     }
 
     public function levelUpPickaxe($item): Item {
-        $oldData = $item->getNamedTag()->getInt("Level");
-        $newData = $oldData + 1;
-        $item->getNamedTag()->setInt("Level", $newData);
+        $item->getNamedTag()->setInt("Level", $item->getNamedTag()->getInt("Level") + 1);
         $this->updatePickaxe($item);
         return $item;
     }
@@ -69,6 +62,7 @@ class PickaxeManager {
 
         $energy = $item->getNamedTag()->getInt("Energy");
         $energyNeeded = $pickaxeManager->getEnergyNeeded($item);
+
         if($energyNeeded == 0) {
             return TF::RED . "Pickaxe is Max Level";
         }
@@ -230,6 +224,7 @@ class PickaxeManager {
         $translatedEnergyNeeded = Translator::shortNumber($energyNeeded);
         $whiteScrolled = $item->getNamedTag()->getString("whitescrolled");
         $levelRequired = $item->getNamedTag()->getInt("LevelRequired");
+
         # prestige buffs
         $energyMastery = $item->getNamedTag()->getString("EnergyMastery");
         $energyMasteryBuff = $item->getNamedTag()->getInt("ChargeOrbSlots");
@@ -273,16 +268,16 @@ class PickaxeManager {
                         $prestigeMessage,
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::GREEN . "$energyBar",
                         TF::RESET . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
-                        TF::EOL,
+                        "",
                         TF::RESET . $whiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::AQUA . "This item is ready to prestige!",
                         TF::RESET . TF::GRAY . "Visit the Prestige Master located at " . TF::AQUA . "/spawn",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -291,15 +286,15 @@ class PickaxeManager {
                         $prestigeMessage,
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                        TF::EOL,
+                        "",
                         TF::RESET . $whiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::AQUA . "This item is ready to level-up!",
                         TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -310,13 +305,13 @@ class PickaxeManager {
                         $prestigeMessage,
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::RESET . "$energyBar",
                         TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                        TF::EOL,
+                        "",
                         TF::RESET . $whiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -327,15 +322,15 @@ class PickaxeManager {
                         $prestigeMessage,
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                        TF::EOL,
+                        "",
                         TF::RESET . $holyWhiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::AQUA . "This item is ready to level-up!",
                         TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -345,13 +340,13 @@ class PickaxeManager {
                         $prestigeMessage,
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::GREEN . "$energyBar",
                         TF::RESET . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
-                        TF::EOL,
+                        "",
                         TF::RESET . $holyWhiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -361,13 +356,13 @@ class PickaxeManager {
                         $prestigeMessage,
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::RESET . "$energyBar",
                         TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                        TF::EOL,
+                        "",
                         TF::RESET . $holyWhiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -377,11 +372,11 @@ class PickaxeManager {
                     $prestigeMessage,
                     TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                     TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                     TF::GREEN . "$energyBar",
                     TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::GRAY . ") " . TF::AQUA . " Energy",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                     TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                 ];
@@ -390,13 +385,13 @@ class PickaxeManager {
                     $prestigeMessage,
                     TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                     TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                     TF::RESET . TF::WHITE . "(" . $translatedEnergy . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::AQUA . "This item is ready to level-up!",
                     TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                     TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                 ];
@@ -406,11 +401,11 @@ class PickaxeManager {
                     $prestigeMessage,
                     TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                     TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                     TF::GREEN . "$energyBar",
                     TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::GRAY . ") " . TF::AQUA . " Energy",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                     TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                 ];
@@ -420,11 +415,11 @@ class PickaxeManager {
                     $prestigeMessage,
                     TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                     TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                     TF::RESET . "$energyBar",
                     TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                     TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                 ];
@@ -435,16 +430,16 @@ class PickaxeManager {
                     $lore = [
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::GREEN . "$energyBar",
                         TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
-                        TF::EOL,
+                        "",
                         TF::RESET . $whiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::AQUA . "This item is ready to prestige!",
                         TF::RESET . TF::GRAY . "Visit the Prestige Master located at " . TF::AQUA . "/spawn",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -452,15 +447,15 @@ class PickaxeManager {
                     $lore = [
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                        TF::EOL,
+                        "",
                         TF::RESET . $whiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::AQUA . "This item is ready to level-up!",
                         TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -470,13 +465,13 @@ class PickaxeManager {
                     $lore = [
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::RESET . "$energyBar",
                         TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                        TF::EOL,
+                        "",
                         TF::RESET . $whiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -486,15 +481,15 @@ class PickaxeManager {
                     $lore = [
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                        TF::EOL,
+                        "",
                         TF::RESET . $holyWhiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::AQUA . "This item is ready to level-up!",
                         TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -503,13 +498,13 @@ class PickaxeManager {
                     $lore = [
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::GREEN . "$energyBar",
                         TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
-                        TF::EOL,
+                        "",
                         TF::RESET . $holyWhiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -518,13 +513,13 @@ class PickaxeManager {
                     $lore = [
                         TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                         TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                         TF::RESET . "$energyBar",
                         TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                        TF::EOL,
+                        "",
                         TF::RESET . $holyWhiteScrollMessage,
-                        TF::EOL,
+                        "",
                         TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                         TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                     ];
@@ -533,11 +528,11 @@ class PickaxeManager {
                 $lore = [
                     TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                     TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                     TF::GREEN . "$energyBar",
                     TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                     TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                 ];
@@ -545,13 +540,13 @@ class PickaxeManager {
                 $lore = [
                     TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                     TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                     TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::AQUA . "This item is ready to level-up!",
                     TF::RESET . TF::GRAY . "Visit the Enchanter located at " . TF::AQUA . "/spawn",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                     TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                 ];
@@ -560,11 +555,11 @@ class PickaxeManager {
                 $lore = [
                     TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                     TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                     TF::GREEN . "$energyBar",
                     TF::RESET . TF::GRAY . "(" . TF::WHITE . $translatedEnergy . TF::AQUA . " Energy",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                     TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                 ];
@@ -573,11 +568,11 @@ class PickaxeManager {
                 $lore = [
                     TF::RESET . TF::GREEN . "=- " . TF::BOLD . TF::WHITE . "$successfulEnchants" . TF::RESET . TF::GREEN . " Enchants -=",
                     TF::RESET . TF::RED . "=- " . TF::BOLD . TF::RED . "$failedEnchants" . TF::RESET . TF::RED . " Failures -=",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::BOLD . TF::AQUA . "Energy",
                     TF::RESET . "$energyBar",
                     TF::RESET . TF::GRAY . "(" . TF::WHITE . "$translatedEnergy" . TF::GRAY . "/" . $translatedEnergyNeeded . ")",
-                    TF::EOL,
+                    "",
                     TF::RESET . TF::GRAY . "Blocks Mined: " . TF::WHITE . $blocksMined,
                     TF::RESET . TF::YELLOW . "Required Mining Level " . $levelRequired
                 ];
@@ -611,6 +606,9 @@ class PickaxeManager {
                 $lore = $this->createLore($item);
                 # set the lore
                 $item->setLore($lore);
+
+                # sort enchants
+                $this->sortEnchants($item);
                 break;
 
             case "Stone":
@@ -632,6 +630,9 @@ class PickaxeManager {
                 $lore = $this->createLore($item);
                 # set the lore
                 $item->setLore($lore);
+
+                # sort enchants
+                $this->sortEnchants($item);
                 break;
 
             case "Gold":
@@ -653,6 +654,9 @@ class PickaxeManager {
                 $lore = $this->createLore($item);
                 # set the lore
                 $item->setLore($lore);
+
+                # sort enchants
+                $this->sortEnchants($item);
                 break;
 
             case "Iron":
@@ -674,6 +678,9 @@ class PickaxeManager {
                 $lore = $this->createLore($item);
                 # set the lore
                 $item->setLore($lore);
+
+                # sort enchants
+                $this->sortEnchants($item);
                 break;
 
             case "Diamond":
@@ -695,6 +702,9 @@ class PickaxeManager {
                 $lore = $this->createLore($item);
                 # set the lore
                 $item->setLore($lore);
+
+                # sort enchants
+                $this->sortEnchants($item);
                 break;
         }
         return $item;
@@ -829,5 +839,82 @@ class PickaxeManager {
         $pk = OnScreenTextureAnimationPacket::create(3);
         $player->getNetworkSession()->sendDataPacket($pk);
         $player->sendTitle(TF::GOLD . "Pickaxe Level Up", "", 5, 30, 5);
+    }
+
+    public function sortEnchants(Item $item): void {
+
+        # rarities
+        $heroicEnchants = [];
+        $godlyEnchants = [];
+        $legendaryEnchants = [];
+        $ultimateEnchants = [];
+        $eliteEnchants = [];
+
+        # check if item has enchants
+        if(count($item->getEnchantments()) == 0) return;
+
+        $enchants = $item->getEnchantments();
+
+        foreach ($enchants as $enchant) {
+
+            # only custom enchants
+            if(!$enchant instanceof CustomEnchant) continue;
+
+            $rarity = $enchant->getRarity();
+
+            # assign enchants to category
+            switch($rarity) {
+
+                case CustomEnchant::RARITY_HEROIC:
+                    $heroicEnchants[] = $enchant;
+                    break;
+
+                case CustomEnchant::RARITY_GODLY:
+                    $godlyEnchants[] = $enchant;
+                    break;
+
+                case CustomEnchant::RARITY_LEGENDARY:
+                    $legendaryEnchants[] = $enchant;
+                    break;
+
+                case CustomEnchant::RARITY_ULTIMATE:
+                    $ultimateEnchants[] = $enchant;
+                    break;
+
+                case CustomEnchant::RARITY_ELITE:
+                    $eliteEnchants[] = $enchant;
+                    break;
+            }
+
+            # remove all enchants
+            $item->removeEnchantments();
+
+            # add enchants in order
+            if(!is_null($heroicEnchants)) {
+                foreach ($heroicEnchants as $heroicEnchant) {
+                    $item->addEnchantment($heroicEnchant);
+                }
+            }
+            if(!is_null($godlyEnchants)) {
+                foreach ($godlyEnchants as $godlyEnchant) {
+                    $item->addEnchantment($godlyEnchant);
+                }
+            }
+            if(!is_null($legendaryEnchants)) {
+                foreach ($legendaryEnchants as $legendaryEnchant) {
+                    $item->addEnchantment($legendaryEnchant);
+                }
+            }
+            if(!is_null($ultimateEnchants)) {
+                foreach ($ultimateEnchants as $ultimateEnchant) {
+                    $item->addEnchantment($ultimateEnchant);
+                }
+            }
+            if(!is_null($eliteEnchants)) {
+                foreach ($eliteEnchants as $eliteEnchant) {
+                    $item->addEnchantment($eliteEnchant);
+                }
+            }
+        }
     }
 }

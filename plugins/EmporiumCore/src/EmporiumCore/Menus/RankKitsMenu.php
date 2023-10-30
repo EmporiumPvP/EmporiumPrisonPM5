@@ -208,7 +208,7 @@ class RankKitsMenu {
         $nobleCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_noble");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_GRAY . "Noble " . TF::RESET . TF::GRAY . "Rank Kit");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.noble");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.noble"]);
 
         if($permission) {
             if($nobleCooldown > 0) {
@@ -246,7 +246,7 @@ class RankKitsMenu {
         $imperialCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_imperial");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_PURPLE . "Imperial " . TF::RESET . TF::GRAY . "Rank Kit");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.imperial");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.imperial"]);
 
         if($permission) {
             if($imperialCooldown > 0) {
@@ -284,7 +284,7 @@ class RankKitsMenu {
         $supremeCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_supreme");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_AQUA . "Supreme " . TF::RESET . TF::GRAY . "Rank Kit");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.supreme");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.supreme"]);
 
         if($permission) {
             if($supremeCooldown > 0) {
@@ -322,7 +322,7 @@ class RankKitsMenu {
         $majestyCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_majesty");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::DARK_PURPLE . "Majesty " . TF::RESET . TF::GRAY . "Rank Kit");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.majesty");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.majesty"]);
 
         if($permission) {
             if($majestyCooldown > 0) {
@@ -360,7 +360,7 @@ class RankKitsMenu {
         $emperorCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_emperor");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::AQUA . "Emperor " . TF::RESET . TF::GRAY . "Rank Kit");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.emperor");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.emperor"]);
 
         if($permission) {
             if($emperorCooldown > 0) {
@@ -397,7 +397,7 @@ class RankKitsMenu {
         $presidentCooldown = (int) DataManager::getInstance()->getPlayerData($player->getXuid(), "cooldown.rank_kit_president");
         $item = StringToItemParser::getInstance()->parse("ender_chest");
         $item->setCustomName(TF::BOLD . TF::RED . "President " . TF::RESET . TF::GRAY . "Rank Kit");
-        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), "emporiumcore.rank_kit.president");
+        $permission = PermissionsManager::getInstance()->checkPermission($player->getXuid(), ["emporiumcore.rank_kit.president"]);
 
         if($permission) {
             if($presidentCooldown > 0) {

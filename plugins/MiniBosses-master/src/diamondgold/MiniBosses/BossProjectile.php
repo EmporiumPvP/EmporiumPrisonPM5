@@ -69,8 +69,8 @@ class BossProjectile extends Projectile
     {
         if ($this->networkId !== EntityIds::PLAYER && !empty($this->networkId)) {
             $player->getNetworkSession()->sendDataPacket(AddActorPacket::create(
-                $this->getId(),
-                $this->getId(),
+                $this->getTypeId(),
+                $this->getTypeId(),
                 $this->networkId,
                 $this->location->asVector3(),
                 $this->getMotion(),
@@ -79,7 +79,7 @@ class BossProjectile extends Projectile
                 $this->location->yaw,
                 $this->location->yaw,
                 array_map(function (Attribute $attr): NetworkAttribute {
-                    return new NetworkAttribute($attr->getId(), $attr->getMinValue(), $attr->getMaxValue(), $attr->getValue(), $attr->getDefaultValue(), []);
+                    return new NetworkAttribute($attr->getTypeId(), $attr->getMinValue(), $attr->getMaxValue(), $attr->getValue(), $attr->getDefaultValue(), []);
                 }, $this->attributeMap->getAll()),
                 $this->getAllNetworkData(),
                 new PropertySyncData([], []),
@@ -145,5 +145,17 @@ class BossProjectile extends Projectile
         } else {
             parent::attack($source);
         }
+    }
+
+    protected function getInitialDragMultiplier(): float
+    {
+        // TODO: Implement getInitialDragMultiplier() method.
+        return 1.0;
+    }
+
+    protected function getInitialGravity(): float
+    {
+        // TODO: Implement getInitialGravity() method.
+        return 1.0;
     }
 }

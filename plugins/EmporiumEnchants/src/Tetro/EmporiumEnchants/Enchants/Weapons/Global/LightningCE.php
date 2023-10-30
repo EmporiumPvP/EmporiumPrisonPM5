@@ -7,9 +7,10 @@ use pocketmine\event\Event;
 use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
+
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\Core\Types\ReactiveEnchantment;
-use Tetro\EmporiumEnchants\entities\PiggyLightning;
+use Tetro\EmporiumEnchants\Entities\Lightning;
 
 # Used Files
 
@@ -25,7 +26,7 @@ class LightningCE extends ReactiveEnchantment
     public function react(Player $player, Item $item, Inventory $inventory, int $slot, Event $event, int $level, int $stack): void
     {
         if ($event instanceof EntityDamageByEntityEvent) {
-            $lightning = PiggyLightning($event->getEntity()->getLocation());
+            $lightning = new Lightning($event->getEntity()->getLocation());
             $lightning->setOwningEntity($player);
             $lightning->spawnToAll();
         }

@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace pocketmine\network\mcpe\protocol\types\login;
 
 /**
- * Model class for LoginPacket JSON Data for JsonMapper
+ * Model class for LoginPacket JSON data for JsonMapper
  */
 final class ClientData{
 
@@ -47,6 +47,9 @@ final class ClientData{
 	public int $ClientRandomId;
 
 	/** @required */
+	public bool $CompatibleWithClientSideChunkGen;
+
+	/** @required */
 	public int $CurrentInputMode;
 
 	/** @required */
@@ -72,6 +75,8 @@ final class ClientData{
 
 	/** @required */
 	public string $LanguageCode;
+
+	public bool $OverrideSkin;
 
 	/**
 	 * @var ClientDataPersonaSkinPiece[]

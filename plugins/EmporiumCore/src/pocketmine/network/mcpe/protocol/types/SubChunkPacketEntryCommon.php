@@ -47,7 +47,7 @@ final class SubChunkPacketEntryCommon{
 			SubChunkPacketHeightMapType::DATA => SubChunkPacketHeightMapInfo::read($in),
 			SubChunkPacketHeightMapType::ALL_TOO_HIGH => SubChunkPacketHeightMapInfo::allTooHigh(),
 			SubChunkPacketHeightMapType::ALL_TOO_LOW => SubChunkPacketHeightMapInfo::allTooLow(),
-			default => throw new PacketDecodeException("Unknown heightmap Data type $heightMapDataType")
+			default => throw new PacketDecodeException("Unknown heightmap data type $heightMapDataType")
 		};
 
 		return new self(

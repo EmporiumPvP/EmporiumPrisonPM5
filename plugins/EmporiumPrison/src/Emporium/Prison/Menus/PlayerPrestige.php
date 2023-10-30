@@ -4,6 +4,7 @@ namespace Emporium\Prison\Menus;
 
 use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\Variables;
+use EmporiumCore\EmporiumCore;
 use EmporiumData\DataManager;
 
 use muqsit\invmenu\InvMenu;
@@ -184,7 +185,7 @@ class PlayerPrestige {
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Lockbox: Prestige " . TF::LIGHT_PURPLE . "<" . TF::AQUA . "I" . TF::LIGHT_PURPLE . ">" . TF::GRAY . "(one time reward)",
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Half /extract cost",
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "$909,350,000 Bank Block Investment Limit (coming soon)",
-                TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Godly Contraband (one time reward)",
+                TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Legendary Contraband (one time reward)",
                 TF::EOL,
                 TF::RED . TF::UNDERLINE . "You have not met the requirements!"
             ];
@@ -257,7 +258,6 @@ class PlayerPrestige {
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "+1 PV",
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "+25% Energy from tinkerer",
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Lockbox: Prestige " . TF::LIGHT_PURPLE . "<" . TF::AQUA . "II" . TF::LIGHT_PURPLE . ">" . TF::GRAY . "(one time reward)",
-                TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Half /extract cost",
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "$2,409,350,000 Bank Block Investment Limit (coming soon)",
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Godly Contraband (one time reward)",
                 TF::EOL,
@@ -338,7 +338,7 @@ class PlayerPrestige {
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Lockbox: Prestige " . TF::LIGHT_PURPLE . "<" . TF::AQUA . "III" . TF::LIGHT_PURPLE . ">" . TF::GRAY . "(one time reward)",
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "+200% Ores Prices",
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "+40% Energy from Mining",
-                TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Godly Contraband (one time reward)",
+                TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Heroic Contraband (one time reward)",
                 TF::EOL,
                 TF::RED . TF::UNDERLINE . "You have not met the requirements!"
             ];
@@ -415,7 +415,7 @@ class PlayerPrestige {
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "+1 PV",
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Lockbox: Prestige " . TF::LIGHT_PURPLE . "<" . TF::AQUA . "IV" . TF::LIGHT_PURPLE . ">" . TF::GRAY . "(one time reward)",
                 TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Permanent 2x Energy Booster",
-                TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "Godly Contraband (one time reward)",
+                TF::BOLD . TF::RED . " * " . TF::RESET . TF::GRAY . "3x Heroic Contraband (one time reward)",
                 TF::EOL,
                 TF::RED . TF::UNDERLINE . "You have not met the requirements!"
             ];
@@ -466,7 +466,6 @@ class PlayerPrestige {
         $item->setLore($lore);
         return $item;
     }
-
     private function prestige5Item(Player $player): Item {
         $playerCurrentPrestige = DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.prestige");
         $playerLevel = DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.level");
@@ -621,5 +620,95 @@ class PlayerPrestige {
         ];
         $item->setLore($lore);
         return $item;
+    }
+
+    private function prestigeRewards(Player $player, int $prestige): void {
+
+        switch ($prestige) {
+
+            case 1:
+                # add pv orb
+                if($player->getInventory()->canAddItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1))) {
+                    $player->getInventory()->addItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                }
+                if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1))) {
+                    $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Legendary(1));
+                }
+                break;
+
+            case 2:
+                # add pv orb
+                if($player->getInventory()->canAddItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1))) {
+                    $player->getInventory()->addItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                }
+                if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Godly(1))) {
+                    $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Godly(1));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Godly(1));
+                }
+                break;
+
+            case 3:
+                # add pv orb
+                if($player->getInventory()->canAddItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1))) {
+                    $player->getInventory()->addItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                }
+                if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1))) {
+                    $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Heroic(1));
+                }
+                break;
+
+            case 4:
+                # add pv orb
+                if($player->getInventory()->canAddItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1))) {
+                    $player->getInventory()->addItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                }
+                if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Heroic(3))) {
+                    $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Heroic(3));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Heroic(3));
+                }
+                break;
+
+            case 5:
+                # add pv orb
+                if($player->getInventory()->canAddItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1))) {
+                    $player->getInventory()->addItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                }
+                if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Heroic(5))) {
+                    $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Heroic(5));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Heroic(5));
+                }
+                break;
+
+            case 6:
+                # add pv orb
+                if($player->getInventory()->canAddItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1))) {
+                    $player->getInventory()->addItem(EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumCore::getInstance()->getLootboxes()->PrestigeKit(1));
+                }
+                if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Heroic(10))) {
+                    $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Heroic(10));
+                } else {
+                    $player->getWorld()->dropItem($player->getPosition(), EmporiumPrison::getInstance()->getContraband()->Heroic(10));
+                }
+                break;
+        }
     }
 }

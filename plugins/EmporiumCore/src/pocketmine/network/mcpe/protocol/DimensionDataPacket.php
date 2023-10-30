@@ -56,7 +56,7 @@ class DimensionDataPacket extends DataPacket implements ClientboundPacket{
 			$dimensionData = DimensionData::read($in);
 
 			if(isset($this->definitions[$dimensionNameId])){
-				throw new PacketDecodeException("Repeated dimension Data for key \"$dimensionNameId\"");
+				throw new PacketDecodeException("Repeated dimension data for key \"$dimensionNameId\"");
 			}
 			if($dimensionNameId !== DimensionNameIds::OVERWORLD && $dimensionNameId !== DimensionNameIds::NETHER && $dimensionNameId !== DimensionNameIds::THE_END){
 				throw new PacketDecodeException("Invalid dimension name ID \"$dimensionNameId\"");

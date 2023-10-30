@@ -15,9 +15,12 @@ declare(strict_types=1);
 namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\network\mcpe\protocol\serializer\PacketSerializer;
+use pocketmine\network\mcpe\protocol\types\command\ChainedSubCommandData;
+use pocketmine\network\mcpe\protocol\types\command\ChainedSubCommandValue;
 use pocketmine\network\mcpe\protocol\types\command\CommandData;
 use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
 use pocketmine\network\mcpe\protocol\types\command\CommandEnumConstraint;
+use pocketmine\network\mcpe\protocol\types\command\CommandOverload;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\utils\BinaryDataException;
 use function array_search;
@@ -37,35 +40,35 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 	 * Basic parameter types. These must be combined with the ARG_FLAG_VALID constant.
 	 * ARG_FLAG_VALID | (type const)
 	 */
-	public const ARG_TYPE_INT = 0x01;
-	public const ARG_TYPE_FLOAT = 0x03;
-	public const ARG_TYPE_VALUE = 0x04;
-	public const ARG_TYPE_WILDCARD_INT = 0x05;
-	public const ARG_TYPE_OPERATOR = 0x06;
-	public const ARG_TYPE_COMPARE_OPERATOR = 0x07;
-	public const ARG_TYPE_TARGET = 0x08;
+	public const ARG_TYPE_INT = 1;
+	public const ARG_TYPE_FLOAT = 3;
+	public const ARG_TYPE_VALUE = 4;
+	public const ARG_TYPE_WILDCARD_INT = 5;
+	public const ARG_TYPE_OPERATOR = 6;
+	public const ARG_TYPE_COMPARE_OPERATOR = 7;
+	public const ARG_TYPE_TARGET = 8;
 
-	public const ARG_TYPE_WILDCARD_TARGET = 0x0a;
+	public const ARG_TYPE_WILDCARD_TARGET = 10;
 
-	public const ARG_TYPE_FILEPATH = 0x11;
+	public const ARG_TYPE_FILEPATH = 17;
 
-	public const ARG_TYPE_FULL_INTEGER_RANGE = 0x17;
+	public const ARG_TYPE_FULL_INTEGER_RANGE = 23;
 
-	public const ARG_TYPE_EQUIPMENT_SLOT = 0x26;
-	public const ARG_TYPE_STRING = 0x27;
+	public const ARG_TYPE_EQUIPMENT_SLOT = 43;
+	public const ARG_TYPE_STRING = 44;
 
-	public const ARG_TYPE_INT_POSITION = 0x2f;
-	public const ARG_TYPE_POSITION = 0x30;
+	public const ARG_TYPE_INT_POSITION = 52;
+	public const ARG_TYPE_POSITION = 53;
 
-	public const ARG_TYPE_MESSAGE = 0x33;
+	public const ARG_TYPE_MESSAGE = 55;
 
-	public const ARG_TYPE_RAWTEXT = 0x35;
+	public const ARG_TYPE_RAWTEXT = 58;
 
-	public const ARG_TYPE_JSON = 0x39;
+	public const ARG_TYPE_JSON = 62;
 
-	public const ARG_TYPE_BLOCK_STATES = 0x43;
+	public const ARG_TYPE_BLOCK_STATES = 71;
 
-	public const ARG_TYPE_COMMAND = 0x46;
+	public const ARG_TYPE_COMMAND = 74;
 
 	/**
 	 * Enums are a little different: they are composed as follows:
@@ -76,13 +79,15 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 	/** This is used for /xp <level: int>L. It can only be applied to integer parameters. */
 	public const ARG_FLAG_POSTFIX = 0x1000000;
 
+	public const ARG_FLAG_SOFT_ENUM = 0x4000000;
+
 	public const HARDCODED_ENUM_NAMES = [
 		"CommandName" => true
 	];
 
 	/**
 	 * @var CommandData[]
-	 * List of command Data, including name, description, alias indexes and parameters.
+	 * List of command data, including name, description, alias indexes and parameters.
 	 */
 	public array $commandData = [];
 
@@ -129,6 +134,12 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 			$enumValues[] = $in->getString();
 		}
 
+		/** @var string[] $chainedSubcommandValueNames */
+		$chainedSubcommandValueNames = [];
+		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
+			$chainedSubcommandValueNames[] = $in->getString();
+		}
+
 		/** @var string[] $postfixes */
 		$postfixes = [];
 		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
@@ -139,21 +150,60 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 		$enums = [];
 		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
 			$enums[] = $enum = $this->getEnum($enumValues, $in);
+			//TODO: Bedrock may provide some enums which are not referenced by any command, and can't reasonably be
+			//considered "hardcoded". This happens with various Edu command enums, and other enums which are probably
+			//intended to be used by commands which aren't present in public releases.
+			//We should probably store these somewhere, since we'll need them to be able to correctly re-encode the
+			//packet for testing.
 			if(isset(self::HARDCODED_ENUM_NAMES[$enum->getName()])){
 				$this->hardcodedEnums[] = $enum;
 			}
 		}
 
+		$chainedSubCommandData = [];
 		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
-			$this->commandData[] = $this->getCommandData($enums, $postfixes, $in);
+			$name = $in->getString();
+			$values = [];
+			for($j = 0, $valueCount = $in->getUnsignedVarInt(); $j < $valueCount; ++$j){
+				$valueName = $chainedSubcommandValueNames[$in->getLShort()];
+				$valueType = $in->getLShort();
+				$values[] = new ChainedSubCommandValue($valueName, $valueType);
+			}
+			$chainedSubCommandData[] = new ChainedSubCommandData($name, $values);
+		}
+
+		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
+			$this->commandData[] = $this->getCommandData($enums, $postfixes, $chainedSubCommandData, $in);
 		}
 
 		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
 			$this->softEnums[] = $this->getSoftEnum($in);
 		}
 
+		$this->initSoftEnumsInCommandData();
+
 		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
 			$this->enumConstraints[] = $this->getEnumConstraint($enums, $enumValues, $in);
+		}
+	}
+
+	/**
+	 * Command data is decoded without referencing to any soft enums, as they are decoded afterwards.
+	 * So we need to separately add soft enums to the command data
+	 */
+	protected function initSoftEnumsInCommandData() : void{
+		foreach($this->commandData as $datum){
+			foreach($datum->getOverloads() as $overload){
+				foreach($overload->getParameters() as $parameter){
+					if(($parameter->paramType & self::ARG_FLAG_SOFT_ENUM) !== 0){
+						$index = $parameter->paramType & 0xffff;
+						$parameter->enum = $this->softEnums[$index] ?? null;
+						if($parameter->enum === null){
+							throw new PacketDecodeException("deserializing $datum->name parameter $parameter->paramName: expected soft enum at $index, but got none");
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -193,7 +243,7 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 			$enumValues[] = $in->getString();
 		}
 
-		return new CommandEnum($enumName, $enumValues);
+		return new CommandEnum($enumName, $enumValues, true);
 	}
 
 	/**
@@ -291,22 +341,30 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 	}
 
 	/**
-	 * @param CommandEnum[] $enums
-	 * @param string[]      $postfixes
+	 * @param CommandEnum[]           $enums
+	 * @param string[]                $postfixes
+	 * @param ChainedSubCommandData[] $allChainedSubCommandData
 	 *
 	 * @throws PacketDecodeException
 	 * @throws BinaryDataException
 	 */
-	protected function getCommandData(array $enums, array $postfixes, PacketSerializer $in) : CommandData{
+	protected function getCommandData(array $enums, array $postfixes, array $allChainedSubCommandData, PacketSerializer $in) : CommandData{
 		$name = $in->getString();
 		$description = $in->getString();
 		$flags = $in->getLShort();
 		$permission = $in->getByte();
 		$aliases = $enums[$in->getLInt()] ?? null;
+
+		$chainedSubCommandData = [];
+		for($i = 0, $count = $in->getUnsignedVarInt(); $i < $count; ++$i){
+			$index = $in->getLShort();
+			$chainedSubCommandData[] = $allChainedSubCommandData[$index] ?? throw new PacketDecodeException("Unknown chained subcommand data index $index");
+		}
 		$overloads = [];
 
 		for($overloadIndex = 0, $overloadCount = $in->getUnsignedVarInt(); $overloadIndex < $overloadCount; ++$overloadIndex){
-			$overloads[$overloadIndex] = [];
+			$parameters = [];
+			$isChaining = $in->getBool();
 			for($paramIndex = 0, $paramCount = $in->getUnsignedVarInt(); $paramIndex < $paramCount; ++$paramIndex){
 				$parameter = new CommandParameter();
 				$parameter->paramName = $in->getString();
@@ -330,18 +388,21 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 					throw new PacketDecodeException("deserializing $name parameter $parameter->paramName: Invalid parameter type 0x" . dechex($parameter->paramType));
 				}
 
-				$overloads[$overloadIndex][$paramIndex] = $parameter;
+				$parameters[$paramIndex] = $parameter;
 			}
+			$overloads[$overloadIndex] = new CommandOverload($isChaining, $parameters);
 		}
 
-		return new CommandData($name, $description, $flags, $permission, $aliases, $overloads);
+		return new CommandData($name, $description, $flags, $permission, $aliases, $overloads, $chainedSubCommandData);
 	}
 
 	/**
-	 * @param int[]       $enumIndexes string enum name -> int index
-	 * @param int[]       $postfixIndexes
+	 * @param int[] $enumIndexes string enum name -> int index
+	 * @param int[] $softEnumIndexes
+	 * @param int[] $postfixIndexes
+	 * @param int[] $chainedSubCommandDataIndexes
 	 */
-	protected function putCommandData(CommandData $data, array $enumIndexes, array $postfixIndexes, PacketSerializer $out) : void{
+	protected function putCommandData(CommandData $data, array $enumIndexes, array $softEnumIndexes, array $postfixIndexes, array $chainedSubCommandDataIndexes, PacketSerializer $out) : void{
 		$out->putString($data->name);
 		$out->putString($data->description);
 		$out->putLShort($data->flags);
@@ -353,15 +414,26 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 			$out->putLInt(-1);
 		}
 
+		$out->putUnsignedVarInt(count($data->chainedSubCommandData));
+		foreach($data->chainedSubCommandData as $chainedSubCommandData){
+			$index = $chainedSubCommandDataIndexes[$chainedSubCommandData->getName()] ??
+				throw new \LogicException("Chained subcommand data {$chainedSubCommandData->getName()} does not have an index (this should be impossible)");
+			$out->putLShort($index);
+		}
+
 		$out->putUnsignedVarInt(count($data->overloads));
 		foreach($data->overloads as $overload){
-			/** @var CommandParameter[] $overload */
-			$out->putUnsignedVarInt(count($overload));
-			foreach($overload as $parameter){
+			$out->putBool($overload->isChaining());
+			$out->putUnsignedVarInt(count($overload->getParameters()));
+			foreach($overload->getParameters() as $parameter){
 				$out->putString($parameter->paramName);
 
 				if($parameter->enum !== null){
-					$type = self::ARG_FLAG_ENUM | self::ARG_FLAG_VALID | ($enumIndexes[$parameter->enum->getName()] ?? -1);
+					if($parameter->enum->isSoft()){
+						$type = self::ARG_FLAG_SOFT_ENUM | self::ARG_FLAG_VALID | ($softEnumIndexes[$parameter->enum->getName()] ?? -1);
+					}else{
+						$type = self::ARG_FLAG_ENUM | self::ARG_FLAG_VALID | ($enumIndexes[$parameter->enum->getName()] ?? -1);
+					}
 				}elseif($parameter->postfix !== null){
 					if(!isset($postfixIndexes[$parameter->postfix])){
 						throw new \LogicException("Postfix '$parameter->postfix' not in postfixes array");
@@ -379,34 +451,86 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 	}
 
 	protected function encodePayload(PacketSerializer $out) : void{
-		/** @var int[] $enumValueIndexes */
+		/**
+		 * @var int[] $enumValueIndexes
+		 * @phpstan-var array<string, int> $enumValueIndexes
+		 */
 		$enumValueIndexes = [];
-		/** @var int[] $postfixIndexes */
+		/**
+		 * @var int[] $postfixIndexes
+		 * @phpstan-var array<string, int> $postfixIndexes
+		 */
 		$postfixIndexes = [];
-		/** @var int[] $enumIndexes */
-		$enumIndexes = [];
-		/** @var CommandEnum[] $enums */
-		$enums = [];
 
-		$addEnumFn = static function(CommandEnum $enum) use (&$enums, &$enumIndexes, &$enumValueIndexes) : void{
-			if(!isset($enumIndexes[$enum->getName()])){
-				$enums[$enumIndexes[$enum->getName()] = count($enumIndexes)] = $enum;
-			}
-			foreach($enum->getValues() as $str){
-				$enumValueIndexes[$str] = $enumValueIndexes[$str] ?? count($enumValueIndexes); //latest index
+		/**
+		 * @var CommandEnum[] $enums
+		 * @phpstan-var array<string, CommandEnum> $enums
+		 */
+		$enums = [];
+		/**
+		 * @var int[] $enumIndexes
+		 * @phpstan-var array<string, int> $enumIndexes
+		 */
+		$enumIndexes = [];
+
+		/**
+		 * @var CommandEnum[] $softEnums
+		 * @phpstan-var array<string, CommandEnum> $softEnums
+		 */
+		$softEnums = [];
+		/**
+		 * @var int[] $softEnumIndexes
+		 * @phpstan-var array<string, int> $softEnumIndexes
+		 */
+		$softEnumIndexes = [];
+
+		/**
+		 * @var ChainedSubCommandData[] $allChainedSubCommandData
+		 * @phpstan-var array<string, ChainedSubCommandData> $allChainedSubCommandData
+		 */
+		$allChainedSubCommandData = [];
+		/**
+		 * @var int[] $chainedSubCommandDataIndexes
+		 * @phpstan-var array<string, int> $chainedSubCommandDataIndexes
+		 */
+		$chainedSubCommandDataIndexes = [];
+
+		/**
+		 * @var int[] $chainedSubCommandValueNameIndexes
+		 * @phpstan-var array<string, int> $chainedSubCommandValueNameIndexes
+		 */
+		$chainedSubCommandValueNameIndexes = [];
+
+		$addEnumFn = static function(CommandEnum $enum) use (
+			&$enums, &$softEnums, &$enumIndexes, &$softEnumIndexes, &$enumValueIndexes
+		) : void{
+			$enumName = $enum->getName();
+
+			if($enum->isSoft()){
+				if(!isset($softEnumIndexes[$enumName])){
+					$softEnums[$softEnumIndexes[$enumName] = count($softEnumIndexes)] = $enum;
+				}
+			}else{
+				foreach($enum->getValues() as $str){
+					$enumValueIndexes[$str] = $enumValueIndexes[$str] ?? count($enumValueIndexes); //latest index
+				}
+				if(!isset($enumIndexes[$enumName])){
+					$enums[$enumIndexes[$enumName] = count($enumIndexes)] = $enum;
+				}
 			}
 		};
 		foreach($this->hardcodedEnums as $enum){
+			$addEnumFn($enum);
+		}
+		foreach($this->softEnums as $enum){
 			$addEnumFn($enum);
 		}
 		foreach($this->commandData as $commandData){
 			if($commandData->aliases !== null){
 				$addEnumFn($commandData->aliases);
 			}
-			/** @var CommandParameter[] $overload */
 			foreach($commandData->overloads as $overload){
-				/** @var CommandParameter $parameter */
-				foreach($overload as $parameter){
+				foreach($overload->getParameters() as $parameter){
 					if($parameter->enum !== null){
 						$addEnumFn($parameter->enum);
 					}
@@ -416,11 +540,26 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 					}
 				}
 			}
+			foreach($commandData->chainedSubCommandData as $chainedSubCommandData){
+				if(!isset($allChainedSubCommandData[$chainedSubCommandData->getName()])){
+					$allChainedSubCommandData[$chainedSubCommandData->getName()] = $chainedSubCommandData;
+					$chainedSubCommandDataIndexes[$chainedSubCommandData->getName()] = count($chainedSubCommandDataIndexes);
+
+					foreach($chainedSubCommandData->getValues() as $value){
+						$chainedSubCommandValueNameIndexes[$value->getName()] ??= count($chainedSubCommandValueNameIndexes);
+					}
+				}
+			}
 		}
 
 		$out->putUnsignedVarInt(count($enumValueIndexes));
 		foreach($enumValueIndexes as $enumValue => $index){
 			$out->putString((string) $enumValue); //stupid PHP key casting D:
+		}
+
+		$out->putUnsignedVarInt(count($chainedSubCommandValueNameIndexes));
+		foreach($chainedSubCommandValueNameIndexes as $chainedSubCommandValueName => $index){
+			$out->putString((string) $chainedSubCommandValueName); //stupid PHP key casting D:
 		}
 
 		$out->putUnsignedVarInt(count($postfixIndexes));
@@ -433,13 +572,25 @@ class AvailableCommandsPacket extends DataPacket implements ClientboundPacket{
 			$this->putEnum($enum, $enumValueIndexes, $out);
 		}
 
-		$out->putUnsignedVarInt(count($this->commandData));
-		foreach($this->commandData as $data){
-			$this->putCommandData($data, $enumIndexes, $postfixIndexes, $out);
+		$out->putUnsignedVarInt(count($allChainedSubCommandData));
+		foreach($allChainedSubCommandData as $chainedSubCommandData){
+			$out->putString($chainedSubCommandData->getName());
+			$out->putUnsignedVarInt(count($chainedSubCommandData->getValues()));
+			foreach($chainedSubCommandData->getValues() as $value){
+				$valueNameIndex = $chainedSubCommandValueNameIndexes[$value->getName()] ??
+					throw new \LogicException("Chained subcommand value name index for \"" . $value->getName() . "\" not found (this should never happen)");
+				$out->putLShort($valueNameIndex);
+				$out->putLShort($value->getType());
+			}
 		}
 
-		$out->putUnsignedVarInt(count($this->softEnums));
-		foreach($this->softEnums as $enum){
+		$out->putUnsignedVarInt(count($this->commandData));
+		foreach($this->commandData as $data){
+			$this->putCommandData($data, $enumIndexes, $softEnumIndexes, $postfixIndexes, $chainedSubCommandDataIndexes, $out);
+		}
+
+		$out->putUnsignedVarInt(count($softEnums));
+		foreach($softEnums as $enum){
 			$this->putSoftEnum($enum, $out);
 		}
 

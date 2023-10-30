@@ -3,14 +3,14 @@ gkits:
   - emporiumcore.gkit.heroic_zenith
   - emporiumcore.gkit.heroic_colossus
   - emporiumcore.gkit.heroic_warlock
-  - emporiumcore.gkit.slaughter
-  - emporiumcore.gkit.enchanter
-  - emporiumcore.gkit.atheos
-  - emporiumcore.gkit.iapetus
-  - emporiumcore.gkit.broteas
-  - emporiumcore.gkit.ares
-  - emporiumcore.gkit.grim_reaper
-  - emporiumcore.gkit.executioner
+  - emporiumcore.gkit.heroic_slaughter
+  - emporiumcore.gkit.heroic_enchanter
+  - emporiumcore.gkit.heroic_atheos
+  - emporiumcore.gkit.heroic_iapetus
+  - emporiumcore.gkit.heroic_broteas
+  - emporiumcore.gkit.heroic_ares
+  - emporiumcore.gkit.heroic_grim_reaper
+  - emporiumcore.gkit.heroic_executioner
   - emporiumcore.gkit.blacksmith
   - emporiumcore.gkit.hero
   - emporiumcore.gkit.cyborg

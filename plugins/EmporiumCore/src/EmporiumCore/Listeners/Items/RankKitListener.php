@@ -3,6 +3,7 @@
 namespace EmporiumCore\Listeners\Items;
 
 use EmporiumCore\EmporiumCore;
+use EmporiumCore\Listeners\WebhookEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\utils\TextFormat as TF;
@@ -15,6 +16,8 @@ class RankKitListener implements Listener {
         $item = $event->getItem();
 
         if($item->getNamedTag()->getTag("RankKitNoble")) {
+
+            WebhookEvent::itemWebhook($player, "RankKitNoble");
 
             $kitItems = EmporiumCore::getInstance()->getNobleItems();
             $rankKitItems = [
@@ -39,6 +42,8 @@ class RankKitListener implements Listener {
 
         if($item->getNamedTag()->getTag("RankKitImperial")) {
 
+            WebhookEvent::itemWebhook($player, "RankKitImperial");
+
             $kitItems = EmporiumCore::getInstance()->getImperialItems();
             $rankKitItems = [
                 $kitItems->energy(),
@@ -61,6 +66,8 @@ class RankKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("RankKitSupreme")) {
+
+            WebhookEvent::itemWebhook($player, "RankKitSupreme");
 
             $kitItems = EmporiumCore::getInstance()->getSupremeItems();
             $rankKitItems = [
@@ -85,6 +92,8 @@ class RankKitListener implements Listener {
 
         if($item->getNamedTag()->getTag("RankKitMajesty")) {
 
+            WebhookEvent::itemWebhook($player, "RankKitMajesty");
+
             $kitItems = EmporiumCore::getInstance()->getMajestyItems();
             $rankKitItems = [
                 $kitItems->energy(),
@@ -107,6 +116,8 @@ class RankKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("RankKitEmperor")) {
+
+            WebhookEvent::itemWebhook($player, "RankKitEmperor");
 
             $kitItems = EmporiumCore::getInstance()->getEmperorItems();
 
@@ -135,6 +146,8 @@ class RankKitListener implements Listener {
         }
 
         if($item->getNamedTag()->getTag("RankKitPresident")) {
+
+            WebhookEvent::itemWebhook($player, "RankKitPresident");
 
             $kitItems = EmporiumCore::getInstance()->getPresidentItems();
 

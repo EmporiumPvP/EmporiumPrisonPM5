@@ -25,28 +25,30 @@ class UnbanCommand extends Command {
             return false;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.unban");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), ["emporiumcore.command.unban"]);
         if (!$permission) {
-            $sender->sendMessage(TF::RED . "No permission");
+            $sender->sendMessage(\Emporium\Prison\Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 
-        if (isset($args[0])) {
-            $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[0]);
-            if (file_exists(Loader::PLAYER_FOLDER . $player->getXuid() . ".json")) {
-                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.banned", false);
-                DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.ban", 0);
-                $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have unbanned " . TF::YELLOW . "$args[0].");
-                // Send Logs
-                WebhookEvent::staffWebhook($sender, $args[0], "Unban");
-                return true;
-            } else {
-                $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "That player cannot be found.");
-                return false;
-            }
-        } else {
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RED . "Usage: /unban <player>");
+        if(!isset($args[0])) {
+            $sender->sendMessage("Please specify a player");
             return false;
         }
+
+        $player = EmporiumCore::getInstance()->getServer()->getPlayerExact($args[0]);
+
+        if(!file_exists(Loader::PLAYER_FOLDER . $player->getXuid() . ".json")) {
+            $sender->sendMessage(TF::BOLD . TF::DARK_GRAY . "(" . TF::RED . "!" . TF::DARK_GRAY . ") " . TF::RESET . TF::RED . "That player cannot be found.");
+            return false;
+        }
+
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.banned", false);
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.ban", 0);
+        $sender->sendMessage(Variables::SERVER_PREFIX . TF::GRAY . "You have unbanned " . TF::YELLOW . "$args[0].");
+
+        // Send Logs
+        WebhookEvent::staffWebhook($sender, $args[0], "Unban");
+        return true;
     }
 }

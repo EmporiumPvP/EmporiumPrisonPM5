@@ -28,10 +28,10 @@ class BalanceCommand extends Command {
             return false;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.balance");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), $this->getPermissions());
         # check permission
         if (!$permission) {
-            $sender->sendMessage(TF::RED . "No permission");
+            $sender->sendMessage(\Emporium\Prison\Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 
@@ -43,7 +43,7 @@ class BalanceCommand extends Command {
                 return true;
             }
 
-            $sender->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "§r§7That player cannot be found.");
+            $sender->sendMessage(\Emporium\Prison\Variables::PREFIX . "That player cannot be found");
             return false;
         }
 

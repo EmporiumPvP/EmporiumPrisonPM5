@@ -23,7 +23,7 @@ class BroadcastCommand extends Command {
             return false;
         }
 
-        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), "emporiumcore.command.broadcast");
+        $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(), ["emporiumcore.command.broadcast"]);
         if (!$permission) {
             $sender->sendMessage(TextFormat::RED . "No permission");
             return false;

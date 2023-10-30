@@ -4,17 +4,25 @@
 namespace Tetro\EmporiumEnchants\Core;
 
 use Emporium\Prison\EmporiumPrison;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\event\block\BlockBreakEvent;
-use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent, EntityEffectAddEvent, ProjectileHitBlockEvent};
-use pocketmine\event\inventory\InventoryTransactionEvent;
+use pocketmine\event\entity\{EntityDamageByEntityEvent,
+    EntityDamageEvent,
+    EntityEffectAddEvent,
+    ProjectileHitBlockEvent
+};
 use pocketmine\event\Listener;
-use pocketmine\event\player\{PlayerDeathEvent, PlayerInteractEvent, PlayerItemHeldEvent, PlayerJoinEvent, PlayerMoveEvent, PlayerQuitEvent, PlayerToggleSneakEvent};
-use pocketmine\event\server\{DataPacketSendEvent, DataPacketReceiveEvent};
+use pocketmine\event\player\{PlayerDeathEvent,
+    PlayerInteractEvent,
+    PlayerItemHeldEvent,
+    PlayerJoinEvent,
+    PlayerMoveEvent,
+    PlayerQuitEvent,
+    PlayerToggleSneakEvent
+};
+use pocketmine\event\server\{DataPacketReceiveEvent, DataPacketSendEvent};
 use pocketmine\inventory\{ArmorInventory, CallbackInventoryListener, Inventory, PlayerInventory};
-use pocketmine\inventory\transaction\action\SlotChangeAction;
-use pocketmine\item\enchantment\EnchantmentInstance;
-use pocketmine\item\{Item, ItemIds, VanillaItems};
+use pocketmine\item\{Item, VanillaItems};
 use pocketmine\network\mcpe\protocol\{InventoryContentPacket,
     InventorySlotPacket,
     InventoryTransactionPacket,
@@ -22,22 +30,22 @@ use pocketmine\network\mcpe\protocol\{InventoryContentPacket,
     PlayerActionPacket,
     PlayerAuthInputPacket,
     types\PlayerAction,
-    types\PlayerBlockActionWithBlockInfo};
+    types\PlayerBlockActionWithBlockInfo
+};
 use pocketmine\network\mcpe\protocol\types\inventory\ItemStackWrapper;
 use pocketmine\player\Player;
 
-use pocketmine\utils\TextFormat as TF;
-use pocketmine\world\sound\AnvilBreakSound;
-use pocketmine\world\sound\DoorBumpSound;
-use pocketmine\world\sound\DoorCrashSound;
-use pocketmine\world\sound\TotemUseSound;
+use pocketmine\scheduler\ClosureTask;
 use Tetro\EmporiumEnchants\Core\Types\{ReactiveEnchantment, ToggleableEnchantment};
+use Tetro\EmporiumEnchants\EmporiumEnchants;
 use Tetro\EmporiumEnchants\Enchants\Tools\ShatterCE;
 use Tetro\EmporiumEnchants\Utils\Utils;
 
-class EventListener implements Listener {
+class EventListener implements Listener
+{
 
-    public function onBreak(BlockBreakEvent $event): void {
+    public function onBreak(BlockBreakEvent $event): void
+    {
         $player = $event->getPlayer();
         ReactiveEnchantment::attemptReaction($player, $event);
     }
@@ -164,8 +172,8 @@ class EventListener implements Listener {
                 if (!$holder instanceof Player) return;
 
                 if (!$oldItem->equals(($newItem = $inventory->getItem($slot)), !$inventory instanceof ArmorInventory)) {
-                    if ($newItem->getId() === ItemIds::AIR || $inventory instanceof ArmorInventory) foreach ($oldItem->getEnchantments() as $oldEnchantment) ToggleableEnchantment::attemptToggle($holder, $oldItem, $oldEnchantment, $inventory, $slot, false);
-                    if ($oldItem->getId() === ItemIds::AIR || $inventory instanceof ArmorInventory) foreach ($newItem->getEnchantments() as $newEnchantment) ToggleableEnchantment::attemptToggle($holder, $newItem, $newEnchantment, $inventory, $slot);
+                    if ($newItem->getTypeId() == BlockTypeIds::AIR || $inventory instanceof ArmorInventory) foreach ($oldItem->getEnchantments() as $oldEnchantment) ToggleableEnchantment::attemptToggle($holder, $oldItem, $oldEnchantment, $inventory, $slot, false);
+                    if ($oldItem->getTypeId() == BlockTypeIds::AIR || $inventory instanceof ArmorInventory) foreach ($newItem->getEnchantments() as $newEnchantment) ToggleableEnchantment::attemptToggle($holder, $newItem, $newEnchantment, $inventory, $slot);
                 }
 
             }
@@ -191,7 +199,7 @@ class EventListener implements Listener {
     {
         $player = $event->getPlayer();
         if (!Utils::shouldTakeFallDamage($player)) {
-            if ($player->getWorld()->getBlock($player->getPosition()->floor()->subtract(0, 1, 0))->getId() !== BlockLegacyIds::AIR && Utils::getNoFallDamageDuration($player) <= 0) {
+            if ($player->getWorld()->getBlock($player->getPosition()->floor()->subtract(0, 1, 0))->getTypeId() !== BlockTypeIds::AIR && Utils::getNoFallDamageDuration($player) <= 0) {
                 Utils::setShouldTakeFallDamage($player, true);
             } else {
                 Utils::increaseNoFallDamageDuration($player);
@@ -237,168 +245,5 @@ class EventListener implements Listener {
     {
         $shooter = $event->getEntity()->getOwningEntity();
         if ($shooter instanceof Player) ReactiveEnchantment::attemptReaction($shooter, $event);
-    }
-
-    /**
-     * @priority HIGHEST
-     */
-    public function onTransaction(InventoryTransactionEvent $event): void
-    {
-        $transaction = $event->getTransaction();
-        $actions = array_values($transaction->getActions());
-        $player = $event->getTransaction()->getSource();
-
-        if (count($actions) != 2) return;
-
-        foreach ($actions as $i => $action) {
-
-            if ($action instanceof SlotChangeAction &&
-                ($otherAction = $actions[($i + 1) % 2]) instanceof SlotChangeAction ) {
-                $itemClicked = $action->getSourceItem();
-                $itemClickedWith = $action->getTargetItem();
-
-                if ($itemClickedWith->getId() === ItemIds::ENCHANTED_BOOK &&
-                    $itemClicked->getId() !== ItemIds::AIR ||
-                    count($itemClicked->getEnchantments()) >= count($itemClickedWith->getEnchantments())) {
-
-
-                    if (count($itemClickedWith->getEnchantments()) < 1) return;
-                    $willChange = false;
-
-                    if($itemClicked->getId() === ItemIds::ENCHANTED_BOOK || $itemClicked->getId() === ItemIds::BOOK) return;
-
-                    # book data
-                    if($itemClickedWith->getNamedTag()->getTag("Energy") === null) return;
-                    if($itemClickedWith->getNamedTag()->getTag("EnergyNeeded") === null) return;
-                    if($itemClickedWith->getNamedTag()->getTag("success") === null) return;
-
-                    $bookEnergy = $itemClickedWith->getNamedTag()->getInt("Energy");
-                    $bookEnergyNeeded = $itemClickedWith->getNamedTag()->getInt("EnergyNeeded");
-                    $bookChance = $itemClickedWith->getNamedTag()->getInt("success");
-
-                    # generate random number
-                    $randomNumber = mt_rand(1, 100);
-
-                    if($bookEnergy < $bookEnergyNeeded) {
-                        $event->cancel();
-                        $player->sendMessage(TF::RED . "You need to fill the Book Energy to do that");
-                        $player->broadcastSound(new DoorBumpSound(), [$player]);
-                        return;
-                    }
-
-
-                    foreach ($itemClickedWith->getEnchantments() as $enchantment) {
-                        $enchantmentType = $enchantment->getType();
-                        $newLevel = $enchantment->getLevel();
-                        $existingEnchant = $itemClicked->getEnchantment($enchantmentType);
-                    }
-
-                    if(!isset($enchantmentType)) {
-                        return;
-                    }
-
-                    if(!$enchantmentType instanceof CustomEnchant) return;
-
-                    if($enchantmentType->getItemType() === CustomEnchant::ITEM_TYPE_TOOLS) {
-
-                        if(!Utils::itemMatchesItemType($itemClicked, $enchantmentType->getItemType()) || !Utils::checkEnchantIncompatibilities($itemClicked, $enchantmentType)) {
-                            $player->sendMessage(TF::RED . "You can not apply this enchant to that item");
-                            return;
-                        }
-
-
-                        # pickaxe data
-                        if($itemClicked->getNamedTag()->getTag("Energy")) return;
-                        $pickaxeEnergy = $itemClicked->getNamedTag()->getInt("Energy");
-                        $pickaxeEnergyNeeded = EmporiumPrison::getInstance()->getPickaxeManager()->getEnergyNeeded($itemClicked);
-
-                        if($pickaxeEnergy < $pickaxeEnergyNeeded) {
-                            $player->sendMessage("You need to fill the Pickaxe Energy to do that");
-                            return;
-                        }
-
-
-                        // Upgrade CE Level
-                        if ($existingEnchant !== null) {
-
-                            if ($existingEnchant->getLevel() <= $newLevel) {
-                                // Upgrade Level
-                                if ($existingEnchant->getLevel() === $newLevel) return;
-
-                                // New Level
-                                if ($existingEnchant->getLevel() < $newLevel) $willChange = true;
-
-                            }
-
-                        } else $willChange = true;
-
-
-                        if (((!Utils::itemMatchesItemType($itemClicked, $enchantmentType->getItemType()) || !Utils::checkEnchantIncompatibilities($itemClicked, $enchantmentType))) ||
-                            $itemClicked->getCount() !== 1 ||
-                            $newLevel > $enchantmentType->getMaxLevel() ||
-                            ($itemClicked->getId() === ItemIds::ENCHANTED_BOOK && count($itemClicked->getEnchantments()) === 0) ||
-                            $itemClicked->getId() === ItemIds::BOOK
-                        ) continue;
-                        if($randomNumber <= $bookChance) {
-                            $player->sendMessage(TF::GREEN . "Enchant Success");
-                            $itemClicked->addEnchantment(new EnchantmentInstance($enchantmentType, $newLevel));
-                        } else {
-                            $player->sendMessage(TF::RED . "Enchant failed");
-                        }
-
-                        return;
-
-                    } else {
-
-
-                        if(!Utils::itemMatchesItemType($itemClicked, $enchantmentType->getItemType()) || !Utils::checkEnchantIncompatibilities($itemClicked, $enchantmentType)) {
-                            $player->sendMessage(TF::RED . "You can not apply this enchant to that item"); return;
-                        }
-                        /*
-                         * not trying to enchant pickaxe
-                         *
-                         * only book needs full energy to enchant
-                         */
-
-                        // Upgrade CE Level
-
-                        if (!is_null($existingEnchant)) {
-                            if ($existingEnchant->getLevel() <= $newLevel) {
-                                // already has enchant with same level
-                                if ($existingEnchant->getLevel() === $newLevel) return;
-                                // New Level
-                                if ($existingEnchant->getLevel() < $newLevel) $willChange = true;
-                            }
-                        } else $willChange = true;
-
-
-
-                        if ($itemClicked->getCount() !== 1 || $newLevel > $enchantmentType->getMaxLevel() ||
-                            ($itemClicked->getId() === ItemIds::ENCHANTED_BOOK && count($itemClicked->getEnchantments()) === 0) ||
-                            $itemClicked->getId() === ItemIds::BOOK) continue;
-
-
-                        if ($randomNumber > $bookChance) {
-                            $event->cancel();
-                            $player->sendTitle(TF::RED . "Enchant failed", "", 5, 40, 5);
-                            $player->broadcastSound(new DoorCrashSound(), [$player]);
-                            $otherAction->getInventory()->setItem($otherAction->getSlot(), VanillaItems::AIR());
-                            return;
-                        }
-
-                        $player->sendTitle(TF::GREEN . "Enchant Success", "", 5, 40, 5);
-                        $itemClicked->addEnchantment(new EnchantmentInstance($enchantmentType, $newLevel));
-                        $player->broadcastSound(new TotemUseSound(), [$player]);
-
-                    }
-
-                    if ($willChange) {
-                        $event->cancel();
-                        $action->getInventory()->setItem($action->getSlot(), $itemClicked);
-                        $otherAction->getInventory()->setItem($otherAction->getSlot(), VanillaItems::AIR());
-                    }
-                }
-            }
-        }
     }
 }

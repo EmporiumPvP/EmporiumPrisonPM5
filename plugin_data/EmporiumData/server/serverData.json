@@ -1,147 +1,156 @@
 {
     "events": {
-        "prison_break": 1
+        "prison_break": 9182,
+        "prison_break-enabled": false,
+        "bandit_spawn": 1174,
+        "boss_spawn": 19174,
+        "meteor": 799
     },
     "meteors": {
-        "-1674_103_88": {
-            "timer": 30,
-            "breaks-left": 50,
+        "-124_130_260": {
+            "breaks-left": 38,
+            "rarity": "heroic"
+        },
+        "-129_130_262": {
+            "breaks-left": 37,
+            "rarity": "heroic"
+        },
+        "-133_130_265": {
+            "breaks-left": 23,
+            "rarity": "heroic"
+        },
+        "-1625_91_-99": {
+            "breaks-left": 1,
+            "rarity": "ultimate"
+        },
+        "-1624_91_-115": {
+            "breaks-left": 1,
             "rarity": "elite"
         },
-        "-1677_100_100": {
-            "timer": 30,
-            "breaks-left": 50,
+        "-1625_91_-119": {
+            "breaks-left": 1,
             "rarity": "elite"
         },
-        "-1677_101_100": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1440_106_25": {
+            "breaks-left": 50
         },
-        "-1675_101_104": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1440_107_25": {
+            "breaks-left": 50
         },
-        "-1674_101_104": {
-            "timer": -1,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1558_113_-142": {
+            "breaks-left": 50
         },
-        "-1678_101_102": {
-            "timer": -1,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1531_111_145": {
+            "breaks-left": 50
         },
-        "-1670_101_106": {
-            "timer": -1,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "88_187_-409": {
+            "breaks-left": 50
         },
-        "-1675_100_100": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "638_133_71": {
+            "breaks-left": 50
         },
-        "-1536_167_-1554": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "710_173_189": {
+            "breaks-left": 50
         },
-        "-1489_92_-1497": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "496_126_34": {
+            "breaks-left": 50
         },
-        "-1508_92_-1516": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "602_150_117": {
+            "breaks-left": 50
         },
-        "-1526_92_-1532": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "354_194_-322": {
+            "breaks-left": 50
         },
-        "-1488_92_-218": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "412_144_-91": {
+            "breaks-left": 50
         },
-        "-1509_92_-140": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "350_173_-213": {
+            "breaks-left": 50
         },
-        "-1508_91_-145": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "520_139_-49": {
+            "breaks-left": 50
         },
-        "-1512_91_-152": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "333_161_-445": {
+            "breaks-left": 50
         },
-        "-1507_91_-153": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "562_149_-18": {
+            "breaks-left": 50
         },
-        "-1507_91_-150": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1129_125_-308": {
+            "breaks-left": 50
         },
-        "-1513_91_-148": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1128_110_-230": {
+            "breaks-left": 50
         },
-        "-1509_91_-148": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1125_122_-310": {
+            "breaks-left": 50
         },
-        "-1500_91_-144": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1129_125_-447": {
+            "breaks-left": 50
         },
-        "-1503_91_-143": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1731_171_2": {
+            "breaks-left": 50
         },
-        "-1505_91_-168": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1723_211_-413": {
+            "breaks-left": 50
         },
-        "-1508_91_-173": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1727_137_-174": {
+            "breaks-left": 50
         },
-        "-1515_92_-174": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1396_101_48": {
+            "breaks-left": 50
         },
-        "-1518_94_-97": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1574_92_-62": {
+            "breaks-left": 50
         },
-        "-1489_94_-111": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1271_215_-507": {
+            "breaks-left": 50
         },
-        "-1659_100_110": {
-            "timer": 30,
-            "breaks-left": 50,
-            "rarity": "elite"
+        "-1285_154_-283": {
+            "breaks-left": 50
+        },
+        "-1295_126_-333": {
+            "breaks-left": 50
+        },
+        "-1310_113_-350": {
+            "breaks-left": 50
+        },
+        "-519_181_451": {
+            "breaks-left": 50
+        },
+        "-1125_108_-198": {
+            "breaks-left": 50
+        },
+        "-530_102_-213": {
+            "breaks-left": 50
+        },
+        "-599_104_-172": {
+            "breaks-left": 50
+        },
+        "-750_99_-406": {
+            "breaks-left": 50
+        },
+        "-832_142_-313": {
+            "breaks-left": 50
+        },
+        "-750_111_-438": {
+            "breaks-left": 50
+        },
+        "-742_35_-200": {
+            "breaks-left": 50
+        },
+        "-1594_192_-507": {
+            "breaks-left": 50
+        },
+        "-1521_132_-444": {
+            "breaks-left": 50
+        },
+        "-1186_129_-197": {
+            "breaks-left": 50
+        },
+        "75_133_225": {
+            "breaks-left": 50
         }
-    }
+    },
+    "meteorites": []
 }

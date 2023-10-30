@@ -14,18 +14,19 @@ use EmporiumData\DataManager;
 
 use JsonException;
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\block\VanillaBlocks;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat as TF;
 
 class IronMineListener implements Listener {
 
-    private array $ores = [ItemIds::IRON_ORE, ItemIds::IRON_BLOCK];
+    private array $ores = [
+        BlockTypeIds::IRON_ORE, BlockTypeIds::IRON
+    ];
 
     private PickaxeManager $pickaxeManager;
     private EnergyManager $energyManager;
@@ -44,7 +45,7 @@ class IronMineListener implements Listener {
 
         # event info
         $player = $event->getPlayer();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $world = $event->getPlayer()->getWorld()->getFolderName();
 
         # world check
@@ -87,7 +88,7 @@ class IronMineListener implements Listener {
 
         # block info
         $block = $event->getBlock();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $blockPosition = $block->getPosition();
 
         # player boosters data
@@ -109,7 +110,7 @@ class IronMineListener implements Listener {
             # ore regen
             switch($blockId) {
 
-                case BlockLegacyIds::IRON_ORE:
+                case BlockTypeIds::IRON_ORE:
 
                     if($chance === 1) {
                         # spawn coal block
@@ -134,7 +135,7 @@ class IronMineListener implements Listener {
                     }
                     break;
 
-                case BlockLegacyIds::IRON_BLOCK:
+                case BlockTypeIds::IRON:
 
                     if($chance === 1) {
                         # spawn coal block
@@ -192,7 +193,7 @@ class IronMineListener implements Listener {
         # ore regen
         switch($blockId) {
 
-            case BlockLegacyIds::IRON_ORE:
+            case BlockTypeIds::IRON_ORE:
 
                 if($chance === 1) {
                     # spawn coal block
@@ -217,7 +218,7 @@ class IronMineListener implements Listener {
                 }
                 break;
 
-            case BlockLegacyIds::IRON_BLOCK:
+            case BlockTypeIds::IRON:
 
                 if($chance === 1) {
                     # spawn coal block

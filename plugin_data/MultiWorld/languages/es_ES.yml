@@ -5,6 +5,7 @@
 ## Commands:
 not-perms: '§cNo tienes permiso para usar este comando'
 default-usage: '§cUso: §7/mw help'
+ingame: '§cThis command can be only used in game.'
 
 # Help Command:
 help: '§2--- Mostrando la página de ayuda de MultiWorld {%0} de {%1} (/mw help <páginas>) ---'
@@ -21,7 +22,8 @@ help-9: '§2/mw manage §fMuestra el formulario para gestionar los mundos.'
 help-10: '§2/mw rename §fRenombrar el mundo'
 
 help-11: '§2/mw duplicate §fDuplicar un mundo'
-help-12: '§2/mw update §fActualice el lobby, cree un mundo o cambie el mundo estándar'
+help-12: '§2/mw setspawan §fUpdate world spawn'
+help-13: '§2/mw setlobby §fUpdate server lobby position'
 
 # Create Command:
 create-usage: '§cUso: §7/mw create <nombre> [semilla] [generador]'
@@ -37,6 +39,7 @@ teleport-load: 'Cargando el mundo {%0} ...'
 teleport-done-1: '§aHas sido teletransportado a {%0}.'
 teleport-done-2: '§aEl jugador {%1} se teletransportó a {%0}.'
 teleport-playernotexists: '§cEl jugador no existe.'
+teleport-error: '§cAn error occurred whilst teleporting player: {%0}'
 
 # List Command:
 list-done: '§aMundos ({%0}):'
@@ -46,6 +49,7 @@ load-usage: '§cUso: §7/mw load <mundo>'
 load-notexists: '§cEl mundo {%0} no existe.'
 load-loaded: '§cEl mundo no pudo ser cargado.'
 load-done: '§aMundo cargado.'
+load-error: '§cAn error occurred whilst loading the world: {%0}'
 
 # Unload Command:
 unload-usage: '§cUso: §7/mw unload <mundo>'
@@ -59,17 +63,9 @@ delete-usage: '§cUso: §7/mw delete <mundo>'
 delete-levelnotexists: '§cEl mundo no existe.'
 delete-done: '§aMundo excluido. ({%0} archivos eliminados).'
 
-# Update Command:
-update-usage: '§cUso: §7/mw update <mod: spawn|lobby|default> [opciones: (mundo) (x) (y) (z)]'
-update-levelnotexists: '§cEl mundo {%0} no existe.'
-update-spawn-done: '§aLa sitio de spawn en el mundo {%0} ha cambiado.'
-update-lobby-done: '§aEl lobby en el mundo {%0} ha cambiado.'
-update-default-usage: '§cUso: §7/mw update default <mundo>'
-update-default-done: '§aEl mundo estándar se ha cambiado a {%0}.'
-update-notsupported: '§4Por favor ejecuta este comando en el juego'
-
 # Info Command:
 info-levelnotexists: '§c{%0} no existe.'
+info-unloaded: '§cCould not fetch info from the world {%0}, due to the world could not be loaded.'
 info: '§a--- {%0} ---'
 info-name: '§7Nombre: {%0}'
 info-folderName: '§7Nombre de la carpeta: {%0}'
@@ -90,12 +86,20 @@ rename-usage: '§cUso: §7/mw rename <de> <para>'
 rename-exists: '§cEl nivel con el nombre {%0} ya existe.'
 rename-levelnotfound: '§cEl nivel {%0} no existe.'
 rename-done: '§aEl nombre del nivel {%0} se ha cambiado a {%1}.'
+rename-error: '§cCould not rename the world (Access denied)'
 
 # Duplicate Command
 duplicate-usage: '§cUso: §7/mw duplicate <mundo> [nuevoNombre]'
 duplicate-exists: '§cEl mundo con el nombre {%0} ya existe.'
 duplicate-levelnotfound: '§cEl mundo {%0} no existe.'
 duplicate-done: '§aEl mundo {%0} fue duplicado con el nombre de {%1}'
+
+# Set Spawn
+setspawn-success: '§a{%0} world spawn set to {%1}'
+
+# Set Lobby
+setlobby-errror: '§cCould not update default world: {%0}'
+setlobby-success: '§aServer lobby position set to {%0} at {%1}'
 
 # Forms
 forms-invalid: '§cResultado inválido.'

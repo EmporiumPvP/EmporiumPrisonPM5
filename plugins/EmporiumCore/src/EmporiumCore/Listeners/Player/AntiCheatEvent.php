@@ -4,14 +4,16 @@
 namespace EmporiumCore\Listeners\Player;
 
 use EmporiumCore\EmporiumCore;
+
 use EmporiumData\DataManager;
+
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\mcpe\protocol\{LevelSoundEventPacket};
 use pocketmine\network\mcpe\protocol\types\LevelSoundEvent;
 use pocketmine\player\Player;
-use Tetro\EmporiumEnchants\Core\CustomEnchant;
+
 use Tetro\EmporiumEnchants\Core\CustomEnchantManager;
 
 # Plugin

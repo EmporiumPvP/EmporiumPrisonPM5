@@ -28,7 +28,9 @@ final class LevelSettings{
 	public int $difficulty;
 	public BlockPosition $spawnPosition;
 	public bool $hasAchievementsDisabled = true;
-	public bool $isEditorMode = false;
+	public int $editorWorldType = EditorWorldType::NON_EDITOR;
+	public bool $createdInEditorMode = false;
+	public bool $exportedFromEditorMode = false;
 	public int $time = -1;
 	public int $eduEditionOffer = EducationEditionOffer::NONE;
 	public bool $hasEduFeaturesEnabled = false;
@@ -63,6 +65,7 @@ final class LevelSettings{
 	public bool $onlySpawnV1Villagers = false;
 	public bool $disablePersona = false;
 	public bool $disableCustomSkins = false;
+	public bool $muteEmoteAnnouncements = false;
 	public string $vanillaVersion = ProtocolInfo::MINECRAFT_VERSION_NETWORK;
 	public int $limitedWorldWidth = 0;
 	public int $limitedWorldLength = 0;
@@ -96,7 +99,9 @@ final class LevelSettings{
 		$this->difficulty = $in->getVarInt();
 		$this->spawnPosition = $in->getBlockPosition();
 		$this->hasAchievementsDisabled = $in->getBool();
-		$this->isEditorMode = $in->getBool();
+		$this->editorWorldType = $in->getVarInt();
+		$this->createdInEditorMode = $in->getBool();
+		$this->exportedFromEditorMode = $in->getBool();
 		$this->time = $in->getVarInt();
 		$this->eduEditionOffer = $in->getVarInt();
 		$this->hasEduFeaturesEnabled = $in->getBool();
@@ -125,6 +130,7 @@ final class LevelSettings{
 		$this->onlySpawnV1Villagers = $in->getBool();
 		$this->disablePersona = $in->getBool();
 		$this->disableCustomSkins = $in->getBool();
+		$this->muteEmoteAnnouncements = $in->getBool();
 		$this->vanillaVersion = $in->getString();
 		$this->limitedWorldWidth = $in->getLInt();
 		$this->limitedWorldLength = $in->getLInt();
@@ -143,7 +149,9 @@ final class LevelSettings{
 		$out->putVarInt($this->difficulty);
 		$out->putBlockPosition($this->spawnPosition);
 		$out->putBool($this->hasAchievementsDisabled);
-		$out->putBool($this->isEditorMode);
+		$out->putVarInt($this->editorWorldType);
+		$out->putBool($this->createdInEditorMode);
+		$out->putBool($this->exportedFromEditorMode);
 		$out->putVarInt($this->time);
 		$out->putVarInt($this->eduEditionOffer);
 		$out->putBool($this->hasEduFeaturesEnabled);
@@ -172,6 +180,7 @@ final class LevelSettings{
 		$out->putBool($this->onlySpawnV1Villagers);
 		$out->putBool($this->disablePersona);
 		$out->putBool($this->disableCustomSkins);
+		$out->putBool($this->muteEmoteAnnouncements);
 		$out->putString($this->vanillaVersion);
 		$out->putLInt($this->limitedWorldWidth);
 		$out->putLInt($this->limitedWorldLength);

@@ -1,0 +1,5 @@
+name: FlatGlass
+main: Tetro\FlatGlass\main
+author: Tetro
+api: 5.0.0
+version: 1.0

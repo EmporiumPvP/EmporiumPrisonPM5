@@ -5,12 +5,12 @@ namespace Emporium\Prison\listeners\blocks;
 use Emporium\Prison\EmporiumPrison;
 use Emporium\Prison\tasks\Meteors\MeteorTask;
 
-use EmporiumData\ServerManager;
 use EmporiumData\DataManager;
+use EmporiumData\ServerManager;
 
 use JsonException;
 
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
 use pocketmine\item\Pickaxe;
@@ -18,19 +18,21 @@ use pocketmine\item\StringToItemParser;
 use pocketmine\utils\TextFormat as TF;
 use pocketmine\world\sound\FizzSound;
 
-class MeteorListener implements Listener {
+class MeteorListener implements Listener
+{
 
     /**
      * @throws JsonException
      */
-    public function onMine(BlockBreakEvent $event) {
+    public function onMine(BlockBreakEvent $event)
+    {
 
         $player = $event->getPlayer();
         $world = $event->getPlayer()->getWorld();
 
         # block Data
         $block = $event->getBlock();
-        $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+        $blockId = $event->getBlock()->getTypeId();
         $blockPosition = $block->getPosition();
         $blockX = round($blockPosition->getX());
         $blockY = round($blockPosition->getY());
@@ -50,12 +52,10 @@ class MeteorListener implements Listener {
         $meteorName = $blockName;
 
         # block check
-        if (!$blockId == BlockLegacyIds::NETHER_QUARTZ_ORE) return;
+        if (!$blockId == BlockTypeIds::NETHER_QUARTZ_ORE) return;
 
-        $event->getPlayer()->sendMessage("Is Quartz");
         # check if block is a meteor
-        if(!ServerManager::getInstance()->getData("meteors.$meteorName")) return;
-        $event->getPlayer()->sendMessage("Exists");
+        if (!ServerManager::getInstance()->getData("meteors.$meteorName")) return;
 
         $meteorX = $blockX;
         $meteorY = $blockY;
@@ -66,40 +66,36 @@ class MeteorListener implements Listener {
         # pickaxe check
         if (!$itemUsed instanceof Pickaxe) return;
 
-        # add energy to pickaxe
+        # calculate energy
         $energy = mt_rand(50, 120);
-        if ($energyBoosterTime >= 1) {
-            $multipliedEnergy = $energy * $energyMultiplier;
-            $oldData = $item->getNamedTag()->getInt("Energy");
-            $newData = $oldData + $multipliedEnergy;
-        } else {
-            $oldData = $item->getNamedTag()->getInt("Energy");
-            $newData = $oldData + $energy;
+        # with booster
+        if($energyBoosterTime > 1) {
+            $energy = $energy * $energyMultiplier;
         }
-        $item->getNamedTag()->setInt("Energy", $newData);
-        $xp = mt_rand(10, 30);
+        # no booster
+        $item->getNamedTag()->setInt("Energy", $item->getNamedTag()->getInt("Energy") + $energy);
 
-        # add xp to player
-        if ($miningBoosterTime > 0) {
-            $multipliedXp = $xp * $miningMultiplier;
-            $player->sendTip("+$multipliedXp xp");
-            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $multipliedXp);
-        } else {
-            $player->sendTip("+$xp xp");
-            DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $xp);
+        # calculate xp
+        $xp = mt_rand(10, 30);
+        if ($miningBoosterTime > 1) {
+            $player->sendTip("+" . $xp * $miningMultiplier . "xp");
+            $xp = $xp * $miningMultiplier;
         }
+        $player->sendTip("+$xp xp");
+
+        # add xp
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.xp") + $xp);
+        DataManager::getInstance()->setPlayerData($player->getXuid(), "profile.total-xp", DataManager::getInstance()->getPlayerData($player->getXuid(), "profile.total-xp") + $xp);
 
         # add pickaxe Data
-        $oldData = $item->getNamedTag()->getInt("BlocksMined");
-        $newData = $oldData + 1;
-        $item->getNamedTag()->setInt("BlocksMined", $newData);
+        $item->getNamedTag()->setInt("BlocksMined", $item->getNamedTag()->getInt("BlocksMined") + 1);
 
         # update pickaxe check player level
         EmporiumPrison::getInstance()->getPickaxeManager()->updatePickaxeSetInHand($player, $item);
         EmporiumPrison::getInstance()->getPlayerLevelManager()->checkPlayerLevelUp($player);
 
         # player just used the last break
-        if($breaksLeft == 1) ServerManager::getInstance()->removeData("meteors.$meteorName");
+        if ($breaksLeft == 1) ServerManager::getInstance()->removeData("meteors.$meteorName");
 
         # check block breaks left
         if ($breaksLeft > 1) {
@@ -125,7 +121,7 @@ class MeteorListener implements Listener {
 
                     case 100: # elite contraband
                         $player->sendMessage(TF::BOLD . TF::RED . "(!) " . TF::RESET . TF::RED . "You found an " . TF::BLUE . "Elite Contraband!");
-                        if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Elite(1))) {
+                        if ($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Elite(1))) {
                             $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Elite(1));
                         } else {
                             $player->getWorld()->dropItem($player->getLocation(), EmporiumPrison::getInstance()->getContraband()->Elite(1));
@@ -144,7 +140,7 @@ class MeteorListener implements Listener {
                         break;
 
                     case 100: # ultimate contraband
-                        if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1))) {
+                        if ($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1))) {
                             $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Ultimate(1));
                         } else {
                             $player->getWorld()->dropItem($player->getLocation(), EmporiumPrison::getInstance()->getContraband()->Elite(1));
@@ -163,7 +159,7 @@ class MeteorListener implements Listener {
                         break;
 
                     case 100:
-                        if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1))) {
+                        if ($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1))) {
                             $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Legendary(1));
                         } else {
                             $player->getWorld()->dropItem($player->getLocation(), EmporiumPrison::getInstance()->getContraband()->Legendary(1));
@@ -184,7 +180,7 @@ class MeteorListener implements Listener {
                         break;
 
                     case 100:
-                        if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Godly(1))) {
+                        if ($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Godly(1))) {
                             $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Godly(1));
                         } else {
                             $player->getWorld()->dropItem($player->getLocation(), EmporiumPrison::getInstance()->getContraband()->Godly(1));
@@ -205,7 +201,7 @@ class MeteorListener implements Listener {
                         break;
 
                     case 100:
-                        if($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1))) {
+                        if ($player->getInventory()->canAddItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1))) {
                             $player->getInventory()->addItem(EmporiumPrison::getInstance()->getContraband()->Heroic(1));
                         } else {
                             $player->getWorld()->dropItem($player->getLocation(), EmporiumPrison::getInstance()->getContraband()->Heroic(1));

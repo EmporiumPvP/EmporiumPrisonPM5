@@ -31,7 +31,7 @@ class PacketPool{
 	protected \SplFixedArray $pool;
 
 	public function __construct(){
-		$this->pool = new \SplFixedArray(256);
+		$this->pool = new \SplFixedArray(512);
 
 		$this->registerPacket(new LoginPacket());
 		$this->registerPacket(new PlayStatusPacket());
@@ -94,7 +94,7 @@ class PacketPool{
 		$this->registerPacket(new SetPlayerGameTypePacket());
 		$this->registerPacket(new PlayerListPacket());
 		$this->registerPacket(new SimpleEventPacket());
-		$this->registerPacket(new EventPacket());
+		$this->registerPacket(new LegacyTelemetryEventPacket());
 		$this->registerPacket(new SpawnExperienceOrbPacket());
 		$this->registerPacket(new ClientboundMapItemDataPacket());
 		$this->registerPacket(new MapInfoRequestPacket());
@@ -145,7 +145,6 @@ class PacketPool{
 		$this->registerPacket(new SetLocalPlayerAsInitializedPacket());
 		$this->registerPacket(new UpdateSoftEnumPacket());
 		$this->registerPacket(new NetworkStackLatencyPacket());
-		$this->registerPacket(new ScriptCustomEventPacket());
 		$this->registerPacket(new SpawnParticleEffectPacket());
 		$this->registerPacket(new AvailableActorIdentifiersPacket());
 		$this->registerPacket(new LevelSoundEventPacketV2());
@@ -199,7 +198,6 @@ class PacketPool{
 		$this->registerPacket(new EduUriResourcePacket());
 		$this->registerPacket(new CreatePhotoPacket());
 		$this->registerPacket(new UpdateSubChunkBlocksPacket());
-		$this->registerPacket(new PhotoInfoRequestPacket());
 		$this->registerPacket(new SubChunkPacket());
 		$this->registerPacket(new SubChunkRequestPacket());
 		$this->registerPacket(new PlayerStartItemCooldownPacket());
@@ -223,6 +221,14 @@ class PacketPool{
 		$this->registerPacket(new GameTestRequestPacket());
 		$this->registerPacket(new GameTestResultsPacket());
 		$this->registerPacket(new UpdateClientInputLocksPacket());
+		$this->registerPacket(new CameraPresetsPacket());
+		$this->registerPacket(new UnlockedRecipesPacket());
+		$this->registerPacket(new CameraInstructionPacket());
+		$this->registerPacket(new CompressedBiomeDefinitionListPacket());
+		$this->registerPacket(new TrimDataPacket());
+		$this->registerPacket(new OpenSignPacket());
+		$this->registerPacket(new AgentAnimationPacket());
+		$this->registerPacket(new RefreshEntitlementsPacket());
 	}
 
 	public function registerPacket(Packet $packet) : void{

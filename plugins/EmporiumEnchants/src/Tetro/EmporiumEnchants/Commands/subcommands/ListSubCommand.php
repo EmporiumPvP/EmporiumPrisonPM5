@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tetro\EmporiumEnchants\Commands\subcommands;
 
-use Tetro\EmporiumEnchants\Utils\Commando\BaseSubCommand;
+use CortexPE\Commando\BaseSubCommand;
 use Tetro\EmporiumEnchants\Core\CustomEnchantManager;
 use Tetro\EmporiumEnchants\Core\CustomEnchant;
 use Tetro\EmporiumEnchants\EmporiumEnchants;
 use Tetro\EmporiumEnchants\Utils\Utils;
+
 use pocketmine\command\CommandSender;
-use pocketmine\player\Player;
 use pocketmine\Utils\TextFormat;
 
 class ListSubCommand extends BaseSubCommand
@@ -60,5 +60,10 @@ class ListSubCommand extends BaseSubCommand
     public function prepare(): void
     {
         $this->setPermission("emporiumenchants.command.list");
+    }
+
+    public function getPermission()
+    {
+        // TODO: Implement getPermission() method.
     }
 }

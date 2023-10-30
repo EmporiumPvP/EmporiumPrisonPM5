@@ -3,7 +3,7 @@
 namespace Tetro\EmporiumEnchants\Enchants\Tools;
 
 use Emporium\Prison\listeners\worlds\WorldListener;
-use pocketmine\block\BlockLegacyIds;
+use pocketmine\block\BlockTypeIds;
 use pocketmine\item\Item;
 use pocketmine\event\Event;
 use pocketmine\player\Player;
@@ -34,22 +34,14 @@ class MinersSightCE extends ReactiveEnchantment {
     }
 
     private array $ores = [
-        BlockLegacyIds::COAL_ORE,
-        BlockLegacyIds::COAL_BLOCK,
-        BlockLegacyIds::IRON_ORE,
-        BlockLegacyIds::IRON_BLOCK,
-        BlockLegacyIds::LAPIS_ORE,
-        BlockLegacyIds::LAPIS_BLOCK,
-        BlockLegacyIds::REDSTONE_ORE,
-        BlockLegacyIds::LIT_REDSTONE_ORE,
-        BlockLegacyIds::REDSTONE_BLOCK,
-        BlockLegacyIds::GOLD_ORE,
-        BlockLegacyIds::GOLD_BLOCK,
-        BlockLegacyIds::DIAMOND_ORE,
-        BlockLegacyIds::DIAMOND_BLOCK,
-        BlockLegacyIds::EMERALD_ORE,
-        BlockLegacyIds::EMERALD_BLOCK,
-        BlockLegacyIds::QUARTZ_ORE
+        BlockTypeIds::COAL_ORE, BlockTypeIds::COAL,
+        BlockTypeIds::IRON_ORE, BlockTypeIds::IRON,
+        BlockTypeIds::LAPIS_LAZULI_ORE, BlockTypeIds::LAPIS_LAZULI,
+        BlockTypeIds::REDSTONE_ORE, BlockTypeIds::REDSTONE,
+        BlockTypeIds::GOLD_ORE, BlockTypeIds::GOLD,
+        BlockTypeIds::DIAMOND_ORE, BlockTypeIds::DIAMOND,
+        BlockTypeIds::EMERALD_ORE, BlockTypeIds::EMERALD,
+        BlockTypeIds::NETHER_QUARTZ_ORE, BlockTypeIds::QUARTZ
     ];
 
     # Enchantment
@@ -59,12 +51,10 @@ class MinersSightCE extends ReactiveEnchantment {
 
             if($event->isCancelled()) return;
 
-            $blockId = $event->getBlock()->getIdInfo()->getBlockId();
+            $blockId = $event->getBlock()->getTypeId();
 
-            if(!in_array($blockId, $this->ores)) {
-                $event->cancel();
-                return;
-            }
+            if(!in_array($blockId, $this->ores)) return;
+
             $player->getEffects()->add(new EffectInstance(VanillaEffects::NIGHT_VISION(), 200, $level - 1, false));
         }
     }

@@ -5,17 +5,16 @@ namespace Emporium\Prison\items;
 use Emporium\Prison\Managers\misc\GlowManager;
 
 use pocketmine\block\VanillaBlocks;
-use pocketmine\data\bedrock\EnchantmentIdMap;
-use pocketmine\item\enchantment\Enchantment;
-use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\Item;
 
+use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;
 
 class Flares {
 
     public function EliteMeteor(): Item {
 
+        VanillaItems::DIAMOND_SWORD();
         $item = VanillaBlocks::REDSTONE_TORCH()->asItem();
         $item->getNamedTag()->setByte("EliteMeteorFlare", 1);
         $item->setCustomName(TF::BOLD . TF::BLUE . "Elite Meteor Flare");
@@ -468,4 +467,5 @@ class Flares {
 
         return $item;
     }
+
 }

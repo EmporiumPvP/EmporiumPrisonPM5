@@ -3,6 +3,7 @@
 namespace Emporium\Prison\items;
 
 use Emporium\Prison\Managers\misc\GlowManager;
+
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
 use pocketmine\utils\TextFormat as TF;

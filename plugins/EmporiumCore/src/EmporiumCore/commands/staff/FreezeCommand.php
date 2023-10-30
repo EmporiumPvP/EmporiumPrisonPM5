@@ -27,7 +27,7 @@ class FreezeCommand extends Command {
 
         $permission = PermissionsManager::getInstance()->checkPermission($sender->getXuid(),  "emporiumcore.command.freeze");
         if (!$permission) {
-            $sender->sendMessage(TF::RED . "No permission");
+            $sender->sendMessage(\Emporium\Prison\Variables::NO_PERMISSION_MESSAGE);
             return false;
         }
 
